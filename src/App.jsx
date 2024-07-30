@@ -14,6 +14,8 @@ import { Companies } from './components/Layouts/Companies';
 import { History } from './components/Layouts/History';
 import { LoginCompanies } from './components/Layouts/LoginCompanies';
 import { Events } from './components/Layouts/Events';
+import { CreateProduct } from './components/Layouts/CreateProduct';
+import { ProductDetail } from './components/Layouts/ProductDetail';
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -35,6 +37,8 @@ function App() {
         <Route path="/Companies" element={<Companies />} />
         <Route path="/LoginCompanies" element={<LoginCompanies />} />
         <Route path="/Events" element={<Events />} />
+        <Route path="/CreateProduct" element={<CreateProduct />} />
+        <Route path="/ProductDetail" element={<ProductDetail />} />
       </Routes>
     </Router>
   );

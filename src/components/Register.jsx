@@ -1,61 +1,39 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
 import BackgroundImage from '../assets/BackgroundLogin.jpg'; 
 import { FaHome } from 'react-icons/fa';
 import Logo from '../../src/assets/Artesanías.png';
-import { useAuth } from '../Context/contextAuth'; // Ensure correct import
 
 export const Register = () => {
     const navigate = useNavigate();
-    const { register } = useAuth(); // Ensure useAuth provides register
-    const [nombre, setNombre] = useState('');
-    const [correoElectronico, setCorreoElectronico] = useState('');
-    const [contrasena, setContrasena] = useState('');
-    const [confirmarContrasena, setConfirmarContrasena] = useState('');
-    const [tipoUsuario, setTipoUsuario] = useState('comprador'); // Default value in lowercase
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-
-        if (contrasena !== confirmarContrasena) {
-            console.error('Las contraseñas no coinciden');
-            return;
-        }
-
-        try {
-            await register(tipoUsuario, nombre, correoElectronico, contrasena);
-            navigate('/login'); // Redirect to the login page after registration
-        } catch (error) {
-            console.error('Error al intentar registrar el usuario:', error);
-        }
+    const handleLoginClick = () => {
+        navigate('/login');
     };
 
     return (
-        <div className="flex items-center justify-center h-screen w-screen fixed top-0 left-0"
+        <div 
+            className="flex items-center justify-center min-h-screen bg-cover bg-center"
             style={{ 
                 backgroundImage: `url(${BackgroundImage})`, 
-                backgroundSize: 'cover', 
-                backgroundPosition: 'center',
             }}
         >
             <NavLink to="/" className="absolute top-4 left-4">
                 <FaHome className="text-darkyellow text-4xl" />
             </NavLink>
-            <div className="relative bg-white p-12 rounded shadow-md w-full max-w-md">
+            <div className="relative bg-white p-5 rounded-lg shadow-md w-full max-w-md mx-4 sm:mx-8 md:mx-16 lg:mx-32">
                 <img src={Logo} alt="Logo" className="h-24 w-24 mx-auto mb-6" />
                 <h1 className="text-2xl font-bold mb-6 text-center">Registrarse</h1>
-                <form onSubmit={handleSubmit}>
+                <form>
                     <div className="mb-4">
-                        <label className="block text-black text-sm font-bold mb-2" htmlFor="nombre">
-                            Nombre Completo
+                        <label className="block text-black text-sm font-bold mb-2" htmlFor="username">
+                            Nombre de Usuario
                         </label>
                         <input
                             type="text"
-                            id="nombre"
-                            value={nombre}
-                            onChange={(e) => setNombre(e.target.value)}
+                            id="username"
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-                            placeholder="Nombre Completo"
+                            placeholder="Nombre de Usuario"
                         />
                     </div>
                     <div className="mb-4">
@@ -65,8 +43,6 @@ export const Register = () => {
                         <input
                             type="email"
                             id="email"
-                            value={correoElectronico}
-                            onChange={(e) => setCorreoElectronico(e.target.value)}
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
                             placeholder="Correo Electrónico"
                         />
@@ -78,8 +54,6 @@ export const Register = () => {
                         <input
                             type="password"
                             id="password"
-                            value={contrasena}
-                            onChange={(e) => setContrasena(e.target.value)}
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
                             placeholder="Contraseña"
                         />
@@ -91,42 +65,38 @@ export const Register = () => {
                         <input
                             type="password"
                             id="confirmPassword"
-                            value={confirmarContrasena}
-                            onChange={(e) => setConfirmarContrasena(e.target.value)}
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
                             placeholder="Confirmar Contraseña"
                         />
                     </div>
                     <div className="mb-4">
-                        <label className="block text-black text-sm font-bold mb-2" htmlFor="tipoUsuario">
-                            Tipo de Usuario
+                        <label className="block text-black text-sm font-bold mb-2" htmlFor="role">
+                            Rol
                         </label>
                         <select
-                            id="tipoUsuario"
-                            value={tipoUsuario}
-                            onChange={(e) => setTipoUsuario(e.target.value)}
+                            id="role"
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
                         >
-                            <option value="comprador">Comprador</option>
-                            <option value="empleado">Empleado</option>
-                            <option value="administrador">Administrador</option>
+                            <option value="admin">Administrador</option>
+                            <option value="seller">Vendedor</option>
+                            <option value="buyer">Comprador</option>
                         </select>
                     </div>
-                    <div className="mb-6">
+                    <div className="flex items-center justify-center">
                         <button
                             type="submit"
-                            className="bg-darkyellow text-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+                            className="bg-darkyellow hover:bg-lightyellow text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                         >
                             Registrarse
                         </button>
                     </div>
                 </form>
-                <p className="text-center text-black">
-                    ¿Ya tienes una cuenta?{' '}
-                    <NavLink to="/login" className="text-darkyellow">
+                <div className="mt-4 text-center">
+                    <span className="text-black text-sm">¿Ya tienes una cuenta?</span>
+                    <NavLink to="/SignIn" className="text-darkyellow hover:underline text-sm ml-2">
                         Iniciar sesión
                     </NavLink>
-                </p>
+                </div>
             </div>
         </div>
     );
