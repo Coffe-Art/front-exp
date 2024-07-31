@@ -24,52 +24,56 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(localStorage.getItem('token'));
     const [userId, setUserId] = useState(localStorage.getItem('userId'));
+    const [userType, setUserType] = useState(localStorage.getItem('userType'));
 
     const login = async (tipoUsuario, correo_electronico, contrasena) => {
         try {
-            const response = await fetch('https://backexperimental.onrender.com/api/auth/login', {
+            const response = await fetch('https://backtesteo.onrender.com/api/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ tipoUsuario, correo_electronico, contrasena })
             });
-    
+
             const data = await response.json();
             console.log('Server response:', data);
-    
+
             if (response.ok) {
                 setToken(data.token);
                 localStorage.setItem('token', data.token);
-    
+
                 const decodedToken = decodeToken(data.token);
                 if (decodedToken) {
                     setUserId(decodedToken.id);
+                    setUserType(decodedToken.tipoUsuario);
                     localStorage.setItem('userId', decodedToken.id);
+                    localStorage.setItem('userType', decodedToken.tipoUsuario);
                 }
             } else {
-                console.error('Login failed:', data.message);
+                console.error('Login failed:', data.error || data.message);
             }
         } catch (error) {
             console.error('Error al intentar iniciar sesión:', error);
         }
     };
 
-    const register = async (tipoUsuario, nombre, nombreUsuario, contrasena, direccion, ciudad, correo_electronico, telefono, codigopostal) => {
+    const register = async (tipoUsuario, nombre, contrasena, correo_electronico, telefono, historia) => {
         try {
-            const response = await fetch('https://backexperimental.onrender.com/api/auth/register', {
+            const response = await fetch('https://backtesteo.onrender.com/api/auth/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ tipoUsuario, nombre, nombreUsuario, contrasena, direccion, ciudad, correo_electronico, telefono, codigopostal })
+                body: JSON.stringify({ tipoUsuario, nombre, contrasena, correo_electronico, telefono, historia })
             });
+
+            const data = await response.json();
 
             if (response.ok) {
                 console.log('Usuario registrado con éxito');
             } else {
-                const data = await response.json();
-                console.error(data.message);
+                console.error(data.error || data.message);
             }
         } catch (error) {
             console.error('Error al intentar registrar el usuario:', error);
@@ -80,8 +84,10 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         setToken(null);
         setUserId(null);
+        setUserType(null);
         localStorage.removeItem('token');
         localStorage.removeItem('userId');
+        localStorage.removeItem('userType');
     };
 
     useEffect(() => {
@@ -94,13 +100,15 @@ export const AuthProvider = ({ children }) => {
             const decodedToken = decodeToken(storedToken);
             if (decodedToken) {
                 setUserId(decodedToken.id);
+                setUserType(decodedToken.tipoUsuario);
                 localStorage.setItem('userId', decodedToken.id);
+                localStorage.setItem('userType', decodedToken.tipoUsuario);
             }
         }
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, token, userId, login, register, logout }}>
+        <AuthContext.Provider value={{ user, token, userId, userType, login, register, logout }}>
             {children}
         </AuthContext.Provider>
     );

@@ -1,10 +1,57 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, NavLink } from 'react-router-dom';
 import BackgroundImage from '../assets/BackgroundLogin.jpg';
 import { FaHome } from 'react-icons/fa';
 import Logo from '../../src/assets/Artesanías.png';
+import { useAuth } from '../Context/contextAuth'; // Asegúrate de que la ruta es correcta
 
 export const SignIn = () => {
+    const navigate = useNavigate();
+    const { login } = useAuth();
+
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+        role: 'administrador' // Por defecto 'administrador', puedes cambiar según lo necesites
+    });
+
+    const [errors, setErrors] = useState({});
+
+    const handleChange = (e) => {
+        const { id, value } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [id]: value
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const newErrors = {};
+
+        // Validaciones
+        if (!formData.email.includes('@')) {
+            newErrors.email = 'El correo debe contener "@"';
+        }
+        if (formData.password.length < 6) {
+            newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
+        }
+
+        setErrors(newErrors);
+
+        if (Object.keys(newErrors).length === 0) {
+            try {
+                await login(formData.role, formData.email, formData.password);
+                navigate('/'); // Redireccionar a la página principal tras iniciar sesión
+            } catch (error) {
+                console.error('Error al intentar iniciar sesión:', error);
+                setErrors({ global: error.message });
+            }
+        } else {
+            console.log(newErrors);
+        }
+    };
+
     return (
         <div 
             className="flex items-center justify-center min-h-screen bg-cover bg-center"
@@ -18,18 +65,8 @@ export const SignIn = () => {
             <div className="relative bg-white p-8 rounded-lg shadow-md w-full max-w-md mx-4 sm:mx-8 md:mx-16 lg:mx-32">
                 <img src={Logo} alt="Logo" className="h-24 w-24 mx-auto mb-6" />
                 <h1 className="text-2xl font-bold mb-6 text-center">Iniciar Sesión</h1>
-                <form>
-                    <div className="mb-4">
-                        <label className="block text-black text-sm font-bold mb-2" htmlFor="username">
-                            Nombre de Usuario
-                        </label>
-                        <input
-                            type="text"
-                            id="username"
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-                            placeholder="Nombre de Usuario"
-                        />
-                    </div>
+                {errors.global && <p className="text-red-500 text-xs italic">{errors.global}</p>}
+                <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label className="block text-black text-sm font-bold mb-2" htmlFor="email">
                             Correo Electrónico
@@ -39,7 +76,10 @@ export const SignIn = () => {
                             id="email"
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
                             placeholder="Correo Electrónico"
+                            value={formData.email}
+                            onChange={handleChange}
                         />
+                        {errors.email && <p className="text-red-500 text-xs italic">{errors.email}</p>}
                     </div>
                     <div className="mb-6">
                         <label className="block text-black text-sm font-bold mb-2" htmlFor="password">
@@ -50,7 +90,25 @@ export const SignIn = () => {
                             id="password"
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow mb-3 leading-tight focus:outline-none focus:shadow-outline"
                             placeholder="Contraseña"
+                            value={formData.password}
+                            onChange={handleChange}
                         />
+                        {errors.password && <p className="text-red-500 text-xs italic">{errors.password}</p>}
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-black text-sm font-bold mb-2" htmlFor="role">
+                            Rol
+                        </label>
+                        <select
+                            id="role"
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
+                            value={formData.role}
+                            onChange={handleChange}
+                        >
+                            <option value="administrador">Administrador</option>
+                            <option value="empleado">Empleado</option>
+                            <option value="comprador">Comprador</option>
+                        </select>
                     </div>
                     <div className="flex items-center justify-center">
                         <button

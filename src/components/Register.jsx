@@ -1,14 +1,79 @@
-import React from 'react';
+
+
+import React, { useState } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
+import { useAuth } from '../Context/contextAuth';
 import BackgroundImage from '../assets/BackgroundLogin.jpg'; 
 import { FaHome } from 'react-icons/fa';
 import Logo from '../../src/assets/Artesanías.png';
 
 export const Register = () => {
     const navigate = useNavigate();
+    const { register } = useAuth();
+    
+    const [formData, setFormData] = useState({
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        role: 'administrador', // Asegúrate de que el valor predeterminado sea válido
+        phone: ''
+    });
 
-    const handleLoginClick = () => {
-        navigate('/login');
+    const [errors, setErrors] = useState({});
+
+    const handleChange = (e) => {
+        const { id, value } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [id]: value
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const newErrors = {};
+
+        // Validaciones
+        if (!formData.username.trim()) {
+            newErrors.username = 'El nombre de usuario es obligatorio';
+        }
+        if (!formData.email.includes('@')) {
+            newErrors.email = 'El correo debe contener "@"';
+        }
+        if (formData.password.length < 6) {
+            newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
+        }
+        if (!/\d/.test(formData.password)) {
+            newErrors.password = 'La contraseña debe contener al menos un número';
+        }
+        if (formData.password !== formData.confirmPassword) {
+            newErrors.confirmPassword = 'Las contraseñas no coinciden';
+        }
+        if (formData.phone.length < 10) {
+            newErrors.phone = 'El número de teléfono debe tener al menos 10 dígitos';
+        }
+
+        setErrors(newErrors);
+
+        if (Object.keys(newErrors).length === 0) {
+            try {
+                console.log('Datos del formulario antes de enviar:', formData); // Agregado para depuración
+                await register(
+                    formData.role.toLowerCase(), // Asegúrate de que el valor se convierte a minúsculas
+                    formData.username,
+                    formData.password,
+                    formData.email,
+                    formData.phone
+                );
+                navigate('/login');
+            } catch (error) {
+                console.error('Error al registrar:', error);
+                // Aquí podrías manejar errores adicionales, como mostrar un mensaje de error al usuario
+            }
+        } else {
+            console.log(newErrors);
+        }
     };
 
     return (
@@ -24,7 +89,7 @@ export const Register = () => {
             <div className="relative bg-white p-5 rounded-lg shadow-md w-full max-w-md mx-4 sm:mx-8 md:mx-16 lg:mx-32">
                 <img src={Logo} alt="Logo" className="h-24 w-24 mx-auto mb-6" />
                 <h1 className="text-2xl font-bold mb-6 text-center">Registrarse</h1>
-                <form>
+                <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label className="block text-black text-sm font-bold mb-2" htmlFor="username">
                             Nombre de Usuario
@@ -34,7 +99,10 @@ export const Register = () => {
                             id="username"
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
                             placeholder="Nombre de Usuario"
+                            value={formData.username}
+                            onChange={handleChange}
                         />
+                        {errors.username && <p className="text-red-500 text-xs italic">{errors.username}</p>}
                     </div>
                     <div className="mb-4">
                         <label className="block text-black text-sm font-bold mb-2" htmlFor="email">
@@ -45,7 +113,24 @@ export const Register = () => {
                             id="email"
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
                             placeholder="Correo Electrónico"
+                            value={formData.email}
+                            onChange={handleChange}
                         />
+                        {errors.email && <p className="text-red-500 text-xs italic">{errors.email}</p>}
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-black text-sm font-bold mb-2" htmlFor="phone">
+                            Teléfono
+                        </label>
+                        <input
+                            type="text"
+                            id="phone"
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
+                            placeholder="Número de Teléfono"
+                            value={formData.phone}
+                            onChange={handleChange}
+                        />
+                        {errors.phone && <p className="text-red-500 text-xs italic">{errors.phone}</p>}
                     </div>
                     <div className="mb-4">
                         <label className="block text-black text-sm font-bold mb-2" htmlFor="password">
@@ -56,7 +141,10 @@ export const Register = () => {
                             id="password"
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
                             placeholder="Contraseña"
+                            value={formData.password}
+                            onChange={handleChange}
                         />
+                        {errors.password && <p className="text-red-500 text-xs italic">{errors.password}</p>}
                     </div>
                     <div className="mb-4">
                         <label className="block text-black text-sm font-bold mb-2" htmlFor="confirmPassword">
@@ -67,7 +155,10 @@ export const Register = () => {
                             id="confirmPassword"
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
                             placeholder="Confirmar Contraseña"
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
                         />
+                        {errors.confirmPassword && <p className="text-red-500 text-xs italic">{errors.confirmPassword}</p>}
                     </div>
                     <div className="mb-4">
                         <label className="block text-black text-sm font-bold mb-2" htmlFor="role">
@@ -76,27 +167,27 @@ export const Register = () => {
                         <select
                             id="role"
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
+                            value={formData.role}
+                            onChange={handleChange}
                         >
-                            <option value="admin">Administrador</option>
-                            <option value="seller">Vendedor</option>
-                            <option value="buyer">Comprador</option>
+                            <option value="administrador">Administrador</option>
+                            <option value="empleado">Empleado</option>
+                            <option value="comprador">Comprador</option>
                         </select>
                     </div>
-                    <div className="flex items-center justify-center">
-                        <button
-                            type="submit"
-                            className="bg-darkyellow hover:bg-lightyellow text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        >
-                            Registrarse
-                        </button>
-                    </div>
+                    <button
+                        type="submit"
+                        className="bg-darkyellow hover:bg-yellow-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+                    >
+                        Registrarse
+                    </button>
+                    <p className="mt-4 text-center">
+                        ¿Ya tienes una cuenta?{' '}
+                        <NavLink to="/login" className="text-darkyellow font-bold hover:underline">
+                            Inicia sesión
+                        </NavLink>
+                    </p>
                 </form>
-                <div className="mt-4 text-center">
-                    <span className="text-black text-sm">¿Ya tienes una cuenta?</span>
-                    <NavLink to="/SignIn" className="text-darkyellow hover:underline text-sm ml-2">
-                        Iniciar sesión
-                    </NavLink>
-                </div>
             </div>
         </div>
     );
