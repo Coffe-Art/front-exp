@@ -4,6 +4,17 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { Footer } from './Footer';
 import { Header } from './Header';
+import axios from 'axios';
+
+const containerStyle = {
+  width: '100%',
+  height: '400px'
+};
+
+const center = {
+  lat: 37.7749,
+  lng: -122.4194
+};
 
 export const Events = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -15,12 +26,24 @@ export const Events = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentEvents, setCurrentEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [newEvent, setNewEvent] = useState({
+    name: '',
+    date: new Date(),
+    location: { lat: '', lng: '' },
+    companies: [],
+    duration: '',
+    place: ''
+  });
+
+  const filteredEvents = events.filter(event =>
+    event.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   useEffect(() => {
     const today = new Date();
-    const ongoingEvents = events.filter(event => event.date.toDateString() === today.toDateString());
+    const ongoingEvents = filteredEvents.filter(event => event.date.toDateString() === today.toDateString());
     setCurrentEvents(ongoingEvents);
-  }, [events]);
+  }, [filteredEvents]);
 
   const handleEventClick = (event) => {
     setSelectedEvent(event);
@@ -28,6 +51,30 @@ export const Events = () => {
 
   const closeModal = () => {
     setSelectedEvent(null);
+  };
+
+  const handleNewEventChange = (e) => {
+    const { name, value } = e.target;
+    setNewEvent(prevEvent => ({
+      ...prevEvent,
+      [name]: value
+    }));
+  };
+
+  const handleNewEventSubmit = (e) => {
+    e.preventDefault();
+    setEvents(prevEvents => [
+      ...prevEvents,
+      { ...newEvent, id: prevEvents.length + 1, date: new Date(newEvent.date) }
+    ]);
+    setNewEvent({
+      name: '',
+      date: new Date(),
+      location: { lat: '', lng: '' },
+      companies: [],
+      duration: '',
+      place: ''
+    });
   };
 
   return (
@@ -49,7 +96,7 @@ export const Events = () => {
             {/* Search */}
             <input
               type="text"
-              placeholder="Search places"
+              placeholder="Search events by name"
               className="p-2 rounded border mb-4 w-full max-w-md"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -57,13 +104,13 @@ export const Events = () => {
 
             {/* Map */}
             <div className="w-full max-w-full mt-8">
-              <LoadScript googleMapsApiKey="YOUR_GOOGLE_MAPS_API_KEY">
+              <LoadScript googleMapsApiKey="AIzaSyB39DzLofNtQbUQSlwfqEfyuD0Eyo0Q1NU">
                 <GoogleMap
-                  mapContainerStyle={{ width: '100%', height: '400px' }}
-                  center={{ lat: 37.7749, lng: -122.4194 }}
+                  mapContainerStyle={containerStyle}
+                  center={center}
                   zoom={10}
                 >
-                  {events.map(event => (
+                  {filteredEvents.map(event => (
                     <Marker
                       key={event.id}
                       position={event.location}
@@ -84,7 +131,7 @@ export const Events = () => {
 
             {/* Event Invitations */}
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-8">
-              {events.map(event => (
+              {filteredEvents.map(event => (
                 <div
                   key={event.id}
                   className="border rounded-lg p-4 shadow-md bg-white cursor-pointer"
@@ -103,12 +150,111 @@ export const Events = () => {
                 onChange={setSelectedDate}
                 value={selectedDate}
                 tileClassName={({ date }) => {
-                  const hasEvent = events.some(event => event.date.toDateString() === date.toDateString());
+                  const hasEvent = filteredEvents.some(event => event.date.toDateString() === date.toDateString());
                   return hasEvent ? 'bg-yellow-300' : null;
                 }}
               />
             </div>
           </div>
+        </section>
+
+        {/* New Event Form */}
+        <section className="mt-12">
+          <h2 className="text-2xl font-bold mb-4">Add New Event</h2>
+          <form onSubmit={handleNewEventSubmit} className="bg-white p-6 rounded-lg shadow-md">
+            <div className="mb-4">
+              <label className="block text-gray-700">Event Name</label>
+              <input
+                type="text"
+                name="name"
+                value={newEvent.name}
+                onChange={handleNewEventChange}
+                className="p-2 border rounded w-full"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700">Date</label>
+              <input
+                type="date"
+                name="date"
+                value={newEvent.date.toISOString().split('T')[0]}
+                onChange={handleNewEventChange}
+                className="p-2 border rounded w-full"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700">Location Latitude</label>
+              <input
+                type="number"
+                name="lat"
+                value={newEvent.location.lat}
+                onChange={(e) => setNewEvent(prevEvent => ({
+                  ...prevEvent,
+                  location: { ...prevEvent.location, lat: parseFloat(e.target.value) }
+                }))}
+                className="p-2 border rounded w-full"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700">Location Longitude</label>
+              <input
+                type="number"
+                name="lng"
+                value={newEvent.location.lng}
+                onChange={(e) => setNewEvent(prevEvent => ({
+                  ...prevEvent,
+                  location: { ...prevEvent.location, lng: parseFloat(e.target.value) }
+                }))}
+                className="p-2 border rounded w-full"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700">Companies (comma separated)</label>
+              <input
+                type="text"
+                name="companies"
+                value={newEvent.companies.join(', ')}
+                onChange={(e) => setNewEvent(prevEvent => ({
+                  ...prevEvent,
+                  companies: e.target.value.split(',').map(company => company.trim())
+                }))}
+                className="p-2 border rounded w-full"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700">Duration</label>
+              <input
+                type="text"
+                name="duration"
+                value={newEvent.duration}
+                onChange={handleNewEventChange}
+                className="p-2 border rounded w-full"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700">Place</label>
+              <input
+                type="text"
+                name="place"
+                value={newEvent.place}
+                onChange={handleNewEventChange}
+                className="p-2 border rounded w-full"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              className="bg-blue-500 text-white p-2 rounded-lg"
+            >
+              Add Event
+            </button>
+          </form>
         </section>
 
         {/* Event Modal */}

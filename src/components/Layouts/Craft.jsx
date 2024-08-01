@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
 import { FaPlus, FaSearch, FaStar } from 'react-icons/fa';
 import imageEarring from '../../assets/AretesArtesanales.jpg';
@@ -11,104 +11,29 @@ import { Footer } from './Footer';
 export const Craft = () => {
   const [cart, setCart] = useState([]);
   const [products] = useState([
-    {
-      id: 1,
-      vendedor: 'Vendedor A',
-      producto: 'Producto A',
-      descripcion: 'Descripción del Producto A',
-      stock: 10,
-      precio: 100,
-      imagen: imageEarring,
-      categoria: 'earrings',
-      rating: 4
-    },
-    {
-      id: 2,
-      vendedor: 'Vendedor B',
-      producto: 'Producto B',
-      descripcion: 'Descripción del Producto B',
-      stock: 5,
-      precio: 75,
-      imagen: imageRuana,
-      categoria: 'ruanas',
-      rating: 3
-    },
-    {
-      id: 3,
-      vendedor: 'Vendedor C',
-      producto: 'Producto C',
-      descripcion: 'Descripción del Producto C',
-      stock: 3,
-      precio: 120,
-      imagen: imageBag,
-      categoria: 'bags',
-      rating: 5
-    },
-    {
-      id: 4,
-      vendedor: 'Vendedor D',
-      producto: 'Producto D',
-      descripcion: 'Descripción del Producto D',
-      stock: 8,
-      precio: 90,
-      imagen: imageEarring,
-      categoria: 'earrings',
-      rating: 4
-    },
-    {
-      id: 5,
-      vendedor: 'Vendedor E',
-      producto: 'Producto E',
-      descripcion: 'Descripción del Producto E',
-      stock: 12,
-      precio: 110,
-      imagen: imageBracelet,
-      categoria: 'bracelets',
-      rating: 3
-    },
-    {
-      id: 6,
-      vendedor: 'Vendedor F',
-      producto: 'Producto F',
-      descripcion: 'Descripción del Producto F',
-      stock: 6,
-      precio: 85,
-      imagen: imageEarring,
-      categoria: 'earrings',
-      rating: 5
-    },
-    {
-      id: 7,
-      vendedor: 'Vendedor G',
-      producto: 'Artesanía G',
-      descripcion: 'Descripción de la Artesanía G',
-      stock: 15,
-      precio: 150,
-      imagen: imageRuana,
-      categoria: 'ruanas',
-      rating: 2
-    },
-    {
-      id: 8,
-      vendedor: 'Vendedor H',
-      producto: 'Artesanía H',
-      descripcion: 'Descripción de la Artesanía H',
-      stock: 7,
-      precio: 95,
-      imagen: imageBracelet,
-      categoria: 'bracelets',
-      rating: 4
-    }
+    { id: 1, vendedor: 'Vendedor A', producto: 'Producto A', descripcion: 'Descripción del Producto A', stock: 10, precio: 100, imagen: imageEarring, categoria: 'earrings', rating: 4 },
+    { id: 2, vendedor: 'Vendedor B', producto: 'Producto B', descripcion: 'Descripción del Producto B', stock: 5, precio: 75, imagen: imageRuana, categoria: 'ruanas', rating: 3 },
+    { id: 3, vendedor: 'Vendedor C', producto: 'Producto C', descripcion: 'Descripción del Producto C', stock: 3, precio: 120, imagen: imageBag, categoria: 'bags', rating: 5 },
+    { id: 4, vendedor: 'Vendedor D', producto: 'Producto D', descripcion: 'Descripción del Producto D', stock: 8, precio: 90, imagen: imageEarring, categoria: 'earrings', rating: 4 },
+    { id: 5, vendedor: 'Vendedor E', producto: 'Producto E', descripcion: 'Descripción del Producto E', stock: 12, precio: 110, imagen: imageBracelet, categoria: 'bracelets', rating: 3 },
+    { id: 6, vendedor: 'Vendedor F', producto: 'Producto F', descripcion: 'Descripción del Producto F', stock: 6, precio: 85, imagen: imageEarring, categoria: 'earrings', rating: 5 },
+    { id: 7, vendedor: 'Vendedor G', producto: 'Artesanía G', descripcion: 'Descripción de la Artesanía G', stock: 15, precio: 150, imagen: imageRuana, categoria: 'ruanas', rating: 2 },
+    { id: 8, vendedor: 'Vendedor H', producto: 'Artesanía H', descripcion: 'Descripción de la Artesanía H', stock: 7, precio: 95, imagen: imageBracelet, categoria: 'bracelets', rating: 4 }
   ]);
 
   const [filteredProducts, setFilteredProducts] = useState(products);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [category, setCategory] = useState('all');
-  const [priceRange, setPriceRange] = useState([0, 500]);
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(500);
   const [rating, setRating] = useState(0);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    filterProducts(searchTerm, category, [minPrice, maxPrice], rating);
+  }, [searchTerm, category, minPrice, maxPrice, rating, products]);
 
   const addToCart = (product) => {
     setCart([...cart, product]);
@@ -121,32 +46,27 @@ export const Craft = () => {
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-    filterProducts(e.target.value, category, priceRange, rating);
   };
 
   const handleCategoryChange = (e) => {
     setCategory(e.target.value);
-    filterProducts(searchTerm, e.target.value, priceRange, rating);
   };
 
-  const handlePriceChange = (e) => {
-    const [min, max] = e.target.value.split(',').map(Number);
-    setPriceRange([min, max]);
-    filterProducts(searchTerm, category, [min, max], rating);
+  const handlePriceChange = () => {
+    filterProducts(searchTerm, category, [minPrice, maxPrice], rating);
   };
 
   const handleRatingChange = (rating) => {
     setRating(rating);
-    filterProducts(searchTerm, category, priceRange, rating);
   };
 
-  const filterProducts = (searchTerm, category, priceRange, rating) => {
+  const filterProducts = (searchTerm, category, [minPrice, maxPrice], rating) => {
     setFilteredProducts(products.filter(product => {
       const matchesSearch = product.producto.toLowerCase().includes(searchTerm.toLowerCase()) ||
                              product.descripcion.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = category === 'all' || product.categoria === category;
-      const matchesPrice = product.precio >= priceRange[0] && product.precio <= priceRange[1];
-      const matchesRating = rating === 0 || product.rating === rating; // Show all ratings if 0 is selected
+      const matchesPrice = product.precio >= minPrice && product.precio <= maxPrice;
+      const matchesRating = rating === 0 || product.rating === rating;
 
       return matchesSearch && matchesCategory && matchesPrice && matchesRating;
     }));
@@ -161,12 +81,12 @@ export const Craft = () => {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-bold">Filtros</h2>
             <button onClick={toggleFilter} className="text-darkyellow text-xl">
-              <FaSearch />
+              {/* Add icon here if needed */}
             </button>
           </div>
           <div>
             <div className="flex items-center mb-4">
-              <label htmlFor="search" className="block text-sm font-bold mb-2">Buscar</label>
+              <label htmlFor="search" className="block text-sm font-bold mb-2"></label>
               <div className="relative flex-1">
                 <input
                   type="text"
@@ -194,19 +114,30 @@ export const Craft = () => {
               <option value="bags">Bolsos</option>
             </select>
             <label htmlFor="price" className="block text-sm font-bold mb-2">Rango de Precio</label>
-            <input
-              type="range"
-              id="price"
-              min="0"
-              max="500"
-              step="10"
-              value={priceRange.join(',')}
-              onChange={handlePriceChange}
-              className="w-full"
-            />
+            <div className="flex mb-4 items-center">
+              <input
+                type="number"
+                min="0"
+                max="500"
+                value={minPrice}
+                onChange={(e) => setMinPrice(Number(e.target.value))}
+                onBlur={handlePriceChange}
+                className="shadow border rounded w-1/2 py-2 px-3 mr-2"
+              />
+              <span> - </span>
+              <input
+                type="number"
+                min="0"
+                max="500"
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(Number(e.target.value))}
+                onBlur={handlePriceChange}
+                className="shadow border rounded w-1/2 py-2 px-3 ml-2"
+              />
+            </div>
             <div className="flex justify-between text-sm mb-4">
-              <span>${priceRange[0]}</span>
-              <span>${priceRange[1]}</span>
+              <span>${minPrice}</span>
+              <span>${maxPrice}</span>
             </div>
             <label htmlFor="rating" className="block text-sm font-bold mb-2">Puntuación Exacta</label>
             <div className="flex items-center mb-4">
@@ -307,3 +238,4 @@ export const Craft = () => {
     </div>
   );
 };
+
