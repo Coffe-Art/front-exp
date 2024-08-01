@@ -1,5 +1,3 @@
-
-
 import React, { useState } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
 import { useAuth } from '../Context/contextAuth';
@@ -16,11 +14,12 @@ export const Register = () => {
         email: '',
         password: '',
         confirmPassword: '',
-        role: 'administrador', // Asegúrate de que el valor predeterminado sea válido
+        role: 'administrador',
         phone: ''
     });
 
     const [errors, setErrors] = useState({});
+    const [notification, setNotification] = useState('');
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -58,21 +57,24 @@ export const Register = () => {
 
         if (Object.keys(newErrors).length === 0) {
             try {
-                console.log('Datos del formulario antes de enviar:', formData); // Agregado para depuración
                 await register(
-                    formData.role.toLowerCase(), // Asegúrate de que el valor se convierte a minúsculas
+                    formData.role.toLowerCase(),
                     formData.username,
                     formData.password,
                     formData.email,
                     formData.phone
                 );
-                navigate('/login');
+                setNotification('Registro exitoso');
+                setTimeout(() => {
+                    setNotification('');
+                    navigate('/login');
+                }, 2000); // Muestra la notificación por 2 segundos antes de redirigir
             } catch (error) {
                 console.error('Error al registrar:', error);
-                // Aquí podrías manejar errores adicionales, como mostrar un mensaje de error al usuario
+                setNotification('Error al registrar, intenta de nuevo');
             }
         } else {
-            console.log(newErrors);
+            setNotification('');
         }
     };
 
@@ -89,6 +91,11 @@ export const Register = () => {
             <div className="relative bg-white p-5 rounded-lg shadow-md w-full max-w-md mx-4 sm:mx-8 md:mx-16 lg:mx-32">
                 <img src={Logo} alt="Logo" className="h-24 w-24 mx-auto mb-6" />
                 <h1 className="text-2xl font-bold mb-6 text-center">Registrarse</h1>
+                {notification && (
+                    <div className={`bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4`} role="alert">
+                        <span className="block sm:inline">{notification}</span>
+                    </div>
+                )}
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label className="block text-black text-sm font-bold mb-2" htmlFor="username">
