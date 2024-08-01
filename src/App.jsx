@@ -1,5 +1,8 @@
+// src/App.jsx
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { EmpresaProvider } from './Context/EmpresaContext'; // Importa el proveedor del contexto
+import { AuthProvider } from './Context/AuthContext'; // Importa el AuthProvider
 import { Home } from './Pages/Home/Home';
 import { Login } from './components/Login';
 import { Register } from './components/Register'; 
@@ -22,29 +25,30 @@ function App() {
 
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/Menu" element={<Menu />} />
-        <Route path="/Profile" element={<Profile />} />
-        <Route path="/Product" element={<Product />} />
-        <Route path="/Help" element={<Help />} />
-        <Route path="/Craft" element={<Craft cart={cart} setCart={setCart} />} />
-        <Route path="/Cart" element={<Cart cart={cart} setCart={setCart} />} />
-        <Route path="/History" element={<History />} />
-        <Route path="/Companies" element={<Companies />} />
-        <Route path="/LoginCompanies" element={<LoginCompanies />} />
-        <Route path="/Events" element={<Events />} />
-        <Route path="/CreateProduct" element={<CreateProduct />} />
-        <Route path="/ProductDetail" element={<ProductDetail />} />
-      </Routes>
+      <AuthProvider> {/* Envuelve con el proveedor del contexto de autenticación */}
+        <EmpresaProvider> {/* Envuelve con el proveedor del contexto */}
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/Menu" element={<Menu />} />
+            <Route path="/Profile" element={<Profile />} />
+            <Route path="/Product" element={<Product />} />
+            <Route path="/Help" element={<Help />} />
+            <Route path="/Craft" element={<Craft cart={cart} setCart={setCart} />} />
+            <Route path="/Cart" element={<Cart cart={cart} setCart={setCart} />} />
+            <Route path="/History" element={<History />} />
+            <Route path="/Companies" element={<Companies />} />
+            <Route path="/LoginCompanies" element={<LoginCompanies />} />
+            <Route path="/Events" element={<Events />} />
+            <Route path="/CreateProduct" element={<CreateProduct />} />
+            <Route path="/ProductDetail" element={<ProductDetail />} />
+          </Routes>
+        </EmpresaProvider>
+      </AuthProvider>
     </Router>
   );
 }
 
 export default App;
-
-
-
