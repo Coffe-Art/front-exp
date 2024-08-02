@@ -23,25 +23,26 @@ function App() {
 
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/Menu" element={<Menu />} />
-        <Route path="/Profile" element={<Profile />} />
-        <Route path="/Product" element={<Product />} />
-        <Route path="/Help" element={<Help />} />
-        <Route path="/Craft" element={<Craft cart={cart} setCart={setCart} />} />
-        <Route path="/Cart" element={<Cart cart={cart} setCart={setCart} />} />
-        <Route path="/History" element={<History />} />
-        <Route path="/Companies" element={<Companies />} />
-        <Route path="/LoginCompanies" element={<LoginCompanies />} />
-        <Route path="/Events" element={<Events />} />
-        <Route path="/CreateProduct" element={<CreateProduct />} />
-        <Route path="/ProductDetail" element={<ProductDetail />} />
-        <Route path="/Statistics" element={<Statistics />} />
-      </Routes>
+      <EmpresaProvider> {/* Envuelve tus rutas con EmpresaProvider */}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/Menu" element={<Menu />} />
+          <Route path="/Profile" element={<Profile />} />
+          <Route path="/Product" element={<Product />} />
+          <Route path="/Help" element={<Help />} />
+          <Route path="/Craft" element={<Craft cart={cart} setCart={setCart} />} />
+          <Route path="/Cart" element={<Cart cart={cart} setCart={setCart} />} />
+          <Route path="/History" element={<History />} />
+          <Route path="/Companies" element={<Companies />} />
+          <Route path="/LoginCompanies" element={<LoginCompanies />} />
+          <Route path="/Events" element={<Events />} />
+          <Route path="/CreateProduct" element={<CreateProduct />} />
+          <Route path="/ProductDetail" element={<ProductDetail />} />
+        </Routes>
+      </EmpresaProvider>
     </Router>
   );
 }
