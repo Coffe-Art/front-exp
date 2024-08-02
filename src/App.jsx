@@ -16,6 +16,7 @@ import { LoginCompanies } from './components/Layouts/LoginCompanies';
 import { Events } from './components/Layouts/Events';
 import { CreateProduct } from './components/Layouts/CreateProduct';
 import { ProductDetail } from './components/Layouts/ProductDetail';
+import { Statistics } from './components/Layouts/Statistics';
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -39,6 +40,7 @@ function App() {
         <Route path="/Events" element={<Events />} />
         <Route path="/CreateProduct" element={<CreateProduct />} />
         <Route path="/ProductDetail" element={<ProductDetail />} />
+        <Route path="/Statistics" element={<Statistics />} />
       </Routes>
     </Router>
   );

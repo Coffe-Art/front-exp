@@ -1,9 +1,11 @@
+// src/components/Main.js
 import React from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import HeaderImage from '../../assets/Cabecera.png';
 import { InformationMain } from './InformationMain';
+import { Statistics } from './Statistics'; // Importa el nuevo componente de estadísticas
 import imageEarring from '../../assets/AretesArtesanales.jpg';
 import imageRuana from '../../assets/RuanaArtesanal.jpg';
 import imageBracelet from '../../assets/PulserasArtesanales.jpg';
@@ -53,9 +55,11 @@ export const Main = () => {
         </div>
       </div>
 
+      <Statistics /> {/* Usa el nuevo componente aquí */}
+
       <div className="bg-gray-200 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-black text-2xl md:text-4xl font-bold">NOVEDADES</h1>
+          <h1 className="text-black text-2xl md:text-4xl font-bold">PRODUCTOS MÁS VENDIDOS</h1>
           <p className="text-black text-sm md:text-lg mx-auto max-w-2xl">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce suscipit, nisi ac tristique
             placerat, dui justo rutrum turpis, id lacinia felis nisi ac tellus. Sed ultricies euismod dui,
@@ -82,4 +86,3 @@ export const Main = () => {
     </div>
   );
 };
-
