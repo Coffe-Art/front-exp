@@ -17,13 +17,15 @@ import { Events } from './components/Layouts/Events';
 import { CreateProduct } from './components/Layouts/CreateProduct';
 import { ProductDetail } from './components/Layouts/ProductDetail';
 import { Statistics } from './components/Layouts/Statistics';
+import { EmpresaProvider } from './Context/contextEmpresa';
+import { EventsForm } from './components/Layouts/EventsForm';
 
 function App() {
   const [cart, setCart] = useState([]);
 
   return (
     <Router>
-      <EmpresaProvider> {/* Envuelve tus rutas con EmpresaProvider */}
+      <EmpresaProvider> 
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -41,6 +43,8 @@ function App() {
           <Route path="/Events" element={<Events />} />
           <Route path="/CreateProduct" element={<CreateProduct />} />
           <Route path="/ProductDetail" element={<ProductDetail />} />
+          <Route path="/Statistics" element={<Statistics />} />
+          <Route path="/EventsForm" element={<EventsForm />} />
         </Routes>
       </EmpresaProvider>
     </Router>

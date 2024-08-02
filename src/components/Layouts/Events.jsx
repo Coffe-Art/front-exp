@@ -4,7 +4,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { Footer } from './Footer';
 import { Header } from './Header';
-import axios from 'axios';
+import { NavLink } from 'react-router-dom'; // Asegúrate de importar NavLink si estás usando react-router
 
 const containerStyle = {
   width: '100%',
@@ -122,14 +122,15 @@ export const Events = () => {
             </div>
           </div>
 
-          <div className="w-full md:w-1/2 flex flex-col items-center md:items-start">
-            {/* Title and Description */}
-            <h2 className="text-2xl font-bold mt-6 text-center md:text-left">Special Events</h2>
-            <p className="text-center md:text-left max-w-2xl mt-2">
-              Here you can see the special events that will take place in Circacia. Discover what's happening and participate in them.
-            </p>
+          <div className="w-full md:w-1/2 flex flex-col items-center">
+            {/* Centered Title and Paragraph */}
+            <div className="text-center">
+              <h2 className="text-2xl font-bold mt-6">Special Events</h2>
+              <p className="max-w-2xl mt-2 mx-auto">
+                Here you can see the special events that will take place in Circacia. Discover what's happening and participate in them.
+              </p>
+            </div>
 
-            {/* Event Invitations */}
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-8">
               {filteredEvents.map(event => (
                 <div
@@ -142,6 +143,16 @@ export const Events = () => {
                   <p>Location: {event.location.lat}, {event.location.lng}</p>
                 </div>
               ))}
+            </div>
+
+            {/* Create New Event Container */}
+            <div className="border rounded-lg p-4 shadow-md bg-white mt-8 max-w-md mx-auto">
+              <h3 className="text-xl font-semibold mb-4">¿Quieres crear un nuevo evento?</h3>
+              <p className="mb-4">
+                <NavLink to="/EventsForm" className="text-darkyellow font-bold hover:underline">
+                  Agregar Evento
+                </NavLink>
+              </p>
             </div>
 
             {/* Calendar */}
@@ -158,106 +169,6 @@ export const Events = () => {
           </div>
         </section>
 
-        {/* New Event Form */}
-        <section className="mt-12">
-          <h2 className="text-2xl font-bold mb-4">Add New Event</h2>
-          <form onSubmit={handleNewEventSubmit} className="bg-white p-6 rounded-lg shadow-md">
-            <div className="mb-4">
-              <label className="block text-gray-700">Event Name</label>
-              <input
-                type="text"
-                name="name"
-                value={newEvent.name}
-                onChange={handleNewEventChange}
-                className="p-2 border rounded w-full"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700">Date</label>
-              <input
-                type="date"
-                name="date"
-                value={newEvent.date.toISOString().split('T')[0]}
-                onChange={handleNewEventChange}
-                className="p-2 border rounded w-full"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700">Location Latitude</label>
-              <input
-                type="number"
-                name="lat"
-                value={newEvent.location.lat}
-                onChange={(e) => setNewEvent(prevEvent => ({
-                  ...prevEvent,
-                  location: { ...prevEvent.location, lat: parseFloat(e.target.value) }
-                }))}
-                className="p-2 border rounded w-full"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700">Location Longitude</label>
-              <input
-                type="number"
-                name="lng"
-                value={newEvent.location.lng}
-                onChange={(e) => setNewEvent(prevEvent => ({
-                  ...prevEvent,
-                  location: { ...prevEvent.location, lng: parseFloat(e.target.value) }
-                }))}
-                className="p-2 border rounded w-full"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700">Companies (comma separated)</label>
-              <input
-                type="text"
-                name="companies"
-                value={newEvent.companies.join(', ')}
-                onChange={(e) => setNewEvent(prevEvent => ({
-                  ...prevEvent,
-                  companies: e.target.value.split(',').map(company => company.trim())
-                }))}
-                className="p-2 border rounded w-full"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700">Duration</label>
-              <input
-                type="text"
-                name="duration"
-                value={newEvent.duration}
-                onChange={handleNewEventChange}
-                className="p-2 border rounded w-full"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700">Place</label>
-              <input
-                type="text"
-                name="place"
-                value={newEvent.place}
-                onChange={handleNewEventChange}
-                className="p-2 border rounded w-full"
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              className="bg-blue-500 text-white p-2 rounded-lg"
-            >
-              Add Event
-            </button>
-          </form>
-        </section>
-
-        {/* Event Modal */}
         {selectedEvent && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-6 max-w-lg w-full relative">
