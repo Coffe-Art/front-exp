@@ -1,15 +1,17 @@
-// src/components/Layouts/Companies.jsx
 import React, { useEffect, useState } from 'react';
 import { useEmpresa } from '../../Context/contextEmpresa';
 import { Header } from './Header';
 import { NavLink } from 'react-router-dom';
 import { Footer } from './Footer';
 import { useNavigate } from 'react-router-dom';
+import CoffeLogo from '../../assets/COFFE_ART.jpg';
+import { FaUser, FaTimes } from 'react-icons/fa';
 
 export const Companies = () => {
     const { empresas, setEmpresas } = useEmpresa();
     const navigate = useNavigate();
     const [userId, setUserId] = useState(null);
+    const [selectedEmpresa, setSelectedEmpresa] = useState(null);
 
     useEffect(() => {
         const storedUserId = localStorage.getItem('userId');
@@ -52,8 +54,12 @@ export const Companies = () => {
         }
     };
 
-    const viewEmpresa = (id) => {
-        navigate(`/company/${id}`);
+    const viewEmpresa = (empresa) => {
+        setSelectedEmpresa(empresa);
+    };
+
+    const closeEmpresaModal = () => {
+        setSelectedEmpresa(null);
     };
 
     return (
@@ -72,7 +78,7 @@ export const Companies = () => {
                             <div
                                 key={empresa.id}
                                 className="bg-white border rounded-lg overflow-hidden shadow-md cursor-pointer flex flex-col items-center p-4"
-                                onClick={() => viewEmpresa(empresa.id)}
+                                onClick={() => viewEmpresa(empresa)}
                             >
                                 <h3 className="text-lg font-semibold mb-2 text-center">{empresa.nombre}</h3>
                                 <p className="text-center underline text-darkyellow">{empresa.direccion}</p>
@@ -106,6 +112,31 @@ export const Companies = () => {
                 </div>
             </div>
             <Footer />
+
+            {selectedEmpresa && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full relative overflow-hidden m-4">
+                        <div className="relative">
+                            <img src={CoffeLogo} alt="Company Logo" className="w-full h-56 object-cover rounded-t-lg" />
+                            <button
+                                className="absolute top-4 right-4 text-white bg-darkyellow rounded-full p-2 shadow-lg hover:bg-yellow-600"
+                                onClick={closeEmpresaModal}
+                            >
+                                <FaTimes className="text-2xl" />
+                            </button>
+                        </div>
+                        <div className="p-8">
+                            <h2 className="text-3xl font-bold mb-4">{selectedEmpresa.nombre}</h2>
+                            <p className="mb-4"><strong>Dirección:</strong> {selectedEmpresa.direccion}</p>
+                            <p className="mb-6"><strong>Descripción:</strong> {selectedEmpresa.descripcion}</p>
+                            <div className="flex items-center">
+                                <FaUser className="text-darkyellow mr-2" />
+                                <span>{selectedEmpresa.propietario}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

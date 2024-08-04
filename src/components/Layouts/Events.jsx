@@ -4,7 +4,8 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { Footer } from './Footer';
 import { Header } from './Header';
-import { NavLink } from 'react-router-dom'; // Asegúrate de importar NavLink si estás usando react-router
+import { NavLink } from 'react-router-dom';
+import { FaSearch } from 'react-icons/fa';
 
 const containerStyle = {
   width: '100%',
@@ -78,15 +79,15 @@ export const Events = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-200">
+    <div className="min-h-screen bg-gray-200 font-sans">
       <Header />
 
       <div className="flex flex-col min-h-screen p-4 md:p-8 bg-gray-200">
         {/* Current Event Message */}
         {currentEvents.length > 0 && (
-          <div className="bg-green-500 text-white text-center p-2 rounded-lg shadow-md mx-auto mb-4 max-w-md">
+          <div className="bg-text-darkyellow text-white text-center p-2 rounded-lg shadow-md mx-auto mb-4 max-w-md">
             {currentEvents.map(event => (
-              <span key={event.id} className="block">{event.name} is happening right now</span>
+              <span key={event.id} className="block">{event.name} está ocurriendo ahora</span>
             ))}
           </div>
         )}
@@ -94,13 +95,16 @@ export const Events = () => {
         <section className="flex flex-col md:flex-row gap-8">
           <div className="w-full md:w-1/2 flex flex-col items-center justify-center md:items-start">
             {/* Search */}
-            <input
-              type="text"
-              placeholder="Search events by name"
-              className="p-2 rounded border mb-4 w-full max-w-md"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+            <div className="relative w-full">
+              <input
+                type="text"
+                placeholder="Buscar por nombre"
+                className="p-2 rounded border mb-4 w-full max-w-full pl-10"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <FaSearch className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500" />
+            </div>
 
             {/* Map */}
             <div className="w-full max-w-full mt-8">
@@ -125,7 +129,7 @@ export const Events = () => {
           <div className="w-full md:w-1/2 flex flex-col items-center">
             {/* Centered Title and Paragraph */}
             <div className="text-center">
-              <h2 className="text-2xl font-bold mt-6">Special Events</h2>
+              <h2 className="text-2xl font-bold mt-6 text-darkyellow">Special Events</h2>
               <p className="max-w-2xl mt-2 mx-auto">
                 Here you can see the special events that will take place in Circacia. Discover what's happening and participate in them.
               </p>
@@ -138,7 +142,7 @@ export const Events = () => {
                   className="border rounded-lg p-4 shadow-md bg-white cursor-pointer"
                   onClick={() => handleEventClick(event)}
                 >
-                  <h3 className="font-semibold">{event.name}</h3>
+                  <h3 className="font-semibold text-darkyellow">{event.name}</h3>
                   <p>{event.date.toDateString()}</p>
                   <p>Location: {event.location.lat}, {event.location.lng}</p>
                 </div>
@@ -147,12 +151,10 @@ export const Events = () => {
 
             {/* Create New Event Container */}
             <div className="border rounded-lg p-4 shadow-md bg-white mt-8 max-w-md mx-auto">
-              <h3 className="text-xl font-semibold mb-4">¿Quieres crear un nuevo evento?</h3>
-              <p className="mb-4">
-                <NavLink to="/EventsForm" className="text-darkyellow font-bold hover:underline">
-                  Agregar Evento
-                </NavLink>
-              </p>
+              <span className="text-black text-sm">¿Quieres agregar un nuevo producto?</span>
+              <NavLink to="/EventsForm" className="text-darkyellow hover:underline text-sm ml-2">
+                Crear Evento
+              </NavLink>
             </div>
 
             {/* Calendar */}
@@ -162,7 +164,7 @@ export const Events = () => {
                 value={selectedDate}
                 tileClassName={({ date }) => {
                   const hasEvent = filteredEvents.some(event => event.date.toDateString() === date.toDateString());
-                  return hasEvent ? 'bg-yellow-300' : null;
+                  return hasEvent ? 'bg-lightyellow' : null;
                 }}
               />
             </div>
@@ -193,3 +195,4 @@ export const Events = () => {
     </div>
   );
 };
+

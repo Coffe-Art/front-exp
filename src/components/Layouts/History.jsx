@@ -14,8 +14,8 @@ const people = [
         photo: person1,
         description: 'Hanna is an experienced entrepreneur with a strong background in technology and innovation.',
         companies: [
-            { name: 'Tech Innovations', description: 'A leading company in technology innovations.' },
-            { name: 'Future Ventures', description: 'Investing in the future of technology and business.' }
+            { name: 'Tech Innovations', address: '123 Tech Lane' },
+            { name: 'Future Ventures', address: '456 Future Road' }
         ]
     },
     {
@@ -24,8 +24,8 @@ const people = [
         photo: person2,
         description: 'Saject is a visionary leader known for his work in sustainable development and green technologies.',
         companies: [
-            { name: 'Green Solutions', description: 'Pioneering green technologies for a sustainable future.' },
-            { name: 'Eco Projects', description: 'Projects focused on environmental sustainability.' }
+            { name: 'Green Solutions', address: '789 Green Blvd' },
+            { name: 'Eco Projects', address: '101 Eco Avenue' }
         ]
     },
     {
@@ -34,8 +34,8 @@ const people = [
         photo: person3,
         description: 'Erick has a diverse portfolio with expertise in finance and business strategy.',
         companies: [
-            { name: 'Finance Group', description: 'Experts in financial planning and management.' },
-            { name: 'Strategic Growth', description: 'Helping businesses grow with strategic planning.' }
+            { name: 'Finance Group', address: '202 Finance St' },
+            { name: 'Strategic Growth', address: '303 Growth Way' }
         ]
     }
 ];
@@ -50,10 +50,6 @@ export const History = () => {
         setSelectedCompany(null); // Reset selected company when selecting a person
     };
 
-    const handleCompanyClick = (company) => {
-        setSelectedCompany(company);
-    };
-
     const handleBackClick = () => {
         setSelectedPerson(null);
         setSelectedCompany(null);
@@ -64,58 +60,34 @@ export const History = () => {
             <Header />
             <div className="min-h-screen bg-gray-200 p-4">
                 {selectedPerson ? (
-                    selectedCompany ? (
-                        <div className="relative bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto">
-                            <button 
-                                onClick={handleBackClick} 
-                                className="absolute top-4 left-4 text-darkyellow text-lg"
-                            >
-                                <FaHome className="text-2xl" />
-                            </button>
-                            <div className="pt-10 text-center">
-                                <h1 className="text-3xl font-bold mb-4 text-darkyellow">{selectedCompany.name}</h1>
-                                <p className="text-lg mb-4">{selectedCompany.description}</p>
-                                <p className="text-blue-500 hover:underline">
-                                    <span className="text-black text-sm">¿Quieres saber más de esta empresa?</span>
-                                    <NavLink to="/Companies" className="text-darkyellow hover:underline text-sm ml-2">
-                                        Ver Empresa
-                                    </NavLink>
-                                </p>
-                                <button onClick={() => setSelectedCompany(null)} className="flex top-4 left-4 text-darkyellow text-lg">
-                                    &larr; Back to Person
-                                </button>
+                    <div className="relative bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto">
+                        <button 
+                            onClick={handleBackClick} 
+                            className="absolute top-4 left-4 text-darkyellow text-lg"
+                        >
+                            <FaHome className="text-2xl" />
+                        </button>
+                        <div className="pt-10 text-center">
+                            <h1 className="text-3xl font-bold mb-4">{selectedPerson.name}</h1>
+                            <img src={selectedPerson.photo} alt={selectedPerson.name} className="w-32 h-32 rounded-full mb-4 mx-auto" />
+                            <p className="text-lg mb-4">{selectedPerson.description}</p>
+                            <h2 className="text-2xl font-semibold mb-4">Companies:</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {selectedPerson.companies.map((company, index) => (
+                                    <div
+                                        key={index}
+                                        className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center cursor-pointer hover:shadow-xl transition-shadow duration-300"
+                                    >
+                                        <h3 className="text-lg font-medium">{company.name}</h3>
+                                        <p className="text-gray-700">{company.address}</p>
+                                        <NavLink to="/Companies" className="text-darkyellow hover:underline text-sm mt-2">
+                                            Ver más sobre esta empresa
+                                        </NavLink>
+                                    </div>
+                                ))}
                             </div>
                         </div>
-                    ) : (
-                        <div className="relative bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto">
-                            <button 
-                                onClick={handleBackClick} 
-                                className="absolute top-4 left-4 text-darkyellow text-lg"
-                            >
-                                <FaHome className="text-2xl" /> {/* Usa el ícono en lugar del texto */}
-                            </button>
-                            <div className="pt-10 text-center">
-                                <h1 className="text-3xl font-bold mb-4">{selectedPerson.name}</h1>
-                                <img src={selectedPerson.photo} alt={selectedPerson.name} className="w-32 h-32 rounded-full mb-4 mx-auto" />
-                                <p className="text-lg mb-4">{selectedPerson.description}</p>
-                                <h2 className="text-2xl font-semibold mb-4">Companies:</h2>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {selectedPerson.companies.map((company, index) => (
-                                        <div
-                                            key={index}
-                                            className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center cursor-pointer hover:shadow-xl transition-shadow duration-300"
-                                            onClick={() => handleCompanyClick(company)}
-                                        >
-                                            <div>
-                                                <h3 className="text-lg font-medium">{company.name}</h3>
-                                                <p className="text-gray-700">{company.description}</p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    )
+                    </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {people.map(person => (
