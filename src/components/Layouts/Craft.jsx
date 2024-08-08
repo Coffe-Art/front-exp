@@ -14,11 +14,6 @@ export const Craft = () => {
     { id: 1, vendedor: 'Vendedor A', producto: 'Producto A', descripcion: 'Descripción del Producto A', stock: 10, precio: 100, imagen: imageEarring, categoria: 'earrings', rating: 4 },
     { id: 2, vendedor: 'Vendedor B', producto: 'Producto B', descripcion: 'Descripción del Producto B', stock: 5, precio: 75, imagen: imageRuana, categoria: 'ruanas', rating: 3 },
     { id: 3, vendedor: 'Vendedor C', producto: 'Producto C', descripcion: 'Descripción del Producto C', stock: 3, precio: 120, imagen: imageBag, categoria: 'bags', rating: 5 },
-    { id: 4, vendedor: 'Vendedor D', producto: 'Producto D', descripcion: 'Descripción del Producto D', stock: 8, precio: 90, imagen: imageEarring, categoria: 'earrings', rating: 4 },
-    { id: 5, vendedor: 'Vendedor E', producto: 'Producto E', descripcion: 'Descripción del Producto E', stock: 12, precio: 110, imagen: imageBracelet, categoria: 'bracelets', rating: 3 },
-    { id: 6, vendedor: 'Vendedor F', producto: 'Producto F', descripcion: 'Descripción del Producto F', stock: 6, precio: 85, imagen: imageEarring, categoria: 'earrings', rating: 5 },
-    { id: 7, vendedor: 'Vendedor G', producto: 'Artesanía G', descripcion: 'Descripción de la Artesanía G', stock: 15, precio: 150, imagen: imageRuana, categoria: 'ruanas', rating: 2 },
-    { id: 8, vendedor: 'Vendedor H', producto: 'Artesanía H', descripcion: 'Descripción de la Artesanía H', stock: 7, precio: 95, imagen: imageBracelet, categoria: 'bracelets', rating: 4 }
   ]);
 
   const [filteredProducts, setFilteredProducts] = useState(products);

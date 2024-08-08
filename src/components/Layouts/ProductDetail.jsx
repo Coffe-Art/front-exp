@@ -73,6 +73,7 @@ export const ProductDetail = () => {
             <p className="text-lg mb-2"><strong>Descripción:</strong> {product.descripcion}</p>
             <p className="text-lg mb-2"><strong>Precio:</strong> ${product.precio}</p>
             <p className="text-lg mb-2"><strong>Stock:</strong> {product.stock}</p>
+            <p className="text-lg mb-2"><strong>Categoría:</strong> {product.categoria}</p> {/* Aquí agregas la categoría */}
             <div className="flex mb-2">
               {[...Array(5)].map((_, index) => (
                 <FaStar

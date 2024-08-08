@@ -8,7 +8,7 @@ import { Menu } from './components/Layouts/Menu';
 import { Profile } from './components/Layouts/Profile';
 import { Product } from './components/Layouts/Product';
 import { Help } from './components/Layouts/Help';
-import { Craft } from './components/Layouts/Craft';
+import { CraftforAdmins } from './components/Layouts/CraftforAdmins';
 import { Cart } from './components/Layouts/Cart';
 import { Companies } from './components/Layouts/Companies';
 import { History } from './components/Layouts/History';
@@ -35,7 +35,7 @@ function App() {
           <Route path="/Profile" element={<Profile />} />
           <Route path="/Product" element={<Product />} />
           <Route path="/Help" element={<Help />} />
-          <Route path="/Craft" element={<Craft cart={cart} setCart={setCart} />} />
+          <Route path="/CraftforAdmins" element={<CraftforAdmins cart={cart} setCart={setCart} />} />
           <Route path="/Cart" element={<Cart cart={cart} setCart={setCart} />} />
           <Route path="/History" element={<History />} />
           <Route path="/Companies" element={<Companies />} />

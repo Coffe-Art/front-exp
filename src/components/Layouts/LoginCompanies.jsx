@@ -10,7 +10,7 @@ export const LoginCompanies = () => {
     const [direccion, setDireccion] = useState('');
     const [descripcion, setDescripcion] = useState('');
     const [idadministrador, setIdAdministrador] = useState('');
-    
+
     const navigate = useNavigate();
     const { setEmpresas } = useEmpresa(); // Obtén setEmpresas desde el contexto
 
@@ -32,11 +32,19 @@ export const LoginCompanies = () => {
             idadministrador
         };
 
+        // Obtén el token de localStorage
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('No se encontró un token en localStorage');
+            return;
+        }
+
         try {
             const response = await fetch('https://backtesteo.onrender.com/api/empresa/nuevaEmpresa', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` // Incluye el token en la cabecera
                 },
                 body: JSON.stringify(newEmpresa),
             });
@@ -50,13 +58,10 @@ export const LoginCompanies = () => {
             const result = await response.json();
             console.log('Empresa creada exitosamente:', result);
 
-            // Obtén el ID de la nueva empresa
-            const empresaId = result.id; 
-
             // Actualiza la lista de empresas en el contexto
             setEmpresas(prevEmpresas => [
                 ...prevEmpresas,
-                { id: empresaId, nombre, direccion, descripcion }
+                { id: result.id, nombre, direccion, descripcion }
             ]);
 
             // Redirige a la página de empresas
@@ -121,7 +126,6 @@ export const LoginCompanies = () => {
                             required
                         />
                     </div>
-                    {/* El campo ID Administrador se ha eliminado del formulario */}
                     <div className="flex items-center justify-center">
                         <button
                             type="submit"
