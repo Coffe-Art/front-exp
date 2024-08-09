@@ -8,7 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import CoffeLogo from '../../assets/COFFE_ART.jpg';
 import { FaUser, FaTimes, FaEdit, FaTrash } from 'react-icons/fa';
 import { GiCoffeeCup } from "react-icons/gi";
-import banner from '../../assets/FondoMenu.png'; // Importar la imagen del banner
+import banner from '../../assets/FondoMenu.png'; 
+import { FaCoffee } from "react-icons/fa";
 
 export const Companies = () => {
     const { empresas, setEmpresas } = useEmpresa();
@@ -167,7 +168,7 @@ export const Companies = () => {
                                 <p className="text-center text-gray-600">ID: {empresa.codigoempresa}</p>
                                 <div className="flex gap-32 mt-4">
                                     <button
-                                        className="text-yellow-600 hover:text-yellow-300"
+                                        className="text-darkyellow hover:text-lightyellow text-3xl"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             handleUpdate(empresa);
@@ -176,7 +177,7 @@ export const Companies = () => {
                                         <FaEdit className="text-xl" />
                                     </button>
                                     <button
-                                        className="text-red-900 hover:text-red-500"
+                                        className="text-darkpurple hover:text-lightpurple text-3xl"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             handleDelete(empresa.codigoempresa);
@@ -214,7 +215,7 @@ export const Companies = () => {
                 {/* Mostrar mensaje de error si hay uno */}
                 {error && (
                     <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-brown-600 bg-darkyellow text-white px-4 py-2 rounded-lg shadow-lg flex items-center">
-                        <svg className="w-6 h-6 mr-2 text-white"> <GiCoffeeCup /> </svg>
+                        <svg className="w-6 h-6 mr-2 text-2xl text-white"> <FaCoffee /> </svg>
                         <span> ¡Aún hay productos registrados en la empresa!</span>
                         <button
                             className="ml-4 bg-darkyellow text-white hover:text-gray-200"

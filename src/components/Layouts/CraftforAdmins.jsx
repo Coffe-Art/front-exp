@@ -4,6 +4,7 @@ import { FaPlus, FaSearch, FaEdit, FaTrash } from 'react-icons/fa';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import ProductoContext from '../../Context/contextProducto';
+import Select from 'react-select';
 
 export const CraftforAdmins = () => {
   const { productos, setProductos } = useContext(ProductoContext);
@@ -17,6 +18,14 @@ export const CraftforAdmins = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(true);
+  const [categoriasOptions, setCategoriasOptions] = useState([]);
+  const [formData, setFormData] = useState({
+    categoria: '',
+    empresasSeleccionadas: [],
+    codigoempresa: '',
+    publicadoPor: ''
+  });
+  const [errors, setErrors] = useState({});
 
   const navigate = useNavigate();
   const userId = localStorage.getItem('userId');
@@ -50,6 +59,179 @@ export const CraftforAdmins = () => {
 
     getProductosByIdAdministrador();
   }, [userId, setProductos]);
+
+  useEffect(() => {
+    // Simulando la obtención de categorías
+    const fetchCategorias = () => {
+      // Aquí debes reemplazar esto con la lógica para obtener las categorías reales
+      const categorias = [
+        {
+          value: 'joyeria',
+          label: 'Joyería',
+          options: [
+            { value: 'collares', label: 'Collares' },
+            { value: 'pulseras', label: 'Pulseras' },
+            { value: 'anillos', label: 'Anillos' },
+            { value: 'aretes', label: 'Aretes' },
+          ],
+        },
+        {
+          value: 'ropa_y_accesorios',
+          label: 'Ropa y Accesorios',
+          options: [
+            { value: 'camisetas', label: 'Camisetas' },
+            { value: 'bufandas', label: 'Bufandas' },
+            { value: 'gorras', label: 'Gorros' },
+            { value: 'bolsos', label: 'Bolsos' },
+          ],
+        },
+        {
+          value: 'ceramica',
+          label: 'Cerámica',
+          options: [
+            { value: 'tazas', label: 'Tazas' },
+            { value: 'platos', label: 'Platos' },
+            { value: 'jarrones', label: 'Jarrones' },
+            { value: 'cuencos', label: 'Cuencos' },
+          ],
+        },
+        {
+          value: 'muebles',
+          label: 'Muebles',
+          options: [
+            { value: 'sillas', label: 'Sillas' },
+            { value: 'mesas', label: 'Mesas' },
+            { value: 'estanterias', label: 'Estanterías' },
+            { value: 'lamparas', label: 'Lámparas' },
+          ],
+        },
+        {
+          value: 'decoracion',
+          label: 'Decoración',
+          options: [
+            { value: 'cuadros', label: 'Cuadros' },
+            { value: 'alfombras', label: 'Alfombras' },
+            { value: 'cortinas', label: 'Cortinas' },
+            { value: 'figuras_decorativas', label: 'Figuras decorativas' },
+          ],
+        },
+        {
+          value: 'arte_textil',
+          label: 'Arte Textil',
+          options: [
+            { value: 'bordados', label: 'Bordados' },
+            { value: 'tejidos', label: 'Tejidos' },
+            { value: 'tapices', label: 'Tapices' },
+            { value: 'quilts', label: 'Quilts' },
+          ],
+        },
+        {
+          value: 'productos_de_madera',
+          label: 'Productos de Madera',
+          options: [
+            { value: 'utensilios_cocina', label: 'Utensilios de cocina' },
+            { value: 'marcos_fotos', label: 'Marcos para fotos' },
+            { value: 'juguetes', label: 'Juguetes' },
+            { value: 'cajas', label: 'Cajas' },
+          ],
+        },
+        {
+          value: 'cosmeticos_y_cuidado_personal',
+          label: 'Cosméticos y Cuidado Personal',
+          options: [
+            { value: 'jabones', label: 'Jabones' },
+            { value: 'cremas', label: 'Cremas' },
+            { value: 'aceites_esenciales', label: 'Aceites esenciales' },
+            { value: 'bano_salas', label: 'Baños de sales' },
+          ],
+        },
+        {
+          value: 'papeleria_y_libros',
+          label: 'Papelería y Libros',
+          options: [
+            { value: 'cuadernos', label: 'Cuadernos' },
+            { value: 'tarjetas', label: 'Tarjetas' },
+            { value: 'agendas', label: 'Agendas' },
+            { value: 'libros_artesanales', label: 'Libros artesanales' },
+          ],
+        },
+        {
+          value: 'articulos_para_el_hogar',
+          label: 'Artículos para el Hogar',
+          options: [
+            { value: 'cojines', label: 'Cojines' },
+            { value: 'manteles', label: 'Manteles' },
+            { value: 'toallas', label: 'Toallas' },
+            { value: 'organizadores', label: 'Organizadores' },
+          ],
+        },
+        {
+          value: 'juguetes_y_juegos',
+          label: 'Juguetes y Juegos',
+          options: [
+            { value: 'juguetes_madera', label: 'Juguetes de madera' },
+            { value: 'juegos_mesa', label: 'Juegos de mesa artesanales' },
+            { value: 'peluches', label: 'Peluches' },
+            { value: 'rompecabezas', label: 'Rompecabezas' },
+          ],
+        },
+        {
+          value: 'instrumentos_musicales',
+          label: 'Instrumentos Musicales',
+          options: [
+            { value: 'guitarras', label: 'Guitarras' },
+            { value: 'tamboriles', label: 'Tamboriles' },
+            { value: 'flautas', label: 'Flautas' },
+            { value: 'maracas', label: 'Maracas' },
+          ],
+        },
+        {
+          value: 'productos_ecologicos',
+          label: 'Productos Ecológicos',
+          options: [
+            { value: 'bolsas_reutilizables', label: 'Bolsas reutilizables' },
+            { value: 'productos_sin_plastico', label: 'Productos sin plástico' },
+            { value: 'articulos_reciclados', label: 'Artículos reciclados' },
+          ],
+        },
+        {
+          value: 'productos_para_mascotas',
+          label: 'Productos para Mascotas',
+          options: [
+            { value: 'juguetes_mascotas', label: 'Juguetes para mascotas' },
+            { value: 'camas', label: 'Camas' },
+            { value: 'collares', label: 'Collares' },
+            { value: 'comederos', label: 'Comederos' },
+          ],
+        },
+      ];
+      
+      setCategoriasOptions(categorias);
+    };
+
+    fetchCategorias();
+  }, []);
+
+  const handleSelectChange = (selectedOptions, actionMeta) => {
+    if (actionMeta.name === 'categoria') {
+      setFormData(prevData => ({
+        ...prevData,
+        categoria: selectedOptions ? selectedOptions.value : ''
+      }));
+    } else if (actionMeta.name === 'codigoempresa') {
+      const empresasSeleccionadas = selectedOptions ? selectedOptions.map(option => option.value) : [];
+      const selectedEmpresa = selectedOptions ? selectedOptions[0] : null; // Tomar la primera empresa seleccionada
+      const codigoempresa = empresasSeleccionadas.length > 0 ? empresasSeleccionadas[0] : '';
+      const publicadoPor = selectedEmpresa ? selectedEmpresa.label : ''; // Obtener el nombre de la empresa seleccionada
+
+      setFormData(prevData => ({
+        ...prevData,
+        empresasSeleccionadas: empresasSeleccionadas,
+        codigoempresa: codigoempresa,
+        publicadoPor: publicadoPor // Actualizar el campo publicadoPor
+      }));
+    }
+  };
 
   useEffect(() => {
     filterProducts();
@@ -93,7 +275,6 @@ export const CraftforAdmins = () => {
   const handleCompanyChange = (e) => setSelectedCompany(e.target.value);
 
   const handleEdit = (idProducto) => navigate(`/updateProduct/${idProducto}`);
-
 
   const handleDelete = async (idProducto) => {
     if (window.confirm('¿Estás seguro de que quieres eliminar este producto?')) {
@@ -151,19 +332,22 @@ export const CraftforAdmins = () => {
                 </div>
               </div>
             </div>
-            <label htmlFor="category" className="block text-sm font-bold mb-2">Categoría</label>
-            <select
-              id="category"
-              value={category}
-              onChange={handleCategoryChange}
-              className="shadow border rounded w-full py-2 px-3 mb-4"
-            >
-              <option value="all">Todos</option>
-              <option value="earrings">Aretes</option>
-              <option value="ruanas">Ruanas</option>
-              <option value="necklaces">Collares</option>
-              <option value="bracelets">Pulseras</option>
-            </select>
+            <div className="mb-4">
+              <label className="block text-black text-sm font-bold mb-2" htmlFor="categoria">
+                Categoría
+              </label>
+              <Select
+                id="categoria"
+                name="categoria"
+                options={categoriasOptions}
+                className="basic-single"
+                classNamePrefix="select"
+                placeholder="Seleccionar Categoría"
+                value={categoriasOptions.find(option => option.value === formData.categoria)}
+                onChange={handleSelectChange}
+              />
+              {errors.categoria && <p className="text-red-500 text-xs italic">{errors.categoria}</p>}
+            </div>
             <label htmlFor="price" className="block text-sm font-bold mb-2">Rango de Precio</label>
             <div className="flex items-center mb-4">
               <input
@@ -183,77 +367,71 @@ export const CraftforAdmins = () => {
               />
             </div>
             <label htmlFor="company" className="block text-sm font-bold mb-2">Empresa</label>
-            <select
-              id="company"
-              value={selectedCompany}
-              onChange={handleCompanyChange}
-              className="shadow border rounded w-full py-2 px-3 mb-4"
-            >
+            <select id="company" value={selectedCompany} onChange={handleCompanyChange} className="shadow border rounded w-full py-2 px-3">
               <option value="all">Todas</option>
-              {companies.map((company) => (
-                <option key={company} value={company}>{company}</option>
+              {companies.map((company, index) => (
+                <option key={index} value={company}>{company}</option>
               ))}
             </select>
-            <button
-              onClick={handlePriceChange}
-              className="bg-darkpurple text-white px-4 py-2 rounded shadow-md"
-            >
-              Filtrar
-            </button>
-            <div className="mt-4">
-            <input
-                type="checkbox"
-                id="checkbox"
-                checked={isCheckboxChecked}
-                onChange={() => setIsCheckboxChecked(true)} // Mantén el checkbox siempre seleccionado
-                className="hidden" // Oculta el checkbox
-            />
-            
-        </div>
+            <div className="flex items-center mt-4">
+  <input
+    type="checkbox"
+    id="checkbox"
+    checked={isCheckboxChecked}
+    onChange={() => setIsCheckboxChecked(!isCheckboxChecked)}
+    className="absolute opacity-0"
+  />
+  
+</div>
           </div>
         </div>
         <div className="flex-1 p-4">
-          <button
-            onClick={() => navigate('/createProduct')}
-            className="bg-darkyellow text-white px-4 py-2 rounded shadow-md mb-4 flex items-center"
-          >
-            <FaPlus className="mr-2" /> Agregar Producto
-          </button>
           {loading ? (
             <p>Cargando productos...</p>
           ) : error ? (
-            <p className="text-red-500">Error: {error}</p>
+            <p className="text-red-500">{error}</p>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredProducts.length > 0 ? (
-                filteredProducts.map((producto) => (
-                  <div key={producto.idProducto} className="bg-white border rounded-lg shadow-md p-4">
-                    <div onClick={() => handleCardClick(producto.idProducto)} className="cursor-pointer">
-                      <h3 className="text-xl font-bold mb-2">{producto.nombre}</h3>
-                      <p className="text-gray-700 mb-2">Descripción: {producto.descripcion}</p>
-                      <p className="text-gray-700 mb-2">Categoría: {producto.categoria}</p>
-                      <p className="text-gray-700 mb-2">Precio: ${formatPrice(producto.precio)}</p>
-                      <p className="text-gray-700">Publicado por: {producto.publicadoPor}</p>
-                    </div>
-                    <div className="flex justify-between mt-4">
+            <div>
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-bold">Productos</h2>
+                <button
+                  onClick={() => navigate('/createProduct')}
+                  className="text-darkyellow text-xl flex items-center"
+                >
+                  <FaPlus className="mr-2" /> Crear Producto
+                </button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredProducts.map(product => (
+                  <div key={product.idProducto} className="bg-white border rounded-lg shadow-md p-4 flex flex-col">
+                    <h3 className="text-xl font-semibold mb-2">{product.nombre}</h3>
+                    <p className="text-gray-700 mb-2">{product.descripcion}</p>
+                    <p className="text-gray-600 mb-2">Categoría: {product.categoria}</p>
+                    <p className="text-gray-600 mb-2">Publicado por: {product.publicadoPor}</p>
+                    <p className="text-gray-900 font-bold mb-2">Precio: {formatPrice(product.precio)}</p>
+                    <div className="flex justify-between mt-auto">
                       <button
-                        onClick={() => handleEdit(producto.idProducto)}
-                        className="text-yellow-600 hover:text-yellow-300 text-2xl  py-2 rounded"
+                        onClick={() => handleEdit(product.idProducto)}
+                        className="text-darkyellow hover:text-lightyellow text-2xl"
                       >
-                        <FaEdit /> 
+                        <FaEdit />
                       </button>
                       <button
-                        onClick={() => handleDelete(producto.idProducto)}
-                        className="text-red-900 hover:text-red-500 text-2xl py-2 rounded"
+                        onClick={() => handleDelete(product.idProducto)}
+                        className="text-darkpurple hover:text-lightpurple text-2xl"
                       >
-                        <FaTrash /> 
+                        <FaTrash />
                       </button>
                     </div>
+                    <button
+                      onClick={() => handleCardClick(product.idProducto)}
+                      className="mt-4 bg-darkyellow text-white py-2 px-4 rounded"
+                    >
+                      Ver Detalles
+                    </button>
                   </div>
-                ))
-              ) : (
-                <p>No hay productos disponibles.</p>
-              )}
+                ))}
+              </div>
             </div>
           )}
         </div>

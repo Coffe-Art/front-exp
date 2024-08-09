@@ -31,6 +31,7 @@ export const CreateProduct = () => {
   const [empresasOptions, setEmpresasOptions] = useState([]);
   const [categoriasOptions, setCategoriasOptions] = useState([]);
   const [fileName, setFileName] = useState('');
+  
 
 
   const allowedTypes = ['image/jpeg', 'image/png'];
