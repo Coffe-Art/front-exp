@@ -19,6 +19,8 @@ import { ProductDetail } from './components/Layouts/ProductDetail';
 import { Statistics } from './components/Layouts/Statistics';
 import { EmpresaProvider } from './Context/contextEmpresa';
 import { EventsForm } from './components/Layouts/EventsForm';
+import { UpdateCompany } from './components/Layouts/UpdateCompanies';
+
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -40,6 +42,7 @@ function App() {
           <Route path="/History" element={<History />} />
           <Route path="/Companies" element={<Companies />} />
           <Route path="/LoginCompanies" element={<LoginCompanies />} />
+          <Route path="/UpdateCompany/:id" element={<UpdateCompany />} />
           <Route path="/Events" element={<Events />} />
           <Route path="/CreateProduct" element={<CreateProduct />} />
           <Route path="/ProductDetail" element={<ProductDetail />} />
