@@ -112,7 +112,6 @@ export const LoginCompanies = () => {
                             placeholder="Dirección"
                             required
                         />
-                        <p className="text-gray-600 text-sm mt-2">Especifica la dirección de tu empresa ¡Así podrán encontrarte!</p>
                     </div>
                     <div className="mb-4">
                         <label className="block text-black text-sm font-bold mb-2" htmlFor="descripcion">
@@ -126,7 +125,6 @@ export const LoginCompanies = () => {
                             placeholder="Descripción"
                             required
                         />
-                        <p className="text-gray-600 text-sm mt-2">Una bonita descripción te ayudara a tener una buena impresión</p>
                     </div>
                     <div className="flex items-center justify-center">
                         <button

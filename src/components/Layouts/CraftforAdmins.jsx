@@ -19,7 +19,9 @@ export const CraftforAdmins = () => {
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(true); // Estado para el checkbox
 
   const navigate = useNavigate();
-  const userId = 35; // Asegúrate de que este ID sea dinámico o provenga del contexto de usuario.
+  const userId = localStorage.getItem('userId');
+  console.log('userId:', userId); // Añade esto para verificar el valor de userId
+
 
   useEffect(() => {
     const getProductosByIdAdministrador = async () => {
