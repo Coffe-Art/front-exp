@@ -165,7 +165,7 @@ export const Companies = () => {
                                 <p className="text-center underline text-darkyellow">{empresa.direccion}</p>
                                 <p className="text-center line-clamp-5">{empresa.descripcion}</p>
                                 <p className="text-center text-gray-600">ID: {empresa.codigoempresa}</p>
-                                <div className="flex gap-2 mt-4">
+                                <div className="flex gap-32 mt-4">
                                     <button
                                         className="text-yellow-600 hover:text-yellow-300"
                                         onClick={(e) => {

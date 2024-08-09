@@ -20,6 +20,8 @@ import { Statistics } from './components/Layouts/Statistics';
 import { EmpresaProvider } from './Context/contextEmpresa';
 import { EventsForm } from './components/Layouts/EventsForm';
 import { UpdateCompany } from './components/Layouts/UpdateCompanies';
+import { UpdateProducto } from './components/Layouts/UpdateProduct';
+
 
 
 function App() {
@@ -45,6 +47,7 @@ function App() {
           <Route path="/UpdateCompany/:id" element={<UpdateCompany />} />
           <Route path="/Events" element={<Events />} />
           <Route path="/CreateProduct" element={<CreateProduct />} />
+          <Route path="/UpdateProduct/:id" element={<UpdateProducto />} />
           <Route path="/ProductDetail" element={<ProductDetail />} />
           <Route path="/Statistics" element={<Statistics />} />
           <Route path="/EventsForm" element={<EventsForm />} />

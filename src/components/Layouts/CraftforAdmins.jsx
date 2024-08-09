@@ -16,12 +16,10 @@ export const CraftforAdmins = () => {
   const [selectedCompany, setSelectedCompany] = useState('all');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isCheckboxChecked, setIsCheckboxChecked] = useState(true); // Estado para el checkbox
+  const [isCheckboxChecked, setIsCheckboxChecked] = useState(true);
 
   const navigate = useNavigate();
   const userId = localStorage.getItem('userId');
-  console.log('userId:', userId); // Añade esto para verificar el valor de userId
-
 
   useEffect(() => {
     const getProductosByIdAdministrador = async () => {
@@ -41,10 +39,7 @@ export const CraftforAdmins = () => {
         if (!response.ok) throw new Error('Error al obtener productos');
         const result = await response.json();
 
-        // Extrae el array de productos del primer elemento de la respuesta
         const productosArray = Array.isArray(result[0]) ? result[0] : [];
-        console.log('Array de productos:', productosArray);
-
         setProductos(productosArray);
         setLoading(false);
       } catch (err) {
@@ -72,16 +67,17 @@ export const CraftforAdmins = () => {
         publicadoPor = ''
       } = product;
 
+      // Conversión a número para manejar el precio
+      const numericPrecio = Number(precio);
+
       return (
         (nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
          descripcion.toLowerCase().includes(searchTerm.toLowerCase())) &&
         (category === 'all' || categoria === category) &&
-        (isCheckboxChecked || (precio >= minPrice && precio <= maxPrice)) &&
+        (isCheckboxChecked || (numericPrecio >= minPrice && numericPrecio <= maxPrice)) &&
         (selectedCompany === 'all' || publicadoPor === selectedCompany)
       );
     });
-
-    console.log('Productos filtrados:', filtered);
 
     setFilteredProducts(filtered);
   };
@@ -97,6 +93,7 @@ export const CraftforAdmins = () => {
   const handleCompanyChange = (e) => setSelectedCompany(e.target.value);
 
   const handleEdit = (idProducto) => navigate(`/updateProduct/${idProducto}`);
+
 
   const handleDelete = async (idProducto) => {
     if (window.confirm('¿Estás seguro de que quieres eliminar este producto?')) {
@@ -116,9 +113,16 @@ export const CraftforAdmins = () => {
     }
   };
 
-  // Extrae las empresas únicas del array de productos
+  const handleCardClick = (idProducto) => {
+    navigate(`/productDetails/${idProducto}`);
+  };
+
   const companies = Array.from(new Set(productos.map(product => product.publicadoPor)));
-  console.log('Empresas únicas:', companies);
+
+  // Función para formatear precios
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('es-CO').format(price);
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-200">
@@ -128,7 +132,7 @@ export const CraftforAdmins = () => {
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-bold">Filtros</h2>
             <button onClick={toggleFilter} className="text-darkyellow text-xl">
-              <FaSearch /> {/* Agrega icono si es necesario */}
+              <FaSearch />
             </button>
           </div>
           <div>
@@ -197,15 +201,15 @@ export const CraftforAdmins = () => {
               Filtrar
             </button>
             <div className="mt-4">
-              <input
+            <input
                 type="checkbox"
                 id="checkbox"
                 checked={isCheckboxChecked}
-                onChange={() => setIsCheckboxChecked(!isCheckboxChecked)} // Permite activar/desactivar
-                className="mr-2"
-              />
-              <label htmlFor="checkbox" className="text-sm font-bold">Mostrar todos los productos</label>
-            </div>
+                onChange={() => setIsCheckboxChecked(true)} // Mantén el checkbox siempre seleccionado
+                className="hidden" // Oculta el checkbox
+            />
+            
+        </div>
           </div>
         </div>
         <div className="flex-1 p-4">
@@ -218,35 +222,37 @@ export const CraftforAdmins = () => {
           {loading ? (
             <p>Cargando productos...</p>
           ) : error ? (
-            <p>Error: {error}</p>
+            <p className="text-red-500">Error: {error}</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredProducts.length > 0 ? (
-                filteredProducts.map(product => (
-                  <div key={product.idProducto} className="bg-white border rounded-lg shadow-md p-4">
-                    <h3 className="text-lg font-bold">{product.nombre}</h3>
-                    <p className="text-gray-700">Descripción: {product.descripcion}</p>
-                    <p className="text-gray-700">Categoría: {product.categoria}</p>
-                    <p className="text-gray-700">Precio: ${product.precio}</p>
-                    <p className="text-gray-700">Publicado en: {product.publicadoPor}</p>
+                filteredProducts.map((producto) => (
+                  <div key={producto.idProducto} className="bg-white border rounded-lg shadow-md p-4">
+                    <div onClick={() => handleCardClick(producto.idProducto)} className="cursor-pointer">
+                      <h3 className="text-xl font-bold mb-2">{producto.nombre}</h3>
+                      <p className="text-gray-700 mb-2">Descripción: {producto.descripcion}</p>
+                      <p className="text-gray-700 mb-2">Categoría: {producto.categoria}</p>
+                      <p className="text-gray-700 mb-2">Precio: ${formatPrice(producto.precio)}</p>
+                      <p className="text-gray-700">Publicado por: {producto.publicadoPor}</p>
+                    </div>
                     <div className="flex justify-between mt-4">
                       <button
-                        onClick={() => handleEdit(product.idProducto)}
-                        className="bg-darkpurple text-white px-2 py-1 rounded flex items-center"
+                        onClick={() => handleEdit(producto.idProducto)}
+                        className="text-yellow-600 hover:text-yellow-300 text-2xl  py-2 rounded"
                       >
-                        <FaEdit className="mr-1" /> Editar
+                        <FaEdit /> 
                       </button>
                       <button
-                        onClick={() => handleDelete(product.idProducto)}
-                        className="bg-red-500 text-white px-2 py-1 rounded flex items-center"
+                        onClick={() => handleDelete(producto.idProducto)}
+                        className="text-red-900 hover:text-red-500 text-2xl py-2 rounded"
                       >
-                        <FaTrash className="mr-1" /> Eliminar
+                        <FaTrash /> 
                       </button>
                     </div>
                   </div>
                 ))
               ) : (
-                <p>No se encontraron productos</p>
+                <p>No hay productos disponibles.</p>
               )}
             </div>
           )}
