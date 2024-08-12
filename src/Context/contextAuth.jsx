@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (tipoUsuario, correo_electronico, contrasena) => {
         try {
-            const response = await fetch('https://backtesteo.onrender.com/api/auth/login', {
+            const response = await fetch('https://checkpoint-9tp4.onrender.com/api/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -65,27 +65,70 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const register = async (tipoUsuario, nombre, contrasena, correo_electronico, telefono, historia) => {
+    const register = async (tipoUsuario, nombre, contrasena, correo_electronico, telefono, historia, estado, permisos, idAdministrador) => {
         try {
-            const response = await fetch('https://backtesteo.onrender.com/api/auth/register', {
+            // Verificar si el usuario ya existe antes de registrar
+            const userExists = await checkIfUserExists(correo_electronico, tipoUsuario);
+            console.log('User exists:', userExists); // Añadir esta línea para depuración
+            if (userExists) {
+                setNotification('El correo electrónico ya está en uso');
+                return { success: false, error: 'El correo electrónico ya está en uso' };
+            }
+    
+            // Log de los datos enviados
+            console.log('Datos enviados:', { tipoUsuario, nombre, contrasena, correo_electronico, telefono, historia, estado, permisos, idAdministrador });
+    
+            const response = await fetch('https://checkpoint-9tp4.onrender.com/api/auth/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ tipoUsuario, nombre, contrasena, correo_electronico, telefono, historia })
+                body: JSON.stringify({
+                    tipoUsuario: tipoUsuario.toLowerCase(),
+                    nombre: nombre,
+                    contrasena: contrasena,
+                    correo_electronico: correo_electronico,
+                    telefono: telefono
+                })
             });
-
+    
             const data = await response.json();
-
+            console.log('Server response:', data); // Añadir esta línea para depuración
+    
             if (response.ok) {
                 console.log('Usuario registrado con éxito');
+                setNotification('Registro exitoso');
                 return { success: true };
             } else {
                 throw new Error(data.error || data.message || 'Error desconocido');
             }
         } catch (error) {
             console.error('Error al intentar registrar el usuario:', error);
+            setNotification(error.message);
             return { success: false, error: error.message };
+        }
+    };
+
+    const checkIfUserExists = async (correo_electronico, tipoUsuario) => {
+        try {
+            const response = await fetch('https://checkpoint-9tp4.onrender.com/api/auth/checkIfUserExists', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ correo_electronico, tipoUsuario })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                return data.exists; // Asegúrate de que la respuesta tenga esta propiedad
+            } else {
+                throw new Error(data.error || data.message || 'Error desconocido');
+            }
+        } catch (error) {
+            console.error('Error al verificar si el usuario existe:', error);
+            return false;
         }
     };
 

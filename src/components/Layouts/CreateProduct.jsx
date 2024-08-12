@@ -46,7 +46,7 @@ export const CreateProduct = () => {
             throw new Error('Token de autenticación no encontrado');
           }
 
-          const response = await fetch(`https://backtesteo.onrender.com/api/empresa/consultarPorAdministrador/${idAdministrador}`, {
+          const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/empresa/consultarPorAdministrador/${idAdministrador}`, {
             headers: {
               'Authorization': `Bearer ${token}`
             }

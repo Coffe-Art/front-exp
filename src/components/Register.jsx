@@ -23,22 +23,18 @@ export const Register = () => {
 
     const handleChange = (e) => {
         const { id, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [id]: value
-        }));
+        setFormData(prevData => ({ ...prevData, [id]: value }));
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const validateForm = () => {
         const newErrors = {};
 
         // Validaciones
         if (!formData.username.trim()) {
             newErrors.username = 'El nombre de usuario es obligatorio';
         }
-        if (!formData.email.includes('@')) {
-            newErrors.email = 'El correo debe contener "@"';
+        if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            newErrors.email = 'El correo electrónico es inválido';
         }
         if (formData.password.length < 6) {
             newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
@@ -53,22 +49,33 @@ export const Register = () => {
             newErrors.phone = 'El número de teléfono debe tener al menos 10 dígitos';
         }
 
+        return newErrors;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const newErrors = validateForm();
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
             try {
-                await register(
+                const response = await register(
                     formData.role.toLowerCase(),
                     formData.username,
                     formData.password,
                     formData.email,
                     formData.phone
                 );
-                setNotification('Registro exitoso');
-                setTimeout(() => {
-                    setNotification('');
-                    navigate('/login');
-                }, 2000); // Muestra la notificación por 2 segundos antes de redirigir
+
+                if (response.success) {
+                    setNotification('Registro exitoso');
+                    setTimeout(() => {
+                        setNotification('');
+                        navigate('/login');
+                    }, 2000);
+                } else {
+                    setNotification('Error al registrar, intenta de nuevo');
+                }
             } catch (error) {
                 console.error('Error al registrar:', error);
                 setNotification('Error al registrar, intenta de nuevo');
@@ -81,9 +88,7 @@ export const Register = () => {
     return (
         <div 
             className="flex items-center justify-center min-h-screen bg-cover bg-center"
-            style={{ 
-                backgroundImage: `url(${BackgroundImage})`, 
-            }}
+            style={{ backgroundImage: `url(${BackgroundImage})` }}
         >
             <NavLink to="/" className="absolute top-4 left-4">
                 <FaHome className="text-darkyellow text-4xl" />

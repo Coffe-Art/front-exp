@@ -45,7 +45,7 @@ const [selectedProduct, setSelectedProduct] = useState(null);
       }
 
       try {
-        const response = await fetch(`https://backtesteo.onrender.com/api/producto/obtenerPorAdministrador/${userId}`, {
+        const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/producto/obtenerPorAdministrador/${userId}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
@@ -162,7 +162,7 @@ const [selectedProduct, setSelectedProduct] = useState(null);
   const handleDelete = async (idProducto) => {
     if (window.confirm('¿Estás seguro de que quieres eliminar este producto?')) {
       try {
-        const response = await fetch(`https://backtesteo.onrender.com/api/producto/eliminar/${idProducto}`, {
+        const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/producto/eliminar/${idProducto}`, {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
