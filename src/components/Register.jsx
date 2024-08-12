@@ -7,7 +7,7 @@ import Logo from '../../src/assets/Artesanías.png';
 
 export const Register = () => {
     const navigate = useNavigate();
-    const { register } = useAuth();
+    const { register, notification } = useAuth();
     
     const [formData, setFormData] = useState({
         username: '',
@@ -19,22 +19,25 @@ export const Register = () => {
     });
 
     const [errors, setErrors] = useState({});
-    const [notification, setNotification] = useState('');
 
     const handleChange = (e) => {
         const { id, value } = e.target;
-        setFormData(prevData => ({ ...prevData, [id]: value }));
+        setFormData((prevData) => ({
+            ...prevData,
+            [id]: value
+        }));
     };
 
-    const validateForm = () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         const newErrors = {};
 
         // Validaciones
         if (!formData.username.trim()) {
             newErrors.username = 'El nombre de usuario es obligatorio';
         }
-        if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'El correo electrónico es inválido';
+        if (!formData.email.includes('@')) {
+            newErrors.email = 'El correo debe contener "@"';
         }
         if (formData.password.length < 6) {
             newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
@@ -49,30 +52,22 @@ export const Register = () => {
             newErrors.phone = 'El número de teléfono debe tener al menos 10 dígitos';
         }
 
-        return newErrors;
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const newErrors = validateForm();
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
             try {
-                const response = await register(
+                const result = await register(
                     formData.role.toLowerCase(),
                     formData.username,
                     formData.password,
                     formData.email,
                     formData.phone
                 );
-
-                if (response.success) {
-                    setNotification('Registro exitoso');
+                
+                if (result.success) {
                     setTimeout(() => {
-                        setNotification('');
                         navigate('/login');
-                    }, 2000);
+                    }, 2000); // Muestra la notificación por 2 segundos antes de redirigir
                 } else {
                     setNotification('Error al registrar, intenta de nuevo');
                 }
@@ -80,15 +75,15 @@ export const Register = () => {
                 console.error('Error al registrar:', error);
                 setNotification('Error al registrar, intenta de nuevo');
             }
-        } else {
-            setNotification('');
         }
     };
 
     return (
         <div 
             className="flex items-center justify-center min-h-screen bg-cover bg-center"
-            style={{ backgroundImage: `url(${BackgroundImage})` }}
+            style={{ 
+                backgroundImage: `url(${BackgroundImage})`, 
+            }}
         >
             <NavLink to="/" className="absolute top-4 left-4">
                 <FaHome className="text-darkyellow text-4xl" />
