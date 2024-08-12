@@ -5,6 +5,8 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 import ProductoContext from '../../Context/contextProducto';
 import Select from 'react-select';
+import { useParams } from 'react-router-dom';
+import imgPrueba from '../../assets/ruana.jpg'
 
 export const CraftforAdmins = () => {
   const { productos, setProductos } = useContext(ProductoContext);
@@ -29,6 +31,10 @@ export const CraftforAdmins = () => {
 
   const navigate = useNavigate();
   const userId = localStorage.getItem('userId');
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+const [selectedProduct, setSelectedProduct] = useState(null);
+
 
   useEffect(() => {
     const getProductosByIdAdministrador = async () => {
@@ -65,148 +71,25 @@ export const CraftforAdmins = () => {
     const fetchCategorias = () => {
       // Aquí debes reemplazar esto con la lógica para obtener las categorías reales
       const categorias = [
-        {
-          value: 'joyeria',
-          label: 'Joyería',
-          options: [
-            { value: 'collares', label: 'Collares' },
-            { value: 'pulseras', label: 'Pulseras' },
-            { value: 'anillos', label: 'Anillos' },
-            { value: 'aretes', label: 'Aretes' },
-          ],
-        },
-        {
-          value: 'ropa_y_accesorios',
-          label: 'Ropa y Accesorios',
-          options: [
-            { value: 'camisetas', label: 'Camisetas' },
-            { value: 'bufandas', label: 'Bufandas' },
-            { value: 'gorras', label: 'Gorros' },
-            { value: 'bolsos', label: 'Bolsos' },
-          ],
-        },
-        {
-          value: 'ceramica',
-          label: 'Cerámica',
-          options: [
-            { value: 'tazas', label: 'Tazas' },
-            { value: 'platos', label: 'Platos' },
-            { value: 'jarrones', label: 'Jarrones' },
-            { value: 'cuencos', label: 'Cuencos' },
-          ],
-        },
-        {
-          value: 'muebles',
-          label: 'Muebles',
-          options: [
-            { value: 'sillas', label: 'Sillas' },
-            { value: 'mesas', label: 'Mesas' },
-            { value: 'estanterias', label: 'Estanterías' },
-            { value: 'lamparas', label: 'Lámparas' },
-          ],
-        },
-        {
-          value: 'decoracion',
-          label: 'Decoración',
-          options: [
-            { value: 'cuadros', label: 'Cuadros' },
-            { value: 'alfombras', label: 'Alfombras' },
-            { value: 'cortinas', label: 'Cortinas' },
-            { value: 'figuras_decorativas', label: 'Figuras decorativas' },
-          ],
-        },
-        {
-          value: 'arte_textil',
-          label: 'Arte Textil',
-          options: [
-            { value: 'bordados', label: 'Bordados' },
-            { value: 'tejidos', label: 'Tejidos' },
-            { value: 'tapices', label: 'Tapices' },
-            { value: 'quilts', label: 'Quilts' },
-          ],
-        },
-        {
-          value: 'productos_de_madera',
-          label: 'Productos de Madera',
-          options: [
-            { value: 'utensilios_cocina', label: 'Utensilios de cocina' },
-            { value: 'marcos_fotos', label: 'Marcos para fotos' },
-            { value: 'juguetes', label: 'Juguetes' },
-            { value: 'cajas', label: 'Cajas' },
-          ],
-        },
-        {
-          value: 'cosmeticos_y_cuidado_personal',
-          label: 'Cosméticos y Cuidado Personal',
-          options: [
-            { value: 'jabones', label: 'Jabones' },
-            { value: 'cremas', label: 'Cremas' },
-            { value: 'aceites_esenciales', label: 'Aceites esenciales' },
-            { value: 'bano_salas', label: 'Baños de sales' },
-          ],
-        },
-        {
-          value: 'papeleria_y_libros',
-          label: 'Papelería y Libros',
-          options: [
-            { value: 'cuadernos', label: 'Cuadernos' },
-            { value: 'tarjetas', label: 'Tarjetas' },
-            { value: 'agendas', label: 'Agendas' },
-            { value: 'libros_artesanales', label: 'Libros artesanales' },
-          ],
-        },
-        {
-          value: 'articulos_para_el_hogar',
-          label: 'Artículos para el Hogar',
-          options: [
-            { value: 'cojines', label: 'Cojines' },
-            { value: 'manteles', label: 'Manteles' },
-            { value: 'toallas', label: 'Toallas' },
-            { value: 'organizadores', label: 'Organizadores' },
-          ],
-        },
-        {
-          value: 'juguetes_y_juegos',
-          label: 'Juguetes y Juegos',
-          options: [
-            { value: 'juguetes_madera', label: 'Juguetes de madera' },
-            { value: 'juegos_mesa', label: 'Juegos de mesa artesanales' },
-            { value: 'peluches', label: 'Peluches' },
-            { value: 'rompecabezas', label: 'Rompecabezas' },
-          ],
-        },
-        {
-          value: 'instrumentos_musicales',
-          label: 'Instrumentos Musicales',
-          options: [
-            { value: 'guitarras', label: 'Guitarras' },
-            { value: 'tamboriles', label: 'Tamboriles' },
-            { value: 'flautas', label: 'Flautas' },
-            { value: 'maracas', label: 'Maracas' },
-          ],
-        },
-        {
-          value: 'productos_ecologicos',
-          label: 'Productos Ecológicos',
-          options: [
-            { value: 'bolsas_reutilizables', label: 'Bolsas reutilizables' },
-            { value: 'productos_sin_plastico', label: 'Productos sin plástico' },
-            { value: 'articulos_reciclados', label: 'Artículos reciclados' },
-          ],
-        },
-        {
-          value: 'productos_para_mascotas',
-          label: 'Productos para Mascotas',
-          options: [
-            { value: 'juguetes_mascotas', label: 'Juguetes para mascotas' },
-            { value: 'camas', label: 'Camas' },
-            { value: 'collares', label: 'Collares' },
-            { value: 'comederos', label: 'Comederos' },
-          ],
-        },
-      ];
-      
-      setCategoriasOptions(categorias);
+        { value: 'joyeria', label: 'Joyería' },
+        { value: 'ropa_y_accesorios', label: 'Ropa y Accesorios' },
+        { value: 'ceramica', label: 'Cerámica' },
+        { value: 'muebles', label: 'Muebles' },
+        { value: 'decoracion', label: 'Decoración' },
+        { value: 'arte_textil', label: 'Arte Textil' },
+        { value: 'productos_de_madera', label: 'Productos de Madera' },
+        { value: 'cosmeticos_y_cuidado_personal', label: 'Cosméticos y Cuidado Personal' },
+        { value: 'papeleria_y_libros', label: 'Papelería y Libros' },
+        { value: 'articulos_para_el_hogar', label: 'Artículos para el Hogar' },
+        { value: 'juguetes_y_juegos', label: 'Juguetes y Juegos' },
+        { value: 'instrumentos_musicales', label: 'Instrumentos Musicales' },
+        { value: 'productos_ecologicos', label: 'Productos Ecológicos' },
+        { value: 'productos_para_mascotas', label: 'Productos para Mascotas' },
+        { value: 'otro', label: 'Otro' },
+    ];
+    
+    setCategoriasOptions(categorias);
+    
     };
 
     fetchCategorias();
@@ -305,6 +188,23 @@ export const CraftforAdmins = () => {
     return new Intl.NumberFormat('es-CO').format(price);
   };
 
+
+  // Función para formatear nombres de categoría
+  const formatCategoryName = (category) => {
+    return category.replace(/_/g, ' ').toLowerCase();
+  };
+
+  const openModal = (product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedProduct(null);
+  };
+
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-200">
       <Header />
@@ -402,41 +302,77 @@ export const CraftforAdmins = () => {
                 </button>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredProducts.map(product => (
-                  <div key={product.idProducto} className="bg-white border rounded-lg shadow-md p-4 flex flex-col">
-                    <h3 className="text-xl font-semibold mb-2">{product.nombre}</h3>
-                    <p className="text-gray-700 mb-2">{product.descripcion}</p>
-                    <p className="text-gray-600 mb-2">Categoría: {product.categoria}</p>
-                    <p className="text-gray-600 mb-2">Publicado por: {product.publicadoPor}</p>
-                    <p className="text-gray-900 font-bold mb-2">Precio: {formatPrice(product.precio)}</p>
-                    <div className="flex justify-between mt-auto">
-                      <button
-                        onClick={() => handleEdit(product.idProducto)}
-                        className="text-darkyellow hover:text-lightyellow text-2xl"
+  {filteredProducts.map(product => (
+    <div key={product.idProducto} className="bg-white border rounded-lg shadow-md p-4 flex flex-col">
+      <h3 className="text-xl font-semibold mb-2">{product.nombre}</h3>
+      <p className="text-gray-700 mb-2">{product.descripcion}</p>
+      <p className="text-gray-600 mb-2">Categoria: {formatCategoryName(product.categoria)}</p>      <p className="text-gray-600 mb-2">Publicado por: {product.publicadoPor}</p>
+      <p className="text-gray-900 font-bold mb-2">Precio: {formatPrice(product.precio)}</p>
+      <p className="text-gray-500 mb-2">ID Producto: {product.idProducto}</p> {/* Línea añadida */}
+      <div className="flex justify-between mt-auto">
+        <button
+          onClick={() => handleEdit(product.idProducto)}
+          className="text-darkyellow hover:text-lightyellow text-2xl"
+        >
+          <FaEdit />
+        </button>
+        <button
+          onClick={() => handleDelete(product.idProducto)}
+          className="text-darkpurple hover:text-lightpurple text-2xl"
+        >
+          <FaTrash /> 
+        </button>
+      </div>
+      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openModal(product);
+                        }}
+                        className="mt-4 bg-darkyellow text-white py-2 px-4 rounded"
                       >
-                        <FaEdit />
+                        Ver Detalles
                       </button>
-                      <button
-                        onClick={() => handleDelete(product.idProducto)}
-                        className="text-darkpurple hover:text-lightpurple text-2xl"
-                      >
-                        <FaTrash />
-                      </button>
-                    </div>
-                    <button
-                      onClick={() => handleCardClick(product.idProducto)}
-                      className="mt-4 bg-darkyellow text-white py-2 px-4 rounded"
-                    >
-                      Ver Detalles
-                    </button>
-                  </div>
-                ))}
-              </div>
+    </div>
+  ))}
+</div>
             </div>
           )}
         </div>
       </div>
       <Footer />
+{/* Modal */}
+{isModalOpen && selectedProduct && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-3xl">
+      <h2 className="text-xl font-bold mb-4">Detalles del producto</h2>
+      <div className="flex flex-col md:flex-row">
+        {/* Imagen */}
+        <div className="relative w-full md:w-1/2 h-48 md:h-auto mb-4 md:mb-0">
+          <img
+            src={selectedProduct.imagen || imgPrueba}
+            alt={selectedProduct.nombre}
+            className="w-full h-full object-contain"
+          />
+        </div>
+        {/* Texto */}
+        <div className="md:ml-4 flex-1">
+          <h3 className="text-lg font-semibold">{selectedProduct.nombre}</h3>
+          <p className="text-gray-600">Categoría: {formatCategoryName(selectedProduct.categoria)}</p>
+          <p className="text-gray-600">Publicado por: {selectedProduct.publicadoPor}</p>
+          <p className="text-lg font-bold">COP {formatPrice(selectedProduct.precio)}</p>
+          <p className="mt-2">{selectedProduct.descripcion}</p>
+        </div>
+      </div>
+      <div className="mt-4 flex justify-end">
+        <button onClick={closeModal} className="bg-gray-500 text-white px-4 py-2 rounded">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
     </div>
   );
 };

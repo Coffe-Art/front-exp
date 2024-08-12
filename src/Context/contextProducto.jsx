@@ -4,6 +4,7 @@ const ProductoContext = createContext();
 
 export const ProductoProvider = ({ children }) => {
   const [productos, setProductos] = useState([]);
+  const [producto, setProducto] = useState(null); // Estado para un solo producto
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userId, setUserId] = useState(null);
@@ -99,8 +100,21 @@ export const ProductoProvider = ({ children }) => {
     }
   };
 
+  const getProductoById = async (idProducto) => {
+    try {
+      const response = await fetch(`https://backtesteo.onrender.com/api/producto/obtenerProducto/${idProducto}`, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
+      if (!response.ok) throw new Error('Error al obtener el producto');
+      const result = await response.json();
+      setProducto(result);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   return (
-    <ProductoContext.Provider value={{ productos, setProductos, createProducto, getProducto: fetchProductos, getProductosByIdAdministrador, getProductosByCodigoEmpresa, updateProducto, deleteProducto, loading, error }}>
+    <ProductoContext.Provider value={{ productos, producto, setProductos, createProducto, getProducto: getProductoById, getProductosByIdAdministrador, getProductosByCodigoEmpresa, updateProducto, deleteProducto, loading, error }}>
       {children}
     </ProductoContext.Provider>
   );

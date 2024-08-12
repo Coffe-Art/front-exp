@@ -90,146 +90,22 @@ export const CreateProduct = () => {
     // Simulando la obtención de categorías
     const fetchCategorias = () => {
       // Aquí debes reemplazar esto con la lógica para obtener las categorías reales
-      const categorias = [
-        {
-          value: 'joyeria',
-          label: 'Joyería',
-          options: [
-            { value: 'collares', label: 'Collares' },
-            { value: 'pulseras', label: 'Pulseras' },
-            { value: 'anillos', label: 'Anillos' },
-            { value: 'aretes', label: 'Aretes' },
-          ],
-        },
-        {
-          value: 'ropa_y_accesorios',
-          label: 'Ropa y Accesorios',
-          options: [
-            { value: 'camisetas', label: 'Camisetas' },
-            { value: 'bufandas', label: 'Bufandas' },
-            { value: 'gorras', label: 'Gorros' },
-            { value: 'bolsos', label: 'Bolsos' },
-          ],
-        },
-        {
-          value: 'ceramica',
-          label: 'Cerámica',
-          options: [
-            { value: 'tazas', label: 'Tazas' },
-            { value: 'platos', label: 'Platos' },
-            { value: 'jarrones', label: 'Jarrones' },
-            { value: 'cuencos', label: 'Cuencos' },
-          ],
-        },
-        {
-          value: 'muebles',
-          label: 'Muebles',
-          options: [
-            { value: 'sillas', label: 'Sillas' },
-            { value: 'mesas', label: 'Mesas' },
-            { value: 'estanterias', label: 'Estanterías' },
-            { value: 'lamparas', label: 'Lámparas' },
-          ],
-        },
-        {
-          value: 'decoracion',
-          label: 'Decoración',
-          options: [
-            { value: 'cuadros', label: 'Cuadros' },
-            { value: 'alfombras', label: 'Alfombras' },
-            { value: 'cortinas', label: 'Cortinas' },
-            { value: 'figuras_decorativas', label: 'Figuras decorativas' },
-          ],
-        },
-        {
-          value: 'arte_textil',
-          label: 'Arte Textil',
-          options: [
-            { value: 'bordados', label: 'Bordados' },
-            { value: 'tejidos', label: 'Tejidos' },
-            { value: 'tapices', label: 'Tapices' },
-            { value: 'quilts', label: 'Quilts' },
-          ],
-        },
-        {
-          value: 'productos_de_madera',
-          label: 'Productos de Madera',
-          options: [
-            { value: 'utensilios_cocina', label: 'Utensilios de cocina' },
-            { value: 'marcos_fotos', label: 'Marcos para fotos' },
-            { value: 'juguetes', label: 'Juguetes' },
-            { value: 'cajas', label: 'Cajas' },
-          ],
-        },
-        {
-          value: 'cosmeticos_y_cuidado_personal',
-          label: 'Cosméticos y Cuidado Personal',
-          options: [
-            { value: 'jabones', label: 'Jabones' },
-            { value: 'cremas', label: 'Cremas' },
-            { value: 'aceites_esenciales', label: 'Aceites esenciales' },
-            { value: 'bano_salas', label: 'Baños de sales' },
-          ],
-        },
-        {
-          value: 'papeleria_y_libros',
-          label: 'Papelería y Libros',
-          options: [
-            { value: 'cuadernos', label: 'Cuadernos' },
-            { value: 'tarjetas', label: 'Tarjetas' },
-            { value: 'agendas', label: 'Agendas' },
-            { value: 'libros_artesanales', label: 'Libros artesanales' },
-          ],
-        },
-        {
-          value: 'articulos_para_el_hogar',
-          label: 'Artículos para el Hogar',
-          options: [
-            { value: 'cojines', label: 'Cojines' },
-            { value: 'manteles', label: 'Manteles' },
-            { value: 'toallas', label: 'Toallas' },
-            { value: 'organizadores', label: 'Organizadores' },
-          ],
-        },
-        {
-          value: 'juguetes_y_juegos',
-          label: 'Juguetes y Juegos',
-          options: [
-            { value: 'juguetes_madera', label: 'Juguetes de madera' },
-            { value: 'juegos_mesa', label: 'Juegos de mesa artesanales' },
-            { value: 'peluches', label: 'Peluches' },
-            { value: 'rompecabezas', label: 'Rompecabezas' },
-          ],
-        },
-        {
-          value: 'instrumentos_musicales',
-          label: 'Instrumentos Musicales',
-          options: [
-            { value: 'guitarras', label: 'Guitarras' },
-            { value: 'tamboriles', label: 'Tamboriles' },
-            { value: 'flautas', label: 'Flautas' },
-            { value: 'maracas', label: 'Maracas' },
-          ],
-        },
-        {
-          value: 'productos_ecologicos',
-          label: 'Productos Ecológicos',
-          options: [
-            { value: 'bolsas_reutilizables', label: 'Bolsas reutilizables' },
-            { value: 'productos_sin_plastico', label: 'Productos sin plástico' },
-            { value: 'articulos_reciclados', label: 'Artículos reciclados' },
-          ],
-        },
-        {
-          value: 'productos_para_mascotas',
-          label: 'Productos para Mascotas',
-          options: [
-            { value: 'juguetes_mascotas', label: 'Juguetes para mascotas' },
-            { value: 'camas', label: 'Camas' },
-            { value: 'collares', label: 'Collares' },
-            { value: 'comederos', label: 'Comederos' },
-          ],
-        },
+        const categorias = [
+          { value: 'joyeria', label: 'Joyería' },
+          { value: 'ropa_y_accesorios', label: 'Ropa y Accesorios' },
+          { value: 'ceramica', label: 'Cerámica' },
+          { value: 'muebles', label: 'Muebles' },
+          { value: 'decoracion', label: 'Decoración' },
+          { value: 'arte_textil', label: 'Arte Textil' },
+          { value: 'productos_de_madera', label: 'Productos de Madera' },
+          { value: 'cosmeticos_y_cuidado_personal', label: 'Cosméticos y Cuidado Personal' },
+          { value: 'papeleria_y_libros', label: 'Papelería y Libros' },
+          { value: 'articulos_para_el_hogar', label: 'Artículos para el Hogar' },
+          { value: 'juguetes_y_juegos', label: 'Juguetes y Juegos' },
+          { value: 'instrumentos_musicales', label: 'Instrumentos Musicales' },
+          { value: 'productos_ecologicos', label: 'Productos Ecológicos' },
+          { value: 'productos_para_mascotas', label: 'Productos para Mascotas' },
+          { value: 'otro', label: 'Otro' },
       ];
       
       setCategoriasOptions(categorias);

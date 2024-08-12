@@ -47,7 +47,7 @@ function App() {
           <Route path="/UpdateCompany/:id" element={<UpdateCompany />} />
           <Route path="/Events" element={<Events />} />
           <Route path="/CreateProduct" element={<CreateProduct />} />
-          <Route path="/UpdateProduct/:id" element={<UpdateProducto />} />
+          <Route path="/UpdateProduct/:idProducto" element={<UpdateProducto />} />
           <Route path="/ProductDetail" element={<ProductDetail />} />
           <Route path="/Statistics" element={<Statistics />} />
           <Route path="/EventsForm" element={<EventsForm />} />

@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, NavLink, useParams } from 'react-router-dom';
-import Select from 'react-select'; // Importar react-select
+import Select from 'react-select';
 import { FaHome } from 'react-icons/fa';
-import ProductoContext from '../../Context/contextProducto'; // Asegúrate de que la ruta sea correcta
-import { useEmpresa } from '../../Context/contextEmpresa'; // Importar el contexto de empresas
+import ProductoContext from '../../Context/contextProducto';
+import { useEmpresa } from '../../Context/contextEmpresa';
 import BackgroundImage from '../../assets/BackgroundLogin.jpg'; 
 import Logo from '../../assets/Artesanías.png';
 
 export const UpdateProducto = () => {
+  const { idProducto } = useParams(); // Obtiene el ID del producto de la URL
   const navigate = useNavigate();
-  const { createProducto } = useContext(ProductoContext);
+  const { getProductoById, updateProducto } = useContext(ProductoContext); // Asegúrate de tener estos métodos en tu contexto
   const { empresas, setEmpresas } = useEmpresa();
-  const { codigoempresa } = useParams(); // Obtener el código de la empresa desde la URL
 
   const [formData, setFormData] = useState({
     nombre: '',
@@ -20,11 +20,13 @@ export const UpdateProducto = () => {
     descripcion: '',
     cantidad: '',
     publicadoPor: '',
-    codigoempresa: codigoempresa || '', // Usar el valor del parámetro de la URL
-    idAdministrador: localStorage.getItem('userId') || '', // Obtener el ID del administrador desde localStorage
+    codigoempresa: '',
+    idAdministrador: localStorage.getItem('userId') || '',
     materiales: '',
-    empresasSeleccionadas: [], // Asegúrate de que este campo esté en el estado
+    empresasSeleccionadas: [],
+    imagenActual: '', // Añadir campo para la URL de la imagen actual
   });
+  
 
   const [file, setFile] = useState(null);
   const [errors, setErrors] = useState({});
@@ -32,15 +34,13 @@ export const UpdateProducto = () => {
   const [empresasOptions, setEmpresasOptions] = useState([]);
   const [categoriasOptions, setCategoriasOptions] = useState([]);
   const [fileName, setFileName] = useState('');
-  const { idProducto } = useParams();
+
   const allowedTypes = ['image/jpeg', 'image/png'];
-
-
 
   useEffect(() => {
     const fetchEmpresas = async () => {
       try {
-        const idAdministrador = localStorage.getItem('userId'); // Obtén el ID del administrador
+        const idAdministrador = localStorage.getItem('userId');
         if (idAdministrador) {
           const token = localStorage.getItem('token');
           if (!token) {
@@ -60,23 +60,17 @@ export const UpdateProducto = () => {
             throw new Error(`Error ${response.status}: ${response.statusText}`);
           }
 
-          const contentType = response.headers.get("content-type");
-          if (contentType && contentType.indexOf("application/json") !== -1) {
-            const data = await response.json();
-            if (Array.isArray(data) && Array.isArray(data[0])) {
-              const empresas = data[0];
-              setEmpresas(empresas);
-              const options = empresas.map(empresa => ({
-                value: empresa.codigoempresa,
-                label: empresa.nombre
-              }));
-              setEmpresasOptions(options);
-            } else {
-              throw new Error('Formato de datos inesperado');
-            }
+          const data = await response.json();
+          if (Array.isArray(data) && Array.isArray(data[0])) {
+            const empresas = data[0];
+            setEmpresas(empresas);
+            const options = empresas.map(empresa => ({
+              value: empresa.codigoempresa,
+              label: empresa.nombre
+            }));
+            setEmpresasOptions(options);
           } else {
-            const text = await response.text();
-            throw new Error('Respuesta no es JSON');
+            throw new Error('Formato de datos inesperado');
           }
         }
       } catch (error) {
@@ -88,156 +82,72 @@ export const UpdateProducto = () => {
   }, [setEmpresas]);
 
   useEffect(() => {
-    // Simulando la obtención de categorías
     const fetchCategorias = () => {
-      // Aquí debes reemplazar esto con la lógica para obtener las categorías reales
       const categorias = [
-        {
-          value: 'joyeria',
-          label: 'Joyería',
-          options: [
-            { value: 'collares', label: 'Collares' },
-            { value: 'pulseras', label: 'Pulseras' },
-            { value: 'anillos', label: 'Anillos' },
-            { value: 'aretes', label: 'Aretes' },
-          ],
-        },
-        {
-          value: 'ropa_y_accesorios',
-          label: 'Ropa y Accesorios',
-          options: [
-            { value: 'camisetas', label: 'Camisetas' },
-            { value: 'bufandas', label: 'Bufandas' },
-            { value: 'gorras', label: 'Gorros' },
-            { value: 'bolsos', label: 'Bolsos' },
-          ],
-        },
-        {
-          value: 'ceramica',
-          label: 'Cerámica',
-          options: [
-            { value: 'tazas', label: 'Tazas' },
-            { value: 'platos', label: 'Platos' },
-            { value: 'jarrones', label: 'Jarrones' },
-            { value: 'cuencos', label: 'Cuencos' },
-          ],
-        },
-        {
-          value: 'muebles',
-          label: 'Muebles',
-          options: [
-            { value: 'sillas', label: 'Sillas' },
-            { value: 'mesas', label: 'Mesas' },
-            { value: 'estanterias', label: 'Estanterías' },
-            { value: 'lamparas', label: 'Lámparas' },
-          ],
-        },
-        {
-          value: 'decoracion',
-          label: 'Decoración',
-          options: [
-            { value: 'cuadros', label: 'Cuadros' },
-            { value: 'alfombras', label: 'Alfombras' },
-            { value: 'cortinas', label: 'Cortinas' },
-            { value: 'figuras_decorativas', label: 'Figuras decorativas' },
-          ],
-        },
-        {
-          value: 'arte_textil',
-          label: 'Arte Textil',
-          options: [
-            { value: 'bordados', label: 'Bordados' },
-            { value: 'tejidos', label: 'Tejidos' },
-            { value: 'tapices', label: 'Tapices' },
-            { value: 'quilts', label: 'Quilts' },
-          ],
-        },
-        {
-          value: 'productos_de_madera',
-          label: 'Productos de Madera',
-          options: [
-            { value: 'utensilios_cocina', label: 'Utensilios de cocina' },
-            { value: 'marcos_fotos', label: 'Marcos para fotos' },
-            { value: 'juguetes', label: 'Juguetes' },
-            { value: 'cajas', label: 'Cajas' },
-          ],
-        },
-        {
-          value: 'cosmeticos_y_cuidado_personal',
-          label: 'Cosméticos y Cuidado Personal',
-          options: [
-            { value: 'jabones', label: 'Jabones' },
-            { value: 'cremas', label: 'Cremas' },
-            { value: 'aceites_esenciales', label: 'Aceites esenciales' },
-            { value: 'bano_salas', label: 'Baños de sales' },
-          ],
-        },
-        {
-          value: 'papeleria_y_libros',
-          label: 'Papelería y Libros',
-          options: [
-            { value: 'cuadernos', label: 'Cuadernos' },
-            { value: 'tarjetas', label: 'Tarjetas' },
-            { value: 'agendas', label: 'Agendas' },
-            { value: 'libros_artesanales', label: 'Libros artesanales' },
-          ],
-        },
-        {
-          value: 'articulos_para_el_hogar',
-          label: 'Artículos para el Hogar',
-          options: [
-            { value: 'cojines', label: 'Cojines' },
-            { value: 'manteles', label: 'Manteles' },
-            { value: 'toallas', label: 'Toallas' },
-            { value: 'organizadores', label: 'Organizadores' },
-          ],
-        },
-        {
-          value: 'juguetes_y_juegos',
-          label: 'Juguetes y Juegos',
-          options: [
-            { value: 'juguetes_madera', label: 'Juguetes de madera' },
-            { value: 'juegos_mesa', label: 'Juegos de mesa artesanales' },
-            { value: 'peluches', label: 'Peluches' },
-            { value: 'rompecabezas', label: 'Rompecabezas' },
-          ],
-        },
-        {
-          value: 'instrumentos_musicales',
-          label: 'Instrumentos Musicales',
-          options: [
-            { value: 'guitarras', label: 'Guitarras' },
-            { value: 'tamboriles', label: 'Tamboriles' },
-            { value: 'flautas', label: 'Flautas' },
-            { value: 'maracas', label: 'Maracas' },
-          ],
-        },
-        {
-          value: 'productos_ecologicos',
-          label: 'Productos Ecológicos',
-          options: [
-            { value: 'bolsas_reutilizables', label: 'Bolsas reutilizables' },
-            { value: 'productos_sin_plastico', label: 'Productos sin plástico' },
-            { value: 'articulos_reciclados', label: 'Artículos reciclados' },
-          ],
-        },
-        {
-          value: 'productos_para_mascotas',
-          label: 'Productos para Mascotas',
-          options: [
-            { value: 'juguetes_mascotas', label: 'Juguetes para mascotas' },
-            { value: 'camas', label: 'Camas' },
-            { value: 'collares', label: 'Collares' },
-            { value: 'comederos', label: 'Comederos' },
-          ],
-        },
+        { value: 'joyeria', label: 'Joyería' },
+        { value: 'ropa_y_accesorios', label: 'Ropa y Accesorios' },
+        { value: 'ceramica', label: 'Cerámica' },
+        { value: 'muebles', label: 'Muebles' },
+        { value: 'decoracion', label: 'Decoración' },
+        { value: 'arte_textil', label: 'Arte Textil' },
+        { value: 'productos_de_madera', label: 'Productos de Madera' },
+        { value: 'cosmeticos_y_cuidado_personal', label: 'Cosméticos y Cuidado Personal' },
+        { value: 'papeleria_y_libros', label: 'Papelería y Libros' },
+        { value: 'articulos_para_el_hogar', label: 'Artículos para el Hogar' },
+        { value: 'juguetes_y_juegos', label: 'Juguetes y Juegos' },
+        { value: 'instrumentos_musicales', label: 'Instrumentos Musicales' },
+        { value: 'productos_ecologicos', label: 'Productos Ecológicos' },
+        { value: 'productos_para_mascotas', label: 'Productos para Mascotas' },
+        { value: 'otro', label: 'Otro' },
       ];
-      
+
       setCategoriasOptions(categorias);
     };
 
     fetchCategorias();
   }, []);
+
+  useEffect(() => {
+    const fetchProducto = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('Token de autenticación no encontrado');
+        }
+
+        const response = await fetch(`https://backtesteo.onrender.com/api/producto/obtenerProducto/${idProducto}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            throw new Error('Token de autenticación inválido o expirado');
+          }
+          throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        setFormData({
+          nombre: data.nombre || '',
+          categoria: data.categoria || '',
+          precio: data.precio || '',
+          descripcion: data.descripcion || '',
+          cantidad: data.cantidad || '',
+          publicadoPor: data.publicadoPor || '',
+          codigoempresa: data.codigoempresa || '',
+          idAdministrador: data.idAdministrador || '',
+          materiales: data.materiales || '',
+          empresasSeleccionadas: data.empresasSeleccionadas || [],
+        });
+      } catch (error) {
+        console.error('Error al obtener producto:', error.message);
+      }
+    };
+
+    fetchProducto();
+  }, [idProducto]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -249,78 +159,72 @@ export const UpdateProducto = () => {
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
-    if (selectedFile && allowedTypes.includes(selectedFile.type)) {
-      setFile(selectedFile);
-      setFileName(selectedFile.name); // Actualiza el nombre del archivo
-    } else {
-      setErrors(prevErrors => ({
-        ...prevErrors,
-        file: 'Tipo de archivo no permitido'
-      }));
-    }
+    setFile(selectedFile);
+    setFileName(selectedFile ? selectedFile.name : '');
   };
 
-  const handleSelectChange = (selectedOption, actionMeta) => {
+  const handleSelectChange = (selectedOptions, actionMeta) => {
     if (actionMeta.name === 'categoria') {
+      // Manejo de la categoría
+      const selectedCategory = selectedOptions ? selectedOptions.value : '';
       setFormData(prevData => ({
         ...prevData,
-        categoria: selectedOption ? selectedOption.value : ''
+        categoria: selectedCategory
       }));
     } else if (actionMeta.name === 'codigoempresa') {
-      const selectedEmpresa = selectedOption || null;
-      const codigoempresa = selectedEmpresa ? selectedEmpresa.value : '';
+      // Manejo de las empresas
+      const empresasSeleccionadas = selectedOptions ? selectedOptions.map(option => option.value) : [];
+      const selectedEmpresa = selectedOptions.length > 0 ? selectedOptions[0] : null; // Asumir la primera opción para 'publicadoPor'
+      const codigoempresa = empresasSeleccionadas.length > 0 ? empresasSeleccionadas[0] : '';
       const publicadoPor = selectedEmpresa ? selectedEmpresa.label : '';
-      
+    
       setFormData(prevData => ({
         ...prevData,
+        empresasSeleccionadas: empresasSeleccionadas,
         codigoempresa: codigoempresa,
         publicadoPor: publicadoPor
       }));
     }
   };
 
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {};
   
     // Validaciones
-    if (!formData.nombre.trim()) {
-      newErrors.nombre = 'El nombre es obligatorio';
-    }
-    if (!formData.categoria.trim()) {
-      newErrors.categoria = 'La categoría es obligatoria';
-    }
-    if (formData.precio <= 0) {
-      newErrors.precio = 'El precio debe ser un número positivo';
-    }
-    if (!formData.descripcion.trim()) {
-      newErrors.descripcion = 'La descripción es obligatoria';
-    }
-    if (formData.cantidad <= 0) {
-      newErrors.cantidad = 'La cantidad debe ser un número positivo';
-    }
-    if (!formData.codigoempresa) { // Cambiado aquí
-      newErrors.codigoempresa = 'Debes seleccionar al menos una empresa';
-    }
-    if (errors.file) {
-      newErrors.file = errors.file;
-    }
+    if (!formData.nombre.trim()) newErrors.nombre = 'El nombre es obligatorio';
+    if (!formData.categoria.trim()) newErrors.categoria = 'La categoría es obligatoria';
+    if (formData.precio <= 0) newErrors.precio = 'El precio debe ser un número positivo';
+    if (!formData.descripcion.trim()) newErrors.descripcion = 'La descripción es obligatoria';
+    if (formData.cantidad <= 0) newErrors.cantidad = 'La cantidad debe ser un número positivo';
+    if (formData.empresasSeleccionadas.length === 0) newErrors.codigoempresa = 'Debes seleccionar al menos una empresa';
   
     setErrors(newErrors);
   
     if (Object.keys(newErrors).length === 0) {
       try {
-        await createProducto(formData, file);
-        setNotification('Producto creado exitosamente');
+        // Actualizar producto
+        const response = await fetch(`https://backtesteo.onrender.com/api/producto/actualizarProducto/${idProducto}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+  
+        if (!response.ok) {
+          throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+  
+        setNotification('Producto actualizado exitosamente');
         setTimeout(() => {
           setNotification('');
           navigate('/CraftforAdmins');
         }, 2000);
       } catch (error) {
-        console.error('Error al crear producto:', error);
-        setNotification('Error al crear el producto, intenta de nuevo');
+        console.error('Error al actualizar producto:', error);
+        setNotification('Error al actualizar el producto, intenta de nuevo');
       }
     } else {
       setNotification('');
@@ -334,141 +238,111 @@ export const UpdateProducto = () => {
         backgroundImage: `url(${BackgroundImage})`, 
       }}
     >
-      <NavLink to="/" className="absolute top-4 left-4">
-        <FaHome className="text-darkyellow text-4xl" />
-      </NavLink>
-      <div className="relative bg-white p-6 rounded-lg shadow-md w-full max-w-md mx-4 sm:mx-6 md:mx-10 lg:mx-20">
-        <img src={Logo} alt="Logo" className="h-24 w-24 mx-auto mb-6" />
-        <h1 className="text-2xl font-bold mb-6 text-center">Crear Nuevo Producto</h1>
-        {notification && (
-          <div className={`bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4`} role="alert">
-            <span className="block sm:inline">{notification}</span>
-          </div>
-        )}
+      <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full space-y-6">
+        <div className="flex justify-center">
+          <img src={Logo} alt="Logo" className="w-32 mb-4" />
+        </div>
+        <h1 className="text-2xl font-bold mb-4 text-center">Actualizar Producto</h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="nombre">
-              Nombre
-            </label>
+            <label className="block text-gray-700">Nombre del Producto</label>
             <input
               type="text"
-              id="nombre"
               name="nombre"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-              placeholder="Nombre del Producto"
               value={formData.nombre}
               onChange={handleChange}
+              className={`w-full border ${errors.nombre ? 'border-red-500' : 'border-gray-300'} rounded px-3 py-2 mt-1`}
             />
-            {errors.nombre && <p className="text-red-500 text-xs italic">{errors.nombre}</p>}
+            {errors.nombre && <p className="text-red-500 text-xs">{errors.nombre}</p>}
           </div>
           <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="categoria">
-              Categoría
-            </label>
-            <Select
-  name="categoria"
-  options={categoriasOptions}
-  onChange={handleSelectChange}
-  placeholder="Selecciona una categoría"
-  className="basic-single"
-  classNamePrefix="select"
-/>
-            {errors.categoria && <p className="text-red-500 text-xs italic">{errors.categoria}</p>}
-          </div>
+  <label className="block text-gray-700">Categoría</label>
+  <Select
+    name="categoria"
+    options={categoriasOptions}
+    value={categoriasOptions.find(option => option.value === formData.categoria)}
+    onChange={handleSelectChange}
+    className="mt-1"
+  />
+  {errors.categoria && <p className="text-red-500 text-xs">{errors.categoria}</p>}
+</div>
           <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="precio">
-              Precio
-            </label>
+            <label className="block text-gray-700">Precio</label>
             <input
               type="number"
-              id="precio"
               name="precio"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-              placeholder="Precio del Producto"
               value={formData.precio}
               onChange={handleChange}
+              className={`w-full border ${errors.precio ? 'border-red-500' : 'border-gray-300'} rounded px-3 py-2 mt-1`}
             />
-            {errors.precio && <p className="text-red-500 text-xs italic">{errors.precio}</p>}
+            {errors.precio && <p className="text-red-500 text-xs">{errors.precio}</p>}
           </div>
           <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="descripcion">
-              Descripción
-            </label>
+            <label className="block text-gray-700">Descripción</label>
             <textarea
-              id="descripcion"
               name="descripcion"
-              rows="4"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-              placeholder="Descripción del Producto"
               value={formData.descripcion}
               onChange={handleChange}
+              className={`w-full border ${errors.descripcion ? 'border-red-500' : 'border-gray-300'} rounded px-3 py-2 mt-1`}
             />
-            {errors.descripcion && <p className="text-red-500 text-xs italic">{errors.descripcion}</p>}
+            {errors.descripcion && <p className="text-red-500 text-xs">{errors.descripcion}</p>}
           </div>
           <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="cantidad">
-              Cantidad
-            </label>
+            <label className="block text-gray-700">Cantidad</label>
             <input
               type="number"
-              id="cantidad"
               name="cantidad"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-              placeholder="Cantidad en Inventario"
               value={formData.cantidad}
               onChange={handleChange}
+              className={`w-full border ${errors.cantidad ? 'border-red-500' : 'border-gray-300'} rounded px-3 py-2 mt-1`}
             />
-            {errors.cantidad && <p className="text-red-500 text-xs italic">{errors.cantidad}</p>}
+            {errors.cantidad && <p className="text-red-500 text-xs">{errors.cantidad}</p>}
           </div>
           <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="codigoempresa">
-              Empresa
-            </label>
+            <label className="block text-gray-700">Materiales</label>
+            <input
+              type="text"
+              name="materiales"
+              value={formData.materiales}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded px-3 py-2 mt-1"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700">Empresa</label>
             <Select
   name="codigoempresa"
   options={empresasOptions}
+  value={empresasOptions.filter(option => formData.empresasSeleccionadas.includes(option.value))}
   onChange={handleSelectChange}
-  placeholder="Selecciona una empresa"
-  className="basic-single"
-  classNamePrefix="select"
+  isMulti
+  className="mt-1"
 />
-            {errors.codigoempresa && <p className="text-red-500 text-xs italic">{errors.codigoempresa}</p>}
+            {errors.codigoempresa && <p className="text-red-500 text-xs">{errors.codigoempresa}</p>}
           </div>
           <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="materiales">
-              Materiales
-            </label>
-            <input
-              type="text"
-              id="materiales"
-              name="materiales"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-              placeholder="Materiales del Producto"
-              value={formData.materiales}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="file">
-              Imagen del Producto
-            </label>
+            <label className="block text-gray-700">Imagen del Producto</label>
             <input
               type="file"
-              id="file"
-              name="file"
-              accept="image/jpeg, image/png"
+              accept={allowedTypes.join(',')}
               onChange={handleFileChange}
+              className="w-full border border-gray-300 rounded px-3 py-2 mt-1"
             />
-            {fileName && <p className="text-gray-600 text-sm">Archivo seleccionado: {fileName}</p>}
-            {errors.file && <p className="text-red-500 text-xs italic">{errors.file}</p>}
+            <p className="text-xs text-gray-500 mt-1">{fileName ? `Archivo seleccionado: ${fileName}` : 'Selecciona una imagen (JPG o PNG)'}</p>
           </div>
           <button
             type="submit"
-            className="bg-darkyellow hover:bg-darkyellow-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
           >
-            Crear Producto
+            Actualizar Producto
           </button>
+          {notification && <p className="mt-4 text-center">{notification}</p>}
         </form>
+        <div className="mt-4 text-center">
+          <NavLink to="/CraftforAdmins" className="text-blue-500 hover:underline flex items-center justify-center">
+            <FaHome className="mr-2" /> Volver al inicio
+          </NavLink>
+        </div>
       </div>
     </div>
   );
