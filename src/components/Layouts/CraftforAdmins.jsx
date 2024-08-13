@@ -168,14 +168,19 @@ const [selectedProduct, setSelectedProduct] = useState(null);
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
         });
-
-        if (!response.ok) throw new Error('Error al eliminar el producto');
+  
+        if (!response.ok) {
+          const errorDetails = await response.json();
+          throw new Error(`Error ${response.status}: ${errorDetails.message || 'No details available'}`);
+        }
+  
         setProductos(prevProductos => prevProductos.filter(product => product.idProducto !== idProducto));
       } catch (err) {
-        setError(err.message);
+        setError(`Failed to delete product: ${err.message}`);
       }
     }
   };
+  
 
   const handleCardClick = (idProducto) => {
     navigate(`/productDetails/${idProducto}`);
