@@ -12,30 +12,30 @@ const people = [
         id: 1,
         name: 'Hanna',
         photo: person1,
-        description: 'Hanna is an experienced entrepreneur with a strong background in technology and innovation.',
+        description: 'Hanna es una emprendedora experimentada con un sólido background en tecnología e innovación.',
         companies: [
-            { name: 'Tech Innovations', address: '123 Tech Lane' },
-            { name: 'Future Ventures', address: '456 Future Road' }
+            { name: 'Tech Innovations', description: 'Una empresa líder en innovaciones tecnológicas.' },
+            { name: 'Future Ventures', description: 'Invirtiendo en el futuro de la tecnología y los negocios.' }
         ]
     },
     {
         id: 2,
         name: 'Saject',
         photo: person2,
-        description: 'Saject is a visionary leader known for his work in sustainable development and green technologies.',
+        description: 'Saject es un líder visionario conocido por su trabajo en desarrollo sostenible y tecnologías verdes.',
         companies: [
-            { name: 'Green Solutions', address: '789 Green Blvd' },
-            { name: 'Eco Projects', address: '101 Eco Avenue' }
+            { name: 'Green Solutions', description: 'Pioneros en tecnologías verdes para un futuro sostenible.' },
+            { name: 'Eco Projects', description: 'Proyectos enfocados en la sostenibilidad ambiental.' }
         ]
     },
     {
         id: 3,
         name: 'Erick',
         photo: person3,
-        description: 'Erick has a diverse portfolio with expertise in finance and business strategy.',
+        description: 'Erick tiene un portafolio diverso con experiencia en finanzas y estrategia empresarial.',
         companies: [
-            { name: 'Finance Group', address: '202 Finance St' },
-            { name: 'Strategic Growth', address: '303 Growth Way' }
+            { name: 'Finance Group', description: 'Expertos en planificación y gestión financiera.' },
+            { name: 'Strategic Growth', description: 'Ayudando a los negocios a crecer con planificación estratégica.' }
         ]
     }
 ];
@@ -50,6 +50,10 @@ export const History = () => {
         setSelectedCompany(null); // Reset selected company when selecting a person
     };
 
+    const handleCompanyClick = (company) => {
+        setSelectedCompany(company);
+    };
+
     const handleBackClick = () => {
         setSelectedPerson(null);
         setSelectedCompany(null);
@@ -60,34 +64,58 @@ export const History = () => {
             <Header />
             <div className="min-h-screen bg-gray-200 p-4">
                 {selectedPerson ? (
-                    <div className="relative bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto">
-                        <button 
-                            onClick={handleBackClick} 
-                            className="absolute top-4 left-4 text-darkyellow text-lg"
-                        >
-                            <FaHome className="text-2xl" />
-                        </button>
-                        <div className="pt-10 text-center">
-                            <h1 className="text-3xl font-bold mb-4">{selectedPerson.name}</h1>
-                            <img src={selectedPerson.photo} alt={selectedPerson.name} className="w-32 h-32 rounded-full mb-4 mx-auto" />
-                            <p className="text-lg mb-4">{selectedPerson.description}</p>
-                            <h2 className="text-2xl font-semibold mb-4">Companies:</h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {selectedPerson.companies.map((company, index) => (
-                                    <div
-                                        key={index}
-                                        className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center cursor-pointer hover:shadow-xl transition-shadow duration-300"
-                                    >
-                                        <h3 className="text-lg font-medium">{company.name}</h3>
-                                        <p className="text-gray-700">{company.address}</p>
-                                        <NavLink to="/Companies" className="text-darkyellow hover:underline text-sm mt-2">
-                                            Ver más sobre esta empresa
-                                        </NavLink>
-                                    </div>
-                                ))}
+                    selectedCompany ? (
+                        <div className="relative bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto">
+                            <button 
+                                onClick={handleBackClick} 
+                                className="absolute top-4 left-4 text-darkyellow text-lg"
+                            >
+                                <FaHome className="text-2xl" />
+                            </button>
+                            <div className="pt-10 text-center">
+                                <h1 className="text-3xl font-bold mb-4 text-darkyellow">{selectedCompany.name}</h1>
+                                <p className="text-lg mb-4">{selectedCompany.description}</p>
+                                <p className="text-blue-500 hover:underline">
+                                    <span className="text-black text-sm">¿Quieres saber más sobre esta empresa?</span>
+                                    <NavLink to="/Companies" className="text-darkyellow hover:underline text-sm ml-2">
+                                        Ver Empresa
+                                    </NavLink>
+                                </p>
+                                <button onClick={() => setSelectedCompany(null)} className="flex top-4 left-4 text-darkyellow text-lg">
+                                    &larr; Volver a Persona
+                                </button>
                             </div>
                         </div>
-                    </div>
+                    ) : (
+                        <div className="relative bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto">
+                            <button 
+                                onClick={handleBackClick} 
+                                className="absolute top-4 left-4 text-darkyellow text-lg"
+                            >
+                                <FaHome className="text-2xl" />
+                            </button>
+                            <div className="pt-10 text-center">
+                                <h1 className="text-3xl font-bold mb-4">{selectedPerson.name}</h1>
+                                <img src={selectedPerson.photo} alt={selectedPerson.name} className="w-32 h-32 rounded-full mb-4 mx-auto" />
+                                <p className="text-lg mb-4">{selectedPerson.description}</p>
+                                <h2 className="text-2xl font-semibold mb-4">Empresas:</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {selectedPerson.companies.map((company, index) => (
+                                        <div
+                                            key={index}
+                                            className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center cursor-pointer hover:shadow-xl transition-shadow duration-300"
+                                            onClick={() => handleCompanyClick(company)}
+                                        >
+                                            <div>
+                                                <h3 className="text-lg font-medium">{company.name}</h3>
+                                                <p className="text-gray-700">{company.description}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {people.map(person => (

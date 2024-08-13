@@ -24,7 +24,7 @@ export const Menu = () => {
           <img src={Logo} alt="Logo" className="h-32 w-32" style={{ margin: '0' }} />
         </a>
         <nav className="flex flex-col items-center space-y-6">
-          <NavLink to="/menu" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Menú</NavLink>
+          <NavLink to="/menu" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Bienvenido</NavLink>
           <NavLink to="/profile" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Perfil</NavLink>
           <NavLink to="/product" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Producto</NavLink>
           <NavLink to="/help" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ayuda</NavLink>
@@ -41,7 +41,7 @@ export const Menu = () => {
           <div className="flex flex-col items-center justify-center text-center p-8 bg-white bg-opacity-80 rounded-lg max-w-lg mx-auto md:max-w-2xl w-full">
             <FaRegUserCircle className="h-20 w-20 text-gray-800 mb-4" />
             <h1 className="text-black text-3xl md:text-4xl font-bold mb-4">¡Bienvenido!</h1>
-            <p className="text-gray-800 text-lg mb-6">Gracias por visitar nuestro menú en línea. Inicia sesión para disfrutar de todas las funcionalidades.</p>
+            <p className="text-gray-800 text-lg mb-6">Gracias por visitar nuestro espacio para ti. Inicia sesión para disfrutar de todas las funcionalidades que tiene Coffe Art.</p>
             <NavLink to="/login" className="bg-darkyellow text-white px-6 py-3 rounded hover:bg-lightyellow text-lg font-bold">Iniciar sesión</NavLink>
           </div>
         </div>

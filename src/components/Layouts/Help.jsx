@@ -80,7 +80,7 @@ export const Help = () => {
             <img src={Logo} alt="Logo" className="h-32 w-32" />
           </a>
           <nav className="flex flex-col items-center space-y-6">
-            <NavLink to="/menu" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Menú</NavLink>
+          <NavLink to="/menu" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Bienvenido</NavLink>
             <NavLink to="/profile" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Perfil</NavLink>
             <NavLink to="/product" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Producto</NavLink>
             <NavLink to="/help" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ayuda</NavLink>
