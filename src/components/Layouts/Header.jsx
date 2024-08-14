@@ -29,13 +29,6 @@ export const Header = () => {
         </a>
       </div>
       <nav className="nav-links flex flex-col items-center md:flex-row md:space-x-4 mt-4 md:mt-0">
-      <NavLink 
-          to="/#" 
-          className="nav-link text-white text-lg font-semibold hover:text-darkyellow mb-2 md:mb-0" 
-          activeClassName="font-bold"
-        >
-          Inicio
-        </NavLink>
         <NavLink 
           to="/Menu" 
           className="nav-link text-white text-lg font-semibold hover:text-darkyellow mb-2 md:mb-0" 
@@ -58,7 +51,7 @@ export const Header = () => {
           Eventos
         </NavLink>
         <NavLink 
-          to="/Craft" 
+          to="/CraftforAdmins" 
           className="nav-link text-white text-lg font-semibold hover:text-darkyellow mb-2 md:mb-0" 
           activeClassName="font-bold"
         >

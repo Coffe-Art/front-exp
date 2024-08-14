@@ -47,7 +47,7 @@ export const UpdateProducto = () => {
             throw new Error('Token de autenticación no encontrado');
           }
 
-          const response = await fetch(`https://backtesteo.onrender.com/api/empresa/consultarPorAdministrador/${idAdministrador}`, {
+          const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/empresa/consultarPorAdministrador/${idAdministrador}`, {
             headers: {
               'Authorization': `Bearer ${token}`
             }
@@ -115,7 +115,7 @@ export const UpdateProducto = () => {
           throw new Error('Token de autenticación no encontrado');
         }
 
-        const response = await fetch(`https://backtesteo.onrender.com/api/producto/obtenerProducto/${idProducto}`, {
+        const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/producto/obtenerProducto/${idProducto}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -204,7 +204,7 @@ export const UpdateProducto = () => {
     if (Object.keys(newErrors).length === 0) {
       try {
         // Actualizar producto
-        const response = await fetch(`https://backtesteo.onrender.com/api/producto/actualizarProducto/${idProducto}`, {
+        const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/producto/actualizarProducto/${idProducto}`, {
           method: 'PUT',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,

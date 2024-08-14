@@ -33,11 +33,11 @@ export const ProductoProvider = ({ children }) => {
   };
 
   const getProductosByIdAdministrador = () => {
-    fetchProductos(`https://backtesteo.onrender.com/api/producto/obtenerPorAdministrador/${userId}`);
+    fetchProductos(`https://checkpoint-9tp4.onrender.com/api/producto/obtenerPorAdministrador/${userId}`);
   };
 
   const getProductosByCodigoEmpresa = (codigoempresa) => {
-    fetchProductos(`https://backtesteo.onrender.com/api/producto/obtenerPorEmpresa/${codigoempresa}`);
+    fetchProductos(`https://checkpoint-9tp4.onrender.com/api/producto/obtenerPorEmpresa/${codigoempresa}`);
   };
 
   const createProducto = async (productData, file) => {
@@ -46,7 +46,7 @@ export const ProductoProvider = ({ children }) => {
     if (file) formData.append('urlProductoImg', file);
 
     try {
-      const response = await fetch('https://backtesteo.onrender.com/api/producto/nuevoProducto', {
+      const response = await fetch('https://checkpoint-9tp4.onrender.com/api/producto/nuevoProducto', {
         method: 'POST',
         body: formData,
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
@@ -74,7 +74,7 @@ export const ProductoProvider = ({ children }) => {
     if (file) formData.append('urlProductoImg', file);
 
     try {
-      const response = await fetch(`https://backtesteo.onrender.com/api/producto/actualizarProducto/${idProducto}`, {
+      const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/producto/actualizarProducto/${idProducto}`, {
         method: 'PUT',
         body: formData,
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
@@ -88,7 +88,7 @@ export const ProductoProvider = ({ children }) => {
 
   const deleteProducto = async (idProducto) => {
     try {
-      const response = await fetch(`https://backtesteo.onrender.com/api/producto/eliminar/${idProducto}`, {
+      const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/producto/eliminar/${idProducto}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
@@ -102,7 +102,7 @@ export const ProductoProvider = ({ children }) => {
 
   const getProductoById = async (idProducto) => {
     try {
-      const response = await fetch(`https://backtesteo.onrender.com/api/producto/obtenerProducto/${idProducto}`, {
+      const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/producto/obtenerProducto/${idProducto}`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       if (!response.ok) throw new Error('Error al obtener el producto');

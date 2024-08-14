@@ -7,7 +7,7 @@ import Logo from '../../src/assets/Artesanías.png';
 
 export const Register = () => {
     const navigate = useNavigate();
-    const { register } = useAuth();
+    const { register, notification } = useAuth();
     
     const [formData, setFormData] = useState({
         username: '',
@@ -19,7 +19,6 @@ export const Register = () => {
     });
 
     const [errors, setErrors] = useState({});
-    const [notification, setNotification] = useState('');
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -57,24 +56,25 @@ export const Register = () => {
 
         if (Object.keys(newErrors).length === 0) {
             try {
-                await register(
+                const result = await register(
                     formData.role.toLowerCase(),
                     formData.username,
                     formData.password,
                     formData.email,
                     formData.phone
                 );
-                setNotification('Registro exitoso');
-                setTimeout(() => {
-                    setNotification('');
-                    navigate('/login');
-                }, 2000); // Muestra la notificación por 2 segundos antes de redirigir
+                
+                if (result.success) {
+                    setTimeout(() => {
+                        navigate('/login');
+                    }, 2000); // Muestra la notificación por 2 segundos antes de redirigir
+                } else {
+                    setNotification('Error al registrar, intenta de nuevo');
+                }
             } catch (error) {
                 console.error('Error al registrar:', error);
                 setNotification('Error al registrar, intenta de nuevo');
             }
-        } else {
-            setNotification('');
         }
     };
 
