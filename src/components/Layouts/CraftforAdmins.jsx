@@ -37,34 +37,36 @@ const [selectedProduct, setSelectedProduct] = useState(null);
 
 
   useEffect(() => {
-    const getProductosByIdAdministrador = async () => {
-      if (!userId) {
-        setError('Usuario no autenticado');
-        setLoading(false);
-        return;
-      }
+  const getProductosByIdAdministrador = async () => {
+    if (!userId) {
+      setError('Usuario no autenticado');
+      setLoading(false);
+      return;
+    }
 
-      try {
-        const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/producto/obtenerPorAdministrador/${userId}`, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
+    try {
+      const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/producto/obtenerPorAdministrador/${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
 
-        if (!response.ok) throw new Error('Error al obtener productos');
-        const result = await response.json();
+      if (!response.ok) throw new Error('Error al obtener productos');
+      const result = await response.json();
 
-        const productosArray = Array.isArray(result[0]) ? result[0] : [];
-        setProductos(productosArray);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
-      }
-    };
+      const productosArray = Array.isArray(result[0]) ? result[0] : [];
+      console.log('Datos de productos obtenidos:', productosArray); // <-- Aquí se muestra los datos de los productos
+      setProductos(productosArray);
+      setLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+    }
+  };
 
-    getProductosByIdAdministrador();
-  }, [userId, setProductos]);
+  getProductosByIdAdministrador();
+}, [userId, setProductos]);
+
 
   useEffect(() => {
     // Simulando la obtención de categorías
@@ -199,6 +201,25 @@ const [selectedProduct, setSelectedProduct] = useState(null);
     return category.replace(/_/g, ' ').toLowerCase();
   };
 
+  const extractImageNames = () => {
+    filteredProducts.forEach(product => {
+      if (product.urlProductoImg) {
+        // Extraer el nombre del archivo de la URL
+        const imageName = product.urlProductoImg.split('/').pop();
+        // Construir la URL completa de la imagen
+        const fullImageUrl = `https://imagenes224.blob.core.windows.net/imagenes224/${imageName}`;
+        console.log(fullImageUrl);
+      }
+    });
+  };
+  
+  // Llama a la función después de que los productos estén cargados y filtrados
+  useEffect(() => {
+    if (filteredProducts.length > 0) {
+      extractImageNames();
+    }
+  }, [filteredProducts]);
+
   const openModal = (product) => {
     setSelectedProduct(product);
     setIsModalOpen(true);
@@ -211,140 +232,145 @@ const [selectedProduct, setSelectedProduct] = useState(null);
 
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-200">
-      <Header />
-      <div className="flex flex-col md:flex-row flex-1">
-        <div className={`md:w-1/4 lg:w-1/5 bg-white border rounded-lg overflow-hidden shadow-md p-4 ${isFilterOpen ? 'block' : 'hidden md:block'}`}>
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-bold">Filtros</h2>
-            <button onClick={toggleFilter} className="text-darkyellow text-xl">
-              <FaSearch />
-            </button>
+  <div className="flex flex-col min-h-screen bg-gray-200">
+    <Header />
+    <div className="flex flex-col md:flex-row flex-1">
+      <div className={`md:w-1/4 lg:w-1/5 bg-white border rounded-lg overflow-hidden shadow-md p-4 ${isFilterOpen ? 'block' : 'hidden md:block'}`}>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-bold">Filtros</h2>
+          <button onClick={toggleFilter} className="text-darkyellow text-xl">
+            <FaSearch />
+          </button>
+        </div>
+        <div>
+          <div className="flex items-center mb-4">
+            <label htmlFor="search" className="block text-sm font-bold mb-2"></label>
+            <div className="relative flex-1">
+              <input
+                type="text"
+                id="search"
+                value={searchTerm}
+                onChange={handleSearchChange}
+                className="shadow border rounded w-full py-2 px-3 pr-12"
+              />
+              <div className="absolute inset-y-0 right-0 flex items-center px-2">
+                <FaSearch className="text-darkpurple" />
+              </div>
+            </div>
           </div>
+          <div className="mb-4">
+            <label className="block text-black text-sm font-bold mb-2" htmlFor="categoria">
+              Categoría
+            </label>
+            <Select
+              id="categoria"
+              name="categoria"
+              options={categoriasOptions}
+              className="basic-single"
+              classNamePrefix="select"
+              placeholder="Seleccionar Categoría"
+              value={categoriasOptions.find(option => option.value === formData.categoria)}
+              onChange={handleSelectChange}
+            />
+            {errors.categoria && <p className="text-red-500 text-xs italic">{errors.categoria}</p>}
+          </div>
+          <label htmlFor="price" className="block text-sm font-bold mb-2">Rango de Precio</label>
+          <div className="flex items-center mb-4">
+            <input
+              type="number"
+              min="0"
+              value={minPrice}
+              onChange={(e) => setMinPrice(Number(e.target.value))}
+              className="shadow border rounded w-full py-2 px-3 mr-2"
+            />
+            <span className="text-gray-500">a</span>
+            <input
+              type="number"
+              min="0"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(Number(e.target.value))}
+              className="shadow border rounded w-full py-2 px-3 ml-2"
+            />
+          </div>
+          <label htmlFor="company" className="block text-sm font-bold mb-2">Empresa</label>
+          <select id="company" value={selectedCompany} onChange={handleCompanyChange} className="shadow border rounded w-full py-2 px-3">
+            <option value="all">Todas</option>
+            {companies.map((company, index) => (
+              <option key={index} value={company}>{company}</option>
+            ))}
+          </select>
+          <div className="flex items-center mt-4">
+            <input
+              type="checkbox"
+              id="checkbox"
+              checked={isCheckboxChecked}
+              onChange={() => setIsCheckboxChecked(!isCheckboxChecked)}
+              className="absolute opacity-0"
+            />
+          </div>
+        </div>
+      </div>
+      <div className="flex-1 p-4">
+        {loading ? (
+          <p>Cargando productos...</p>
+        ) : error ? (
+          <p className="text-red-500">{error}</p>
+        ) : (
           <div>
-            <div className="flex items-center mb-4">
-              <label htmlFor="search" className="block text-sm font-bold mb-2"></label>
-              <div className="relative flex-1">
-                <input
-                  type="text"
-                  id="search"
-                  value={searchTerm}
-                  onChange={handleSearchChange}
-                  className="shadow border rounded w-full py-2 px-3 pr-12"
-                />
-                <div className="absolute inset-y-0 right-0 flex items-center px-2">
-                  <FaSearch className="text-darkpurple" />
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-bold">Productos</h2>
+              <button
+                onClick={() => navigate('/createProduct')}
+                className="text-darkyellow text-xl flex items-center"
+              >
+                <FaPlus className="mr-2" /> Crear Producto
+              </button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredProducts.map(product => (
+                <div key={product.idProducto} className="bg-white border rounded-lg shadow-md p-4 flex flex-col">
+                  <img
+  src={`https://imagenes224.blob.core.windows.net/imagenes224/${product.urlProductoImg.split('/').pop()}`}
+  alt={product.nombre}
+  className="product-image"
+/>
+                  <h3 className="text-xl font-semibold mb-2">{product.nombre}</h3>
+                  <p className="text-gray-700 mb-2">{product.descripcion}</p>
+                  <p className="text-gray-600 mb-2">Categoria: {formatCategoryName(product.categoria)}</p>
+                  <p className="text-gray-600 mb-2">Publicado por: {product.publicadoPor}</p>
+                  <p className="text-gray-900 font-bold mb-2">Precio: {formatPrice(product.precio)}</p>
+                  <p className="text-gray-500 mb-2">ID Producto: {product.idProducto}</p>
+                  <div className="flex justify-between mt-auto">
+                    <button
+                      onClick={() => handleEdit(product.idProducto)}
+                      className="text-darkyellow hover:text-lightyellow text-2xl"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(product.idProducto)}
+                      className="text-darkpurple hover:text-lightpurple text-2xl"
+                    >
+                      <FaTrash /> 
+                    </button>
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openModal(product);
+                    }}
+                    className="mt-4 bg-darkyellow text-white py-2 px-4 rounded"
+                  >
+                    Ver Detalles
+                  </button>
                 </div>
-              </div>
-            </div>
-            <div className="mb-4">
-              <label className="block text-black text-sm font-bold mb-2" htmlFor="categoria">
-                Categoría
-              </label>
-              <Select
-                id="categoria"
-                name="categoria"
-                options={categoriasOptions}
-                className="basic-single"
-                classNamePrefix="select"
-                placeholder="Seleccionar Categoría"
-                value={categoriasOptions.find(option => option.value === formData.categoria)}
-                onChange={handleSelectChange}
-              />
-              {errors.categoria && <p className="text-red-500 text-xs italic">{errors.categoria}</p>}
-            </div>
-            <label htmlFor="price" className="block text-sm font-bold mb-2">Rango de Precio</label>
-            <div className="flex items-center mb-4">
-              <input
-                type="number"
-                min="0"
-                value={minPrice}
-                onChange={(e) => setMinPrice(Number(e.target.value))}
-                className="shadow border rounded w-full py-2 px-3 mr-2"
-              />
-              <span className="text-gray-500">a</span>
-              <input
-                type="number"
-                min="0"
-                value={maxPrice}
-                onChange={(e) => setMaxPrice(Number(e.target.value))}
-                className="shadow border rounded w-full py-2 px-3 ml-2"
-              />
-            </div>
-            <label htmlFor="company" className="block text-sm font-bold mb-2">Empresa</label>
-            <select id="company" value={selectedCompany} onChange={handleCompanyChange} className="shadow border rounded w-full py-2 px-3">
-              <option value="all">Todas</option>
-              {companies.map((company, index) => (
-                <option key={index} value={company}>{company}</option>
               ))}
-            </select>
-            <div className="flex items-center mt-4">
-  <input
-    type="checkbox"
-    id="checkbox"
-    checked={isCheckboxChecked}
-    onChange={() => setIsCheckboxChecked(!isCheckboxChecked)}
-    className="absolute opacity-0"
-  />
-  
-</div>
-          </div>
-        </div>
-        <div className="flex-1 p-4">
-          {loading ? (
-            <p>Cargando productos...</p>
-          ) : error ? (
-            <p className="text-red-500">{error}</p>
-          ) : (
-            <div>
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-bold">Productos</h2>
-                <button
-                  onClick={() => navigate('/createProduct')}
-                  className="text-darkyellow text-xl flex items-center"
-                >
-                  <FaPlus className="mr-2" /> Crear Producto
-                </button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-  {filteredProducts.map(product => (
-    <div key={product.idProducto} className="bg-white border rounded-lg shadow-md p-4 flex flex-col">
-      <h3 className="text-xl font-semibold mb-2">{product.nombre}</h3>
-      <p className="text-gray-700 mb-2">{product.descripcion}</p>
-      <p className="text-gray-600 mb-2">Categoria: {formatCategoryName(product.categoria)}</p>      <p className="text-gray-600 mb-2">Publicado por: {product.publicadoPor}</p>
-      <p className="text-gray-900 font-bold mb-2">Precio: {formatPrice(product.precio)}</p>
-      <p className="text-gray-500 mb-2">ID Producto: {product.idProducto}</p> {/* Línea añadida */}
-      <div className="flex justify-between mt-auto">
-        <button
-          onClick={() => handleEdit(product.idProducto)}
-          className="text-darkyellow hover:text-lightyellow text-2xl"
-        >
-          <FaEdit />
-        </button>
-        <button
-          onClick={() => handleDelete(product.idProducto)}
-          className="text-darkpurple hover:text-lightpurple text-2xl"
-        >
-          <FaTrash /> 
-        </button>
-      </div>
-      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openModal(product);
-                        }}
-                        className="mt-4 bg-darkyellow text-white py-2 px-4 rounded"
-                      >
-                        Ver Detalles
-                      </button>
-    </div>
-  ))}
-</div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
-      <Footer />
+    </div>
+    <Footer />
 {/* Modal */}
 {isModalOpen && selectedProduct && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -354,7 +380,7 @@ const [selectedProduct, setSelectedProduct] = useState(null);
         {/* Imagen */}
         <div className="relative w-full md:w-1/2 h-48 md:h-auto mb-4 md:mb-0">
           <img
-            src={selectedProduct.imagen || imgPrueba}
+            src={selectedProduct.urlProductoImg ? `https://imagenes224.blob.core.windows.net/imagenes224/${selectedProduct.urlProductoImg.split('/').pop()}` : imgPrueba}
             alt={selectedProduct.nombre}
             className="w-full h-full object-contain"
           />
@@ -377,7 +403,6 @@ const [selectedProduct, setSelectedProduct] = useState(null);
   </div>
 )}
 
-
-    </div>
-  );
+  </div>
+);
 };
