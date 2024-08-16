@@ -239,17 +239,18 @@ const [selectedProduct, setSelectedProduct] = useState(null);
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold">Filtros</h2>
           <button onClick={toggleFilter} className="text-darkyellow text-xl">
-            <FaSearch />
+            
           </button>
         </div>
         <div>
           <div className="flex items-center mb-4">
-            <label htmlFor="search" className="block text-sm font-bold mb-2"></label>
+            <label htmlFor="search" className="block text-sm font-bold mb-2 "></label>
             <div className="relative flex-1">
               <input
                 type="text"
                 id="search"
                 value={searchTerm}
+                placeholder="Escriba el nombre de lo que busca..."
                 onChange={handleSearchChange}
                 className="shadow border rounded w-full py-2 px-3 pr-12"
               />
@@ -312,7 +313,7 @@ const [selectedProduct, setSelectedProduct] = useState(null);
       </div>
       <div className="flex-1 p-4">
         {loading ? (
-          <p>Cargando productos...</p>
+          <p>Espere un segundo cargando productos...</p>
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : (
