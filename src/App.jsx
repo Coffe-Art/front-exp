@@ -23,7 +23,7 @@ import { UpdateCompany } from './components/Layouts/UpdateCompanies';
 import { UpdateProducto } from './components/Layouts/UpdateProduct';
 import { TermsAndConditions } from './components/Layouts/TermsAndConditions';
 import { SalesOverview } from './components/Layouts/SalesOverview';
-
+import { CreateStory } from './components/Layouts/CreateHistory';
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -54,6 +54,7 @@ function App() {
           <Route path="/EventsForm" element={<EventsForm />} />
           <Route path="/TermsAndConditions" element={<TermsAndConditions />} />
           <Route path="/SalesOverview" element={<SalesOverview />} />
+          <Route path="/CreateStory" element={<CreateStory />} />
         </Routes>
       </EmpresaProvider>
     </Router>
