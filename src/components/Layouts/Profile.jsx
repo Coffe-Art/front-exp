@@ -33,6 +33,7 @@ export const Profile = () => {
           <NavLink to="/profile" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Perfil</NavLink>
           <NavLink to="/product" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Producto</NavLink>
           <NavLink to="/help" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ayuda</NavLink>
+          <NavLink to="/SalesOverview" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ventas</NavLink>
           <button
             className="bg-darkyellow text-white px-4 py-2 rounded hover:bg-lightyellow mt-4 text-lg font-bold"
             onClick={handleLoginClick}
@@ -44,7 +45,7 @@ export const Profile = () => {
       <div className="flex flex-col justify-center items-center md:w-4/5 lg:w-5/6">
         <div className="w-full h-screen flex justify-center items-center bg-cover bg-center p-4" style={{ backgroundImage: `url(${Background})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
           <div className="flex flex-col items-center justify-center text-center p-8 bg-white bg-opacity-70 rounded-lg max-w-lg mx-auto md:max-w-2xl w-full">
-            <FaRegUserCircle className="h-20 w-20 mb-4 text-black" />
+          <img src={Logo} alt="Logo" className="h-20 w-20 text-gray-800 mb-4 mx-auto" />
             <h1 className="text-black text-3xl md:text-5xl font-bold mb-8">Perfil de Usuario</h1>
             <EditableField label="Nombre:" value={name} onChange={(e) => setName(e.target.value)} />
             <EditableField label="Correo:" value={email} onChange={(e) => setEmail(e.target.value)} />
