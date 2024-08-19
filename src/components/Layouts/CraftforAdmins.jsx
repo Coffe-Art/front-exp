@@ -239,18 +239,17 @@ const [selectedProduct, setSelectedProduct] = useState(null);
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold">Filtros</h2>
           <button onClick={toggleFilter} className="text-darkyellow text-xl">
-            
+            <FaSearch />
           </button>
         </div>
         <div>
           <div className="flex items-center mb-4">
-            <label htmlFor="search" className="block text-sm font-bold mb-2 "></label>
+            <label htmlFor="search" className="block text-sm font-bold mb-2"></label>
             <div className="relative flex-1">
               <input
                 type="text"
                 id="search"
                 value={searchTerm}
-                placeholder="Escriba el nombre de lo que busca..."
                 onChange={handleSearchChange}
                 className="shadow border rounded w-full py-2 px-3 pr-12"
               />
@@ -313,7 +312,7 @@ const [selectedProduct, setSelectedProduct] = useState(null);
       </div>
       <div className="flex-1 p-4">
         {loading ? (
-          <p>Espere un segundo cargando productos...</p>
+          <p>Cargando productos...</p>
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : (
@@ -375,28 +374,32 @@ const [selectedProduct, setSelectedProduct] = useState(null);
 {/* Modal */}
 {isModalOpen && selectedProduct && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-    <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-3xl">
-      <h2 className="text-xl font-bold mb-4">Detalles del producto</h2>
+    <div className={`bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-3xl 
+                    transform transition-transform duration-300 ease-out 
+                    ${isModalOpen ? 'scale-100 opacity-100' : 'scale-75 opacity-0'}`}>
+      <h2 className="text-2xl font-bold mb-4 text-darkyellow">Detalles del Producto</h2>
       <div className="flex flex-col md:flex-row">
         {/* Imagen */}
-        <div className="relative w-full md:w-1/2 h-48 md:h-auto mb-4 md:mb-0">
+        <div className="relative w-full md:w-1/2 h-64 md:h-auto mb-4 md:mb-0">
           <img
             src={selectedProduct.urlProductoImg ? `https://imagenes224.blob.core.windows.net/imagenes224/${selectedProduct.urlProductoImg.split('/').pop()}` : imgPrueba}
             alt={selectedProduct.nombre}
-            className="w-full h-full object-contain"
+            className="w-full h-full object-cover"
           />
         </div>
         {/* Texto */}
-        <div className="md:ml-4 flex-1">
-          <h3 className="text-lg font-semibold">{selectedProduct.nombre}</h3>
-          <p className="text-gray-600">Categoría: {formatCategoryName(selectedProduct.categoria)}</p>
-          <p className="text-gray-600">Publicado por: {selectedProduct.publicadoPor}</p>
-          <p className="text-lg font-bold">COP {formatPrice(selectedProduct.precio)}</p>
-          <p className="mt-2">{selectedProduct.descripcion}</p>
+        <div className="md:ml-6 flex-1">
+          <h3 className="text-4xl font-semibold text-darkyellow mb-2">{selectedProduct.nombre}</h3>
+          <p className="font-medium mb-1 text-darkyellow">Categoría: <span className="font-normal">{formatCategoryName(selectedProduct.categoria)}</span></p>
+          <p className="font-medium mb-1 text-darkyellow">Publicado por: <span className="font-normal">{selectedProduct.publicadoPor}</span></p>
+          <p className="text-lg font-bold mb-2 text-darkyellow">Precio: <span className="text-green-600">COP {formatPrice(selectedProduct.precio)}</span></p>
+          <p className="text-darkyellow mb-2">Descripción:</p>
+          <p className="text-gray-600">{selectedProduct.descripcion}</p>
+          <p className="text-darkyellow mt-2 font-medium">Stock: <span className="font-normal">{selectedProduct.cantidad}</span></p>
         </div>
       </div>
       <div className="mt-4 flex justify-end">
-        <button onClick={closeModal} className="bg-gray-500 text-white px-4 py-2 rounded">
+        <button onClick={closeModal} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
           Cerrar
         </button>
       </div>
