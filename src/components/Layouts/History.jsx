@@ -104,7 +104,7 @@ export const History = () => {
                                     {selectedPerson.companies.map((company, index) => (
                                         <div
                                             key={index}
-                                            className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center cursor-pointer hover:shadow-xl transition-shadow duration-300 border-l-4 border-darkyellow"
+                                            className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center cursor-pointer hover:shadow-xl transition-shadow duration-300"
                                             onClick={() => handleCompanyClick(company)}
                                         >
                                             <h3 className="text-lg font-medium mb-2">{company.name}</h3>
@@ -121,7 +121,7 @@ export const History = () => {
                             {people.map(person => (
                                 <div
                                     key={person.id}
-                                    className="bg-white p-6 rounded-lg shadow-lg flex items-center cursor-pointer hover:shadow-xl transition-shadow duration-300 border-l-4 border-darkyellow"
+                                    className="bg-white p-6 rounded-lg shadow-lg flex items-center cursor-pointer hover:shadow-xl transition-shadow duration-300"
                                     onClick={() => handlePersonClick(person)}
                                 >
                                     <img src={person.photo} alt={person.name} className="w-32 h-32 rounded-full mr-6 border-4 border-darkyellow glow-border" />
@@ -173,4 +173,3 @@ export const History = () => {
         </div>
     );
 };
-

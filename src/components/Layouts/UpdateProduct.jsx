@@ -238,6 +238,9 @@ export const UpdateProducto = () => {
         backgroundImage: `url(${BackgroundImage})`, 
       }}
     >
+    <NavLink to="/CraftforAdmins" className="absolute top-4 left-4">
+        <FaHome className="text-darkyellow text-4xl" />
+      </NavLink>
       <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full space-y-6">
         <div className="flex justify-center">
           <img src={Logo} alt="Logo" className="w-32 mb-4" />
@@ -332,15 +335,15 @@ export const UpdateProducto = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+            className="w-full bg-darkyellow text-white py-2 rounded hover:bg-lightyellow"
           >
             Actualizar Producto
           </button>
           {notification && <p className="mt-4 text-center">{notification}</p>}
         </form>
         <div className="mt-4 text-center">
-          <NavLink to="/CraftforAdmins" className="text-blue-500 hover:underline flex items-center justify-center">
-            <FaHome className="mr-2" /> Volver al inicio
+          <NavLink to="/CraftforAdmins" className="text-darkyellow hover:underline flex items-center justify-center">
+           Volver a artesanias 
           </NavLink>
         </div>
       </div>

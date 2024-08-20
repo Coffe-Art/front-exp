@@ -33,10 +33,7 @@ export const Main = () => {
               COFFE ART
             </h1>
             <p className="text-sm md:text-lg text-center px-2 md:px-8 py-2 max-w-3xl">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce suscipit, nisi ac tristique
-              placerat, dui justo rutrum turpis, id lacinia felis nisi ac tellus. Sed ultricies euismod dui,
-              eget ultricies felis. Duis in augue non augue viverra tincidunt non a est. Curabitur quis augue
-              ac odio semper accumsan vel at enim.
+            Buscamos poner en valor y resaltar el incuestionable y valioso trabajo de los artesanos, promoviendo activamente sus productos únicos y auténticos, que son verdaderas expresiones de su arte y habilidades. Además, como una parte integral de nuestra misión, ofrecemos procesos y métodos diseñados para mejorar y ayudar en la gestión de sus negocios. 
             </p>
           </div>
         </div>

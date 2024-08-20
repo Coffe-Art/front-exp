@@ -15,7 +15,7 @@ export const Footer = () => {
             Contacto
           </NavLink>
           <NavLink
-            to="/direccion"
+            to="/Address"
             className="text-lg font-semibold m-2 md:m-4 hover:text-lightyellow"
             activeClassName="font-bold"
           >

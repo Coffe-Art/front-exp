@@ -318,14 +318,7 @@ const [selectedProduct, setSelectedProduct] = useState(null);
           <p className="text-red-500">{error}</p>
         ) : (
           <div>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-bold">Productos</h2>
-              <button
-                onClick={() => navigate('/createProduct')}
-                className="text-darkyellow text-xl flex items-center"
-              >
-                <FaPlus className="mr-2" /> Crear Producto
-              </button>
+            <div className="flex justify-between items-center mb-4">                  
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {filteredProducts.map(product => (
@@ -365,7 +358,9 @@ const [selectedProduct, setSelectedProduct] = useState(null);
                     Ver Detalles
                   </button>
                 </div>
+                
               ))}
+              
             </div>
           </div>
         )}
@@ -396,7 +391,7 @@ const [selectedProduct, setSelectedProduct] = useState(null);
         </div>
       </div>
       <div className="mt-4 flex justify-end">
-        <button onClick={closeModal} className="bg-gray-500 text-white px-4 py-2 rounded">
+        <button onClick={closeModal} className="bg-darkpurple text-white px-4 py-2 rounded hover:bg-lightpurple">
           Cerrar
         </button>
       </div>

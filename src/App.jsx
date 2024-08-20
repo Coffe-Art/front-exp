@@ -24,6 +24,7 @@ import { UpdateProducto } from './components/Layouts/UpdateProduct';
 import { TermsAndConditions } from './components/Layouts/TermsAndConditions';
 import { SalesOverview } from './components/Layouts/SalesOverview';
 import { CreateStory } from './components/Layouts/CreateHistory';
+import { Address } from './components/Layouts/Address';
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -55,6 +56,7 @@ function App() {
           <Route path="/TermsAndConditions" element={<TermsAndConditions />} />
           <Route path="/SalesOverview" element={<SalesOverview />} />
           <Route path="/CreateStory" element={<CreateStory />} />
+          <Route path="/Address" element={<Address />} />
         </Routes>
       </EmpresaProvider>
     </Router>

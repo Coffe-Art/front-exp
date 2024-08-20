@@ -1,14 +1,14 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { FaHome } from 'react-icons/fa';
-import Image from '../../assets/LogoCoffe.png';
+import Image from '../../assets/LogoCoffe.png'; // Puedes cambiar esta imagen si es necesario
 
-export const TermsAndConditions = () => {
+export const Address = () => {
   return (
     <div className="min-h-screen bg-gray-200 flex flex-col md:flex-row">
       {/* Sección de la Imagen de Cabecera */}
       <div className="w-full md:w-1/3 bg-darkpurple flex items-center justify-center relative">
-        <NavLink to="/History" className="absolute top-4 left-4">
+        <NavLink to="/Home" className="absolute top-4 left-4">
           <FaHome className="text-darkyellow text-4xl" />
         </NavLink>
         <img 
@@ -19,36 +19,43 @@ export const TermsAndConditions = () => {
         />
       </div>
 
-      {/* Sección de Contenido de Términos y Condiciones */}
+      {/* Sección de Contenido de Dirección */}
       <div className="w-full md:w-2/3 bg-gray-200 flex flex-col justify-center p-8">
         <div className="container mx-auto text-center">
           <h1 className="text-3xl md:text-5xl font-bold mb-8 text-darkpurple">
-            Términos y Condiciones
+            Dirección
           </h1>
           
           <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-6">
-            Bienvenido a Coffee Art. Estos términos y condiciones describen las reglas y regulaciones para el uso del sitio web de Coffee Art.
+            Aquí encontrarás la dirección y la información relevante sobre nuestra ubicación.
           </p>
           
           <h2 className="text-2xl md:text-3xl font-semibold mb-4 text-darkpurple">
-            Sección 1: Introducción
+            Oficina Principal
           </h2>
           <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-6">
-            Al acceder a este sitio web asumimos que aceptas estos términos y condiciones en su totalidad. No continúes usando Coffee Art si no aceptas todos los términos y condiciones establecidos en esta página.
+            Coffee Art S.A.<br />
+            Calle Falsa 123, Oficina 456<br />
+            Ciudad Imaginaria, 12345<br />
+            País Fantasía
           </p>
           
           <h2 className="text-2xl md:text-3xl font-semibold mb-4 text-darkpurple">
-            Sección 2: Licencia
+            Horario de Atención
           </h2>
           <p className="text-base md:text-lg text-gray-700 leading-relaxed mb-6">
-            A menos que se indique lo contrario, Coffee Art y/o sus licenciatarios poseen los derechos de propiedad intelectual de todo el material en Coffee Art. Todos los derechos de propiedad intelectual están reservados.
+            Lunes a Viernes: 9:00 AM - 6:00 PM<br />
+            Sábados: 10:00 AM - 2:00 PM<br />
+            Domingos: Cerrado
           </p>
           
           <h2 className="text-2xl md:text-3xl font-semibold mb-4 text-darkpurple">
-            Sección 3: Hipervínculos a Nuestro Contenido
+            Contacto
           </h2>
           <p className="text-base md:text-lg text-gray-700 leading-relaxed">
-            Las siguientes organizaciones pueden enlazar a nuestro sitio web sin aprobación previa por escrito: Agencias gubernamentales; Motores de búsqueda; Organizaciones de noticias...
+            Teléfono: +123 456 7890<br />
+            Email: contacto@coffeeart.com<br />
+            Sitio Web: <a href="https://www.coffeeart.com" className="text-darkyellow hover:underline">www.coffeeart.com</a>
           </p>
         </div>
       </div>
