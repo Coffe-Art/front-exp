@@ -5,6 +5,9 @@ import BackgroundImage from '../../assets/FondoHeader.jpg';
 
 export const Header = () => {
   const navigate = useNavigate();
+  
+  // Obtener el tipo de usuario del localStorage
+  const userType = localStorage.getItem('userType');
 
   const handleLoginClick = () => {
     navigate('/login');
@@ -30,40 +33,86 @@ export const Header = () => {
       </div>
       <nav className="nav-links flex flex-col items-center md:flex-row md:space-x-4 mt-4 md:mt-0">
         <NavLink 
+          to="/#" 
+          className="nav-link text-white text-lg font-semibold hover:text-darkyellow mb-2 md:mb-0" 
+          activeClassName="font-bold"
+        >
+          Inicio
+        </NavLink>
+        <NavLink 
           to="/Menu" 
           className="nav-link text-white text-lg font-semibold hover:text-darkyellow mb-2 md:mb-0" 
           activeClassName="font-bold"
         >
           Menú
         </NavLink>
-        <NavLink 
-          to="/History" 
-          className="nav-link text-white text-lg font-semibold hover:text-darkyellow mb-2 md:mb-0" 
-          activeClassName="font-bold"
-        >
-          Historias
-        </NavLink>
-        <NavLink 
-          to="/Events" 
-          className="nav-link text-white text-lg font-semibold hover:text-darkyellow mb-2 md:mb-0" 
-          activeClassName="font-bold"
-        >
-          Eventos
-        </NavLink>
-        <NavLink 
-          to="/CraftforAdmins" 
-          className="nav-link text-white text-lg font-semibold hover:text-darkyellow mb-2 md:mb-0" 
-          activeClassName="font-bold"
-        >
-          Artesanías
-        </NavLink>
-        <NavLink 
-          to="/Companies" 
-          className="nav-link text-white text-lg font-semibold hover:text-darkyellow mb-2 md:mb-0" 
-          activeClassName="font-bold"
-        >
-          Empresas
-        </NavLink>
+        {userType === 'comprador' && (
+          <>
+            <NavLink 
+              to="/Cart" 
+              className="nav-link text-white text-lg font-semibold hover:text-darkyellow mb-2 md:mb-0" 
+              activeClassName="font-bold"
+            >
+              Carrito
+            </NavLink>
+            <NavLink 
+              to="/CraftComprador" 
+              className="nav-link text-white text-lg font-semibold hover:text-darkyellow mb-2 md:mb-0" 
+              activeClassName="font-bold"
+            >
+              Artesanías
+            </NavLink>
+            <NavLink 
+              to="/CompaniesComprador" 
+              className="nav-link text-white text-lg font-semibold hover:text-darkyellow mb-2 md:mb-0" 
+              activeClassName="font-bold"
+            >
+              Empresas
+            </NavLink>
+            <NavLink 
+              to="/EventsComprador" 
+              className="nav-link text-white text-lg font-semibold hover:text-darkyellow mb-2 md:mb-0" 
+              activeClassName="font-bold"
+            >
+              Eventos
+            </NavLink>
+          </>
+        )}
+        {userType === 'administrador' || userType === 'empleado' ? (
+          <>
+            <NavLink 
+              to="/CraftforAdmins" 
+              className="nav-link text-white text-lg font-semibold hover:text-darkyellow mb-2 md:mb-0" 
+              activeClassName="font-bold"
+            >
+              Artesanías
+            </NavLink>
+            <NavLink 
+              to="/CompaniesForAdmin" 
+              className="nav-link text-white text-lg font-semibold hover:text-darkyellow mb-2 md:mb-0" 
+              activeClassName="font-bold"
+            >
+              Empresas
+            </NavLink>
+            
+            <NavLink 
+              to="/EventsForAdmin" 
+              className="nav-link text-white text-lg font-semibold hover:text-darkyellow mb-2 md:mb-0" 
+              activeClassName="font-bold"
+            >
+              Eventos
+            </NavLink>
+          </>
+        ) : null}
+        {userType === 'anonimo' && (
+          <NavLink 
+            to="/ProfileAnon" 
+            className="nav-link text-white text-lg font-semibold hover:text-darkyellow mb-2 md:mb-0" 
+            activeClassName="font-bold"
+          >
+            Perfil Anónimo
+          </NavLink>
+        )}
       </nav>
       <div className="flex justify-center mt-4 md:mt-0">
         <button

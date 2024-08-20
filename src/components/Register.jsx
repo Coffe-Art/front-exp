@@ -184,13 +184,13 @@ export const Register = () => {
                     </div>
                     <button
                         type="submit"
-                        className="bg-darkyellow hover:bg-yellow-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+                        className="bg-darkyellow hover:bg-lightyellow text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
                     >
                         Registrarse
                     </button>
                     <p className="mt-4 text-center">
                         ¿Ya tienes una cuenta?{' '}
-                        <NavLink to="/login" className="text-darkyellow font-bold hover:underline">
+                        <NavLink to="/SignIn" className="text-darkyellow hover:underline">
                             Inicia sesión
                         </NavLink>
                     </p>

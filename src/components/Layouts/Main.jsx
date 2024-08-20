@@ -33,10 +33,7 @@ export const Main = () => {
               COFFE ART
             </h1>
             <p className="text-sm md:text-lg text-center px-2 md:px-8 py-2 max-w-3xl">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce suscipit, nisi ac tristique
-              placerat, dui justo rutrum turpis, id lacinia felis nisi ac tellus. Sed ultricies euismod dui,
-              eget ultricies felis. Duis in augue non augue viverra tincidunt non a est. Curabitur quis augue
-              ac odio semper accumsan vel at enim.
+            Buscamos poner en valor y resaltar el incuestionable y valioso trabajo de los artesanos, promoviendo activamente sus productos únicos y auténticos, que son verdaderas expresiones de su arte y habilidades. Además, como una parte integral de nuestra misión, ofrecemos procesos y métodos diseñados para mejorar y ayudar en la gestión de sus negocios. 
             </p>
           </div>
         </div>
@@ -57,17 +54,13 @@ export const Main = () => {
 
       <Statistics /> {/* Usa el nuevo componente aquí */}
 
-      <div className="bg-gray-200 py-8">
-        <div className="text-center mb-8">
-          <h1 className="text-black text-2xl md:text-4xl font-bold">PRODUCTOS MÁS VENDIDOS</h1>
-          <p className="text-black text-sm md:text-lg mx-auto max-w-2xl">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce suscipit, nisi ac tristique
-            placerat, dui justo rutrum turpis, id lacinia felis nisi ac tellus. Sed ultricies euismod dui,
-            eget ultricies felis. Duis in augue non augue viverra tincidunt non a est. Curabitur quis augue
-            ac odio semper accumsan vel at enim.
+      <div className="bg-gray-200 py-16">
+        <div className="text-center mb-16 px-4">
+          <h1 className="text-black text-2xl md:text-4xl font-bold mb-6">PRODUCTOS MÁS VENDIDOS</h1>
+          <p className="text-black text-sm md:text-lg mx-auto max-w-2xl mb-12">
+            Nuestros "Productos Más Vendidos" ofrecen una visión clave de las preferencias de nuestros clientes y las tendencias actuales del mercado. Esta sección destaca los productos que han sido los más solicitados en el último período, proporcionando información valiosa sobre qué artículos están atrayendo más atención y demanda.
           </p>
         </div>
-        <h1 className="text-darkyellow text-2xl md:text-4xl font-bold text-center mb-8">PRODUCTOS MÁS VENDIDOS</h1>
         <div className="flex flex-wrap justify-center">
           {[
             { image: imageEarring, title: 'Aretes Artesanales', description: 'Descripción de los aretes artesanales...' },
@@ -75,7 +68,7 @@ export const Main = () => {
             { image: imageBracelet, title: 'Pulseras Artesanales', description: 'Descripción de las pulseras artesanales...' },
             { image: imageBag, title: 'Bolso Artesanal', description: 'Descripción del bolso artesanal...' },
           ].map((product, index) => (
-            <div key={index} className="bg-darkyellow rounded-lg p-4 shadow-md text-center flex flex-col justify-center items-center mx-2 mb-4 w-48 sm:w-64 lg:w-80">
+            <div key={index} className="bg-darkyellow text-white rounded-lg p-4 shadow-md text-center flex flex-col justify-center items-center mx-2 mb-6 w-48 sm:w-64 lg:w-80">
               <img src={product.image} alt={product.title} className="w-24 h-auto sm:w-32 lg:w-40" />
               <h3 className="text-lg font-bold mt-2">{product.title}</h3>
               <p className="text-sm mt-1">{product.description}</p>

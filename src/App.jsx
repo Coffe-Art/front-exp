@@ -2,55 +2,78 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Home } from './Pages/Home/Home';
 import { Login } from './components/Login';
-import { Register } from './components/Register'; 
-import { SignIn } from './components/SignIn'; 
+import { Register } from './components/Register';
+import { SignIn } from './components/SignIn';
 import { Menu } from './components/Layouts/Menu';
-import { Profile } from './components/Layouts/Profile';
-import { Product } from './components/Layouts/Product';
+import { ProductFav } from './components/Layouts/ProductFav';
 import { Help } from './components/Layouts/Help';
 import { CraftforAdmins } from './components/Layouts/CraftforAdmins';
 import { Cart } from './components/Layouts/Cart';
-import { Companies } from './components/Layouts/Companies';
 import { History } from './components/Layouts/History';
 import { LoginCompanies } from './components/Layouts/LoginCompanies';
-import { Events } from './components/Layouts/Events';
 import { CreateProduct } from './components/Layouts/CreateProduct';
-import { ProductDetail } from './components/Layouts/ProductDetail';
 import { Statistics } from './components/Layouts/Statistics';
 import { EmpresaProvider } from './Context/contextEmpresa';
 import { EventsForm } from './components/Layouts/EventsForm';
-import { UpdateCompany } from './components/Layouts/UpdateCompanies';
-import { UpdateProducto } from './components/Layouts/UpdateProduct';
-
-
+import { UpdateCompany } from './components/Layouts/UpdateCompany';
+import { UpdateProducto } from './components/Layouts/UpdateProducto';
+import { TermsAndConditions } from './components/Layouts/TermsAndConditions';
+import { SalesOverview } from './components/Layouts/SalesOverview';
+import { CreateStory } from './components/Layouts/CreateHistory';
+import { Address } from './components/Layouts/Address';
+import { CraftComprador } from './components/Layouts/CraftComprador';
+import { CompaniesComprador } from './components/Layouts/CompaniesComprador';
+import { CompaniesForAdmin } from './components/Layouts/CompaniesForAdmin';
+import { EventsComprador } from './components/Layouts/EventsComprador';
+import { EventsForAdmin } from './components/Layouts/EventsForAdmin';
+import { ProfileAnon } from './components/Layouts/ProfileAnon';
+import { ProfileComprador } from './components/Layouts/ProfileComprador';
+import { ProfileForAdmin } from './components/Layouts/ProfileForAdmin';
+import ProtectedRoute from './components/Layouts/Proteccion de Rutas/ProtectedRoute';
 
 function App() {
   const [cart, setCart] = useState([]);
 
   return (
     <Router>
-      <EmpresaProvider> 
+      <EmpresaProvider>
         <Routes>
+          {/* Rutas para comunes (cualquiera puede visualizarlas) */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/Menu" element={<Menu />} />
-          <Route path="/Profile" element={<Profile />} />
-          <Route path="/Product" element={<Product />} />
+          <Route path="/ProductFav" element={<ProductFav />} />
           <Route path="/Help" element={<Help />} />
-          <Route path="/CraftforAdmins" element={<CraftforAdmins cart={cart} setCart={setCart} />} />
-          <Route path="/Cart" element={<Cart cart={cart} setCart={setCart} />} />
           <Route path="/History" element={<History />} />
-          <Route path="/Companies" element={<Companies />} />
-          <Route path="/LoginCompanies" element={<LoginCompanies />} />
-          <Route path="/UpdateCompany/:id" element={<UpdateCompany />} />
-          <Route path="/Events" element={<Events />} />
-          <Route path="/CreateProduct" element={<CreateProduct />} />
-          <Route path="/UpdateProduct/:idProducto" element={<UpdateProducto />} />
-          <Route path="/ProductDetail" element={<ProductDetail />} />
+          <Route path="/Address" element={<Address />} />
+          <Route path="/TermsAndConditions" element={<TermsAndConditions />} />
           <Route path="/Statistics" element={<Statistics />} />
-          <Route path="/EventsForm" element={<EventsForm />} />
+
+          {/* Rutas exclusivas para anonimo */}
+          <Route path="/ProfileAnon" element={<ProfileAnon />} />
+
+          {/* Rutas exclusivas para Comprador */}
+          <Route path="/ProfileComprador" element={<ProtectedRoute element={ProfileComprador} allowedRoles={['comprador']} />} />
+          <Route path="/Cart" element={<ProtectedRoute element={() => <Cart cart={cart} setCart={setCart} />} allowedRoles={['comprador', 'anonimo']} />} />
+          <Route path="/CraftComprador" element={<ProtectedRoute element={CraftComprador} allowedRoles={['comprador']} />} />
+          <Route path="/CompaniesComprador" element={<ProtectedRoute element={CompaniesComprador} allowedRoles={['comprador']} />} />
+          <Route path="/EventsComprador" element={<ProtectedRoute element={EventsComprador} allowedRoles={['comprador']} />} />
+
+          {/* Rutas para Administradores y empleados */}
+          <Route path="/ProfileForAdmin" element={<ProtectedRoute element={ProfileForAdmin} allowedRoles={['administrador', 'empleado']} />} />
+          <Route path="/CompaniesForAdmin" element={<ProtectedRoute element={CompaniesForAdmin} allowedRoles={['administrador', 'empleado']} />} />
+          <Route path="/CraftforAdmins" element={<ProtectedRoute element={CraftforAdmins} allowedRoles={['administrador', 'empleado']} />} />
+          <Route path="/CreateStory" element={<ProtectedRoute element={CreateStory} allowedRoles={['administrador', 'empleado']} />} />
+          <Route path="/CreateProduct" element={<ProtectedRoute element={CreateProduct} allowedRoles={['administrador', 'empleado']} />} />
+          <Route path="/EventsForAdmin" element={<ProtectedRoute element={EventsForAdmin} allowedRoles={['administrador', 'empleado']} />} />
+          <Route path="/EventsForm" element={<ProtectedRoute element={EventsForm} allowedRoles={['administrador', 'empleado']} />} />
+          <Route path="/LoginCompanies" element={<ProtectedRoute element={LoginCompanies} allowedRoles={['administrador', 'empleado']} />} />
+          <Route path="/SalesOverview" element={<ProtectedRoute element={SalesOverview} allowedRoles={['administrador', 'empleado']} />} />
+          <Route path="/UpdateCompany/:id" element={<ProtectedRoute element={UpdateCompany} allowedRoles={['administrador', 'empleado']} />} />
+          <Route path="/UpdateProduct/:idProducto" element={<ProtectedRoute element={UpdateProducto} allowedRoles={['administrador', 'empleado']} />} />
+
         </Routes>
       </EmpresaProvider>
     </Router>
@@ -58,6 +81,3 @@ function App() {
 }
 
 export default App;
-
-
-
