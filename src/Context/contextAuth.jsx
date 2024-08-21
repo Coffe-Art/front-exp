@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(localStorage.getItem('token'));
     const [userId, setUserId] = useState(localStorage.getItem('userId'));
-    const [userType, setUserType] = useState(localStorage.getItem('userType'));
+    const [userType, setUserType] = useState(localStorage.getItem('userType') || 'comprador'); // Valor predeterminado
     const [notification, setNotification] = useState('');
 
     const login = async (tipoUsuario, correo_electronico, contrasena) => {
@@ -93,7 +93,7 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         setToken(null);
         setUserId(null);
-        setUserType(null);
+        setUserType('comprador'); // Restablecer el tipo de usuario a 'comprador'
         localStorage.removeItem('token');
         localStorage.removeItem('userId');
         localStorage.removeItem('userType');
@@ -114,6 +114,9 @@ export const AuthProvider = ({ children }) => {
                 localStorage.setItem('userId', decodedToken.id);
                 localStorage.setItem('userType', decodedToken.tipoUsuario);
             }
+        } else {
+            // Si no hay token, establecer el tipo de usuario a 'comprador'
+            setUserType('comprador');
         }
     }, []);
 
