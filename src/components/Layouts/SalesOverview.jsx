@@ -10,6 +10,8 @@ import Chart from 'chart.js/auto';
 export const SalesOverview = ({ isAuthenticated, userType }) => {
   const navigate = useNavigate();
   const [showAccessMessage, setShowAccessMessage] = useState(false);
+  // Obtiene el rol de usuario desde el localStorage
+  const userRole = localStorage.getItem('userType');
 
   // Datos de ejemplo para las estadísticas de ventas
   const bestRatedProduct = {
@@ -63,10 +65,32 @@ export const SalesOverview = ({ isAuthenticated, userType }) => {
         </a>
         <nav className="flex flex-col items-center space-y-6">
           <NavLink to="/menu" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Bienvenido</NavLink>
-          <NavLink to="/profile" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Perfil</NavLink>
-          <NavLink to="/product" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Producto</NavLink>
-          <NavLink to="/help" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ayuda</NavLink>
-          <NavLink to="/SalesOverview" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ventas</NavLink>
+          <NavLink to={userRole === 'comprador' ? '/ProfileComprador' : userRole === 'administrador' ? '/ProfileForAdmin' : '/ProfileForEmpleado'} className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">
+            Perfil
+          </NavLink>
+
+          {/* Rutas para el rol 'comprador' */}
+          {userRole === 'comprador' && (
+            <>
+              <NavLink to="/ProductFav" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Producto Favorito</NavLink>
+              <NavLink to="/Cart" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Carrito</NavLink>
+              <NavLink to="/CraftComprador" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Artesanías</NavLink>
+              <NavLink to="/CompaniesComprador" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Compañías</NavLink>
+              <NavLink to="/EventsComprador" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Eventos</NavLink>
+            </>
+          )}
+
+          {/* Rutas para los roles 'administrador' y 'empleado' */}
+          {(userRole === 'administrador' || userRole === 'empleado') && (
+            <>
+              <NavLink to="/SalesOverview" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ventas</NavLink>
+              
+            </>
+          )}
+
+          {/* Ruta común para todos */}
+          <NavLink to="/Help" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ayuda</NavLink>
+
           <button
             className="bg-darkyellow text-white px-4 py-2 rounded hover:bg-lightyellow mt-4 text-lg font-bold"
             onClick={handleLoginClick}
