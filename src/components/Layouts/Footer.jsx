@@ -15,14 +15,14 @@ export const Footer = () => {
             Contacto
           </NavLink>
           <NavLink
-            to="/direccion"
+            to="/Address"
             className="text-lg font-semibold m-2 md:m-4 hover:text-lightyellow"
             activeClassName="font-bold"
           >
             Dirección
           </NavLink>
           <NavLink
-            to="/terminos"
+            to="/TermsAndConditions"
             className="text-lg font-semibold m-2 md:m-4 hover:text-lightyellow"
             activeClassName="font-bold"
           >

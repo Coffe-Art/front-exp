@@ -6,7 +6,7 @@ import BackgroundImage from '../../assets/FondoMenu.png';
 import Background from '../../assets/Fondo.png';
 import { EditableField } from './EditableField';
 
-export const Profile = () => {
+export const ProfileAnon = () => {
   const [name, setName] = useState('Nombre de Usuario');
   const [email, setEmail] = useState('usuario@example.com');
   const [phone, setPhone] = useState('123-456-7890');
@@ -30,7 +30,7 @@ export const Profile = () => {
         </a>
         <nav className="flex flex-col items-center space-y-6">
         <NavLink to="/menu" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Bienvenido</NavLink>
-          <NavLink to="/profile" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Perfil</NavLink>
+          <NavLink to="/ProfileAnon" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Perfil</NavLink>
           <NavLink to="/product" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Producto</NavLink>
           <NavLink to="/help" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ayuda</NavLink>
           <NavLink to="/SalesOverview" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ventas</NavLink>
@@ -46,7 +46,7 @@ export const Profile = () => {
         <div className="w-full h-screen flex justify-center items-center bg-cover bg-center p-4" style={{ backgroundImage: `url(${Background})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
           <div className="flex flex-col items-center justify-center text-center p-8 bg-white bg-opacity-70 rounded-lg max-w-lg mx-auto md:max-w-2xl w-full">
           <img src={Logo} alt="Logo" className="h-20 w-20 text-gray-800 mb-4 mx-auto" />
-            <h1 className="text-black text-3xl md:text-5xl font-bold mb-8">Perfil de Usuario</h1>
+            <h1 className="text-black text-3xl md:text-5xl font-bold mb-8">Crea una cuenta</h1>
             <EditableField label="Nombre:" value={name} onChange={(e) => setName(e.target.value)} />
             <EditableField label="Correo:" value={email} onChange={(e) => setEmail(e.target.value)} />
             <EditableField label="Teléfono:" value={phone} onChange={(e) => setPhone(e.target.value)} />

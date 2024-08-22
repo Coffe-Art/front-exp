@@ -3,7 +3,7 @@ import { useNavigate, NavLink } from 'react-router-dom';
 import BackgroundImage from '../assets/BackgroundLogin.jpg';
 import { FaHome } from 'react-icons/fa';
 import Logo from '../../src/assets/Artesanías.png';
-import { useAuth } from '../Context/contextAuth'; // Asegúrate de que la ruta es correcta
+import { useAuth } from '../Context/contextAuth';
 
 export const SignIn = () => {
     const navigate = useNavigate();
@@ -12,10 +12,11 @@ export const SignIn = () => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
-        role: 'administrador' // Por defecto 'administrador', puedes cambiar según lo necesites
+        role: 'administrador'
     });
 
     const [errors, setErrors] = useState({});
+    const [notification, setNotification] = useState('');
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -40,15 +41,20 @@ export const SignIn = () => {
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
-            try {
-                await login(formData.role, formData.email, formData.password);
-                navigate('/'); // Redireccionar a la página principal tras iniciar sesión
-            } catch (error) {
-                console.error('Error al intentar iniciar sesión:', error);
-                setErrors({ global: error.message });
+            const result = await login(formData.role, formData.email, formData.password);
+            
+            if (result.success) {
+                setNotification('Inicio de sesión exitoso');
+                setTimeout(() => {
+                    setNotification('');
+                    navigate('/');
+                }, 2000); // Muestra la notificación por 2 segundos antes de redirigir
+            } else {
+                // Mostrar el error en la notificación
+                setNotification(result.error || 'Error desconocido. Intenta de nuevo.');
             }
         } else {
-            console.log(newErrors);
+            setNotification('Por favor corrige los errores en el formulario.');
         }
     };
 
@@ -65,7 +71,16 @@ export const SignIn = () => {
             <div className="relative bg-white p-8 rounded-lg shadow-md w-full max-w-md mx-4 sm:mx-8 md:mx-16 lg:mx-32">
                 <img src={Logo} alt="Logo" className="h-24 w-24 mx-auto mb-6" />
                 <h1 className="text-2xl font-bold mb-6 text-center">Iniciar Sesión</h1>
-                {errors.global && <p className="text-red-500 text-xs italic">{errors.global}</p>}
+                {notification && (
+                    <div className={`border px-4 py-3 rounded relative mb-4 ${notification.startsWith('Error') ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700'}`} role="alert">
+                        <span className="block sm:inline">{notification}</span>
+                    </div>
+                )}
+                {errors.global && (
+                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                        <span className="block sm:inline">{errors.global}</span>
+                    </div>
+                )}
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label className="block text-black text-sm font-bold mb-2" htmlFor="email">

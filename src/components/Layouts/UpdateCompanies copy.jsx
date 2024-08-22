@@ -65,7 +65,7 @@ export const LoginCompanies = () => {
             ]);
 
             // Redirige a la página de empresas
-            navigate('/companiesForAdmin');
+            navigate('/companies');
         } catch (error) {
             console.error('Error al crear la empresa:', error);
         }
@@ -78,7 +78,7 @@ export const LoginCompanies = () => {
                 backgroundImage: `url(${BackgroundImage})`, 
             }}
         >
-            <NavLink to="/CompaniesForAdmin" className="absolute top-4 left-4">
+            <NavLink to="/Companies" className="absolute top-4 left-4">
                 <FaHome className="text-darkyellow text-4xl" />
             </NavLink>
             <div className="relative bg-white p-5 rounded-lg shadow-md w-full max-w-md mx-4 sm:mx-8 md:mx-16 lg:mx-32">
@@ -112,7 +112,6 @@ export const LoginCompanies = () => {
                             placeholder="Dirección"
                             required
                         />
-                        <p className="text-gray-600 text-sm mt-2">Especifica la dirección de tu empresa ¡Así podrán encontrarte!</p>
                     </div>
                     <div className="mb-4">
                         <label className="block text-black text-sm font-bold mb-2" htmlFor="descripcion">
@@ -126,7 +125,6 @@ export const LoginCompanies = () => {
                             placeholder="Descripción"
                             required
                         />
-                        <p className="text-gray-600 text-sm mt-2">Una bonita descripción te ayudara a tener una buena impresión</p>
                     </div>
                     <div className="flex items-center justify-center">
                         <button

@@ -24,7 +24,8 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(localStorage.getItem('token'));
     const [userId, setUserId] = useState(localStorage.getItem('userId'));
-    const [userType, setUserType] = useState(localStorage.getItem('userType'));
+    const [userType, setUserType] = useState(localStorage.getItem('userType') || 'comprador'); // Valor predeterminado
+    const [notification, setNotification] = useState('');
 
     const login = async (tipoUsuario, correo_electronico, contrasena) => {
         try {
@@ -49,12 +50,18 @@ export const AuthProvider = ({ children }) => {
                     setUserType(decodedToken.tipoUsuario);
                     localStorage.setItem('userId', decodedToken.id);
                     localStorage.setItem('userType', decodedToken.tipoUsuario);
+                    setNotification('Inicio de sesión exitoso');
+                    return { success: true };
+                } else {
+                    throw new Error('Error decoding token');
                 }
             } else {
-                console.error('Login failed:', data.error || data.message);
+                throw new Error(data.error || data.message || 'Error desconocido');
             }
         } catch (error) {
             console.error('Error al intentar iniciar sesión:', error);
+            setNotification(error.message);
+            return { success: false, error: error.message };
         }
     };
 
@@ -72,11 +79,13 @@ export const AuthProvider = ({ children }) => {
 
             if (response.ok) {
                 console.log('Usuario registrado con éxito');
+                return { success: true };
             } else {
-                console.error(data.error || data.message);
+                throw new Error(data.error || data.message || 'Error desconocido');
             }
         } catch (error) {
             console.error('Error al intentar registrar el usuario:', error);
+            return { success: false, error: error.message };
         }
     };
 
@@ -84,10 +93,11 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         setToken(null);
         setUserId(null);
-        setUserType(null);
+        setUserType('comprador'); // Restablecer el tipo de usuario a 'comprador'
         localStorage.removeItem('token');
         localStorage.removeItem('userId');
         localStorage.removeItem('userType');
+        setNotification('Has cerrado sesión exitosamente');
     };
 
     useEffect(() => {
@@ -104,11 +114,14 @@ export const AuthProvider = ({ children }) => {
                 localStorage.setItem('userId', decodedToken.id);
                 localStorage.setItem('userType', decodedToken.tipoUsuario);
             }
+        } else {
+            // Si no hay token, establecer el tipo de usuario a 'comprador'
+            setUserType('comprador');
         }
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, token, userId, userType, login, register, logout }}>
+        <AuthContext.Provider value={{ user, token, userId, userType, login, register, logout, notification }}>
             {children}
         </AuthContext.Provider>
     );

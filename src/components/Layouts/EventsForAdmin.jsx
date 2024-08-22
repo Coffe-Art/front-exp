@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { Footer } from './Footer';
 import { Header } from './Header';
+import { Footer } from './Footer';
 import { NavLink } from 'react-router-dom';
-import { FaSearch } from 'react-icons/fa'; // Importa el ícono de lupa
+import { FaSearch, FaTimes } from 'react-icons/fa';
 import Fondo from '../../assets/FondoEmpresas.png'; // Asegúrate de que la ruta sea correcta
 
 const containerStyle = {
   width: '100%',
-  height: '600px' // Aumenta la altura del mapa
+  height: '600px'
 };
 
 const center = {
@@ -18,7 +18,7 @@ const center = {
   lng: -122.4194
 };
 
-export const Events = () => {
+export const EventsForAdmin = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [events, setEvents] = useState([
     { id: 1, name: 'Festival de Música', date: new Date('2024-07-30'), location: { lat: 37.7749, lng: -122.4194 }, companies: ['Empresa A', 'Empresa B'], duration: '4 horas', place: 'Central Park' },
@@ -28,55 +28,23 @@ export const Events = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [currentEvents, setCurrentEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [newEvent, setNewEvent] = useState({
-    name: '',
-    date: new Date(),
-    location: { lat: '', lng: '' },
-    companies: [],
-    duration: '',
-    place: ''
-  });
+
+  useEffect(() => {
+    const today = new Date();
+    const ongoingEvents = events.filter(event => event.date.toDateString() === today.toDateString());
+    setCurrentEvents(ongoingEvents);
+  }, [events]);
 
   const filteredEvents = events.filter(event =>
     event.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  useEffect(() => {
-    const today = new Date();
-    const ongoingEvents = filteredEvents.filter(event => event.date.toDateString() === today.toDateString());
-    setCurrentEvents(ongoingEvents);
-  }, [filteredEvents]);
 
   const handleEventClick = (event) => {
     setSelectedEvent(event);
   };
 
   const closeModal = () => {
-    setSelectedEvent(null); // Deselecciona el evento y cierra el modal
-  };
-
-  const handleNewEventChange = (e) => {
-    const { name, value } = e.target;
-    setNewEvent(prevEvent => ({
-      ...prevEvent,
-      [name]: value
-    }));
-  };
-
-  const handleNewEventSubmit = (e) => {
-    e.preventDefault();
-    setEvents(prevEvents => [
-      ...prevEvents,
-      { ...newEvent, id: prevEvents.length + 1, date: new Date(newEvent.date) }
-    ]);
-    setNewEvent({
-      name: '',
-      date: new Date(),
-      location: { lat: '', lng: '' },
-      companies: [],
-      duration: '',
-      place: ''
-    });
+    setSelectedEvent(null);
   };
 
   return (
@@ -185,7 +153,7 @@ export const Events = () => {
                   onClick={closeModal}
                   className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl"
                 >
-                  &times;
+                  <FaTimes />
                 </button>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <h3 className="text-2xl font-semibold text-white">{selectedEvent.name}</h3>
@@ -200,7 +168,6 @@ export const Events = () => {
             </div>
           </div>
         )}
-
       </div>
 
       <Footer />

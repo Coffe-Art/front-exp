@@ -1,89 +1,135 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import BackgroundImage from '../../assets/BackgroundLogin.jpg';
 import { FaHome } from 'react-icons/fa';
 import Logo from '../../assets/Artesanías.png';
-import { useEmpresa } from '../../Context/contextEmpresa'; // Importa el hook para usar el contexto
+import { useEmpresa } from '../../Context/contextEmpresa';
 
-export const LoginCompanies = () => {
+export const UpdateCompany = () => {
     const [nombre, setNombre] = useState('');
     const [direccion, setDireccion] = useState('');
     const [descripcion, setDescripcion] = useState('');
+    const [error, setError] = useState('');
     const [idadministrador, setIdAdministrador] = useState('');
-
     const navigate = useNavigate();
-    const { setEmpresas } = useEmpresa(); // Obtén setEmpresas desde el contexto
+    const { setEmpresas } = useEmpresa();
+    const { id } = useParams(); // Obtener el ID de la URL
 
     useEffect(() => {
-        // Obtener el ID del administrador del localStorage
         const storedId = localStorage.getItem('userId');
         if (storedId) {
             setIdAdministrador(storedId);
         }
-    }, []);
+
+        const fetchCompany = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    throw new Error('Token de autenticación no encontrado');
+                }
+        
+                const response = await fetch(`https://backtesteo.onrender.com/api/empresa/consultar/${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+        
+                if (!response.ok) {
+                    const errorDetails = await response.json();
+                    console.error('Error al obtener la empresa:', errorDetails);
+                    throw new Error('Error al obtener la empresa');
+                }
+        
+                const data = await response.json();
+                console.log('Datos recibidos:', data); // Depuración completa
+        
+                // Verificar si data es un array y tiene al menos un objeto
+                if (Array.isArray(data) && data.length > 0) {
+                    const company = data[0]; // Acceder al primer objeto del array
+                    if (company.nombre !== undefined && company.direccion !== undefined && company.descripcion !== undefined) {
+                        setNombre(company.nombre || '');
+                        setDireccion(company.direccion || '');
+                        setDescripcion(company.descripcion || '');
+                    } else {
+                        throw new Error('Datos de empresa incompletos');
+                    }
+                } else {
+                    throw new Error('Datos de empresa incompletos');
+                }
+            } catch (error) {
+                console.error('Error al cargar la empresa:', error);
+                setError('Error al cargar la información de la empresa.');
+            }
+        };
+
+        fetchCompany();
+    }, [id]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const newEmpresa = {
+        const updatedEmpresa = {
             nombre,
             direccion,
             descripcion,
             idadministrador
         };
 
-        // Obtén el token de localStorage
         const token = localStorage.getItem('token');
         if (!token) {
             console.error('No se encontró un token en localStorage');
+            setError('No se encontró un token en localStorage');
             return;
         }
 
         try {
-            const response = await fetch('https://backtesteo.onrender.com/api/empresa/nuevaEmpresa', {
-                method: 'POST',
+            const response = await fetch(`https://backtesteo.onrender.com/api/empresa/actualizar/${id}`, {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}` // Incluye el token en la cabecera
+                    'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(newEmpresa),
+                body: JSON.stringify(updatedEmpresa),
             });
 
             if (!response.ok) {
                 const errorDetails = await response.json();
-                console.error('Error en la creación de la empresa:', errorDetails);
-                throw new Error('Error en la creación de la empresa');
+                console.error('Error en la actualización de la empresa:', errorDetails);
+                throw new Error('Error en la actualización de la empresa');
             }
 
             const result = await response.json();
-            console.log('Empresa creada exitosamente:', result);
+            console.log('Empresa actualizada exitosamente:', result);
 
-            // Actualiza la lista de empresas en el contexto
-            setEmpresas(prevEmpresas => [
-                ...prevEmpresas,
-                { id: result.id, nombre, direccion, descripcion }
-            ]);
+            setEmpresas(prevEmpresas =>
+                prevEmpresas.map(emp => emp.codigoempresa === id ? { ...emp, ...updatedEmpresa } : emp)
+            );
 
-            // Redirige a la página de empresas
-            navigate('/companiesForAdmin');
+            navigate('/companies');
         } catch (error) {
-            console.error('Error al crear la empresa:', error);
+            console.error('Error al actualizar la empresa:', error);
+            setError('Error al actualizar la empresa.');
         }
     };
 
     return (
-        <div 
+        <div
             className="flex items-center justify-center min-h-screen bg-cover bg-center"
-            style={{ 
-                backgroundImage: `url(${BackgroundImage})`, 
+            style={{
+                backgroundImage: `url(${BackgroundImage})`,
             }}
         >
-            <NavLink to="/CompaniesForAdmin" className="absolute top-4 left-4">
+            <NavLink to="/companies" className="absolute top-4 left-4">
                 <FaHome className="text-darkyellow text-4xl" />
             </NavLink>
             <div className="relative bg-white p-5 rounded-lg shadow-md w-full max-w-md mx-4 sm:mx-8 md:mx-16 lg:mx-32">
                 <img src={Logo} alt="Logo" className="h-24 w-24 mx-auto mb-6" />
-                <h1 className="text-2xl font-bold mb-6 text-center">Registrar Empresa</h1>
+                <h1 className="text-2xl font-bold mb-6 text-center">Actualizar Empresa</h1>
+                {error && (
+                    <div className="bg-red-500 text-white p-2 rounded mb-4">
+                        {error}
+                    </div>
+                )}
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label className="block text-black text-sm font-bold mb-2" htmlFor="nombre">
@@ -112,7 +158,6 @@ export const LoginCompanies = () => {
                             placeholder="Dirección"
                             required
                         />
-                        <p className="text-gray-600 text-sm mt-2">Especifica la dirección de tu empresa ¡Así podrán encontrarte!</p>
                     </div>
                     <div className="mb-4">
                         <label className="block text-black text-sm font-bold mb-2" htmlFor="descripcion">
@@ -126,14 +171,13 @@ export const LoginCompanies = () => {
                             placeholder="Descripción"
                             required
                         />
-                        <p className="text-gray-600 text-sm mt-2">Una bonita descripción te ayudara a tener una buena impresión</p>
                     </div>
                     <div className="flex items-center justify-center">
                         <button
                             type="submit"
                             className="bg-darkyellow hover:bg-lightyellow text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                         >
-                            Registrar Empresa
+                            Actualizar Empresa
                         </button>
                     </div>
                 </form>

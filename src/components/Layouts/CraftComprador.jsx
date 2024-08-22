@@ -8,7 +8,7 @@ import imageBag from '../../assets/BolsoArtesanal.jpg';
 import { Header } from './Header';
 import { Footer } from './Footer';
 
-export const Craft = () => {
+export const CraftComprador = () => {
   const [cart, setCart] = useState([]);
   const [products] = useState([
     { id: 1, vendedor: 'Vendedor A', producto: 'Producto A', descripcion: 'Descripción del Producto A', stock: 10, precio: 100, imagen: imageEarring, categoria: 'earrings', rating: 4 },
@@ -79,7 +79,7 @@ export const Craft = () => {
         {/* Filtro en la esquina izquierda */}
         <div className={`md:w-1/4 lg:w-1/5 bg-white border rounded-lg overflow-hidden shadow-md p-4 ${isFilterOpen ? 'block' : 'hidden md:block'}`}>
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-bold">Filtros</h2>
+            <h2 className="text-lg font-bold">Comprador</h2>
             <button onClick={toggleFilter} className="text-darkyellow text-xl">
               {/* Add icon here if needed */}
             </button>

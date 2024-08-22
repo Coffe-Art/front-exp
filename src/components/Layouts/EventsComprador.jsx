@@ -18,7 +18,7 @@ const center = {
   lng: -122.4194
 };
 
-export const Events = () => {
+export const EventsComprador = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [events, setEvents] = useState([
     { id: 1, name: 'Festival de Música', date: new Date('2024-07-30'), location: { lat: 37.7749, lng: -122.4194 }, companies: ['Empresa A', 'Empresa B'], duration: '4 horas', place: 'Central Park' },
@@ -130,7 +130,7 @@ export const Events = () => {
           <div className="w-full md:w-1/2 flex flex-col items-center">
             {/* Centered Title and Paragraph */}
             <div className="text-center">
-              <h2 className="text-darkyellow text-4xl font-bold mt-6">Eventos Especiales</h2>
+              <h2 className="text-darkyellow text-4xl font-bold mt-6">Comprador</h2>
               <p className="max-w-2xl mt-2 mx-auto text-lg">
                 Aquí puedes ver los eventos especiales que tendrán lugar en Circacia. Descubre qué está pasando y participa en ellos.
               </p>

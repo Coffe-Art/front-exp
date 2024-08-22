@@ -11,7 +11,7 @@ import { GiCoffeeCup } from "react-icons/gi";
 import banner from '../../assets/FondoMenu.png'; 
 import { FaCoffee } from "react-icons/fa";
 
-export const Companies = () => {
+export const CompaniesForAdmin = () => {
     const { empresas, setEmpresas } = useEmpresa();
     const { getProductosByCodigoEmpresa } = useContext(ProductoContext);
     const navigate = useNavigate();
@@ -68,7 +68,7 @@ export const Companies = () => {
                 } else {
                     throw new Error('Formato de datos inesperado');
                 }
-            } else {    
+            } else {
                 const text = await response.text();
                 console.error('Respuesta no es JSON:', text);
                 throw new Error('Respuesta no es JSON');
