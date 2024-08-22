@@ -330,7 +330,7 @@ const [selectedProduct, setSelectedProduct] = useState(null);
                   onClick={() => navigate('/createProduct')}
                   className="text-darkyellow text-xl flex items-center"
                 >
-                  <FaPlus className="mr-2" /> Crear Producto
+                  <FaPlus className="mr-2" /> Crear Artesanía
                 </button>
               </div>
             <div className="flex justify-between items-center mb-4">                  
