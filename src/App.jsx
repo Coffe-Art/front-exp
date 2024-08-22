@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Home } from './Pages/Home/Home';
 import { Login } from './components/Login';
@@ -35,6 +35,14 @@ import ProtectedRoute from './components/Layouts/Proteccion de Rutas/ProtectedRo
 function App() {
   const [cart, setCart] = useState([]);
 
+  useEffect(() => {
+    // Revisar si userType ya existe en localStorage, si no, establecer como 'anonimo'
+    const userType = localStorage.getItem('userType');
+    if (!userType) {
+      localStorage.setItem('userType', 'anonimo');
+    }
+  }, []);
+
   return (
     <Router>
       <EmpresaProvider>
@@ -59,9 +67,9 @@ function App() {
 
           {/* Rutas para comprador y anonimo */}
           <Route path="/Cart" element={<ProtectedRoute element={() => <Cart cart={cart} setCart={setCart} />} allowedRoles={['comprador', 'anonimo']} />} />
-          <Route path="/CraftComprador" element={<ProtectedRoute element={CraftComprador} allowedRoles={['comprador']} />} />
-          <Route path="/CompaniesComprador" element={<ProtectedRoute element={CompaniesComprador} allowedRoles={['comprador']} />} />
-          <Route path="/EventsComprador" element={<ProtectedRoute element={EventsComprador} allowedRoles={['comprador']} />} />
+          <Route path="/CraftComprador" element={<ProtectedRoute element={CraftComprador} allowedRoles={['comprador', 'anonimo']} />} />
+          <Route path="/CompaniesComprador" element={<ProtectedRoute element={CompaniesComprador} allowedRoles={['comprador', 'anonimo']} />} />
+          <Route path="/EventsComprador" element={<ProtectedRoute element={EventsComprador} allowedRoles={['comprador', 'anonimo']} />} />
           <Route path="/ProductFav" element={<ProductFav />} />
 
 

@@ -7,8 +7,8 @@ import Background from '../../assets/Fondo.png';
 export const Menu = () => {
   const navigate = useNavigate();
 
-  // Obtiene el rol de usuario desde el localStorage
-  const userRole = localStorage.getItem('userType');
+  // Obtiene el rol de usuario desde el localStorage o establece 'anonimo' por defecto
+  const userRole = localStorage.getItem('userType') || 'anonimo';
 
   const handleLogoClick = (e) => {
     e.preventDefault();
@@ -27,15 +27,18 @@ export const Menu = () => {
         </a>
         <nav className="flex flex-col items-center space-y-6">
           <NavLink to="/menu" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Bienvenido</NavLink>
-          <NavLink to={userRole === 'comprador' ? '/ProfileComprador' : userRole === 'administrador' ? '/ProfileForAdmin' : '/ProfileForEmpleado'} className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">
-            Perfil
-          </NavLink>
 
-          {/* Rutas para el rol 'comprador' */}
-          {userRole === 'comprador' && (
+          {/* Solo muestra el perfil si el usuario no es anonimo */}
+          {userRole !== 'anonimo' && (
+            <NavLink to={userRole === 'comprador' ? '/ProfileComprador' : userRole === 'administrador' ? '/ProfileForAdmin' : '/ProfileForEmpleado'} className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">
+              Perfil
+            </NavLink>
+          )}
+
+          {/* Rutas para el rol 'comprador' o 'anonimo' */}
+          {(userRole === 'comprador' || userRole === 'anonimo') && (
             <>
               <NavLink to="/ProductFav" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Favoritos</NavLink>
-              <NavLink to="/Cart" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Carrito</NavLink>
             </>
           )}
 
@@ -43,7 +46,6 @@ export const Menu = () => {
           {(userRole === 'administrador' || userRole === 'empleado') && (
             <>
               <NavLink to="/SalesOverview" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ventas</NavLink>
-              
             </>
           )}
 
