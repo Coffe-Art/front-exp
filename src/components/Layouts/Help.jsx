@@ -45,8 +45,8 @@ const fetchAIResponse = async (question) => {
 };
 
 export const Help = () => {
-    // Obtiene el rol de usuario desde el localStorage
-    const userRole = localStorage.getItem('userType');
+    // Obtiene el rol de usuario desde el localStorage o establece 'anonimo' por defecto
+  const userRole = localStorage.getItem('userType') || 'anonimo';
   const navigate = useNavigate();
   const [userQuestion, setUserQuestion] = useState('');
   const [messages, setMessages] = useState([
