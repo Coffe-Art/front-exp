@@ -388,7 +388,7 @@ const [selectedProduct, setSelectedProduct] = useState(null);
 {isModalOpen && selectedProduct && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
     <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-3xl">
-      <h2 className="text-xl font-bold mb-4">Detalles del producto</h2>
+      <h2 className="text-xl font-bold mb-4">Detalles de la Artesania¡</h2>
       <div className="flex flex-col md:flex-row">
         {/* Imagen */}
         <div className="relative w-full md:w-1/2 h-48 md:h-auto mb-4 md:mb-0">
