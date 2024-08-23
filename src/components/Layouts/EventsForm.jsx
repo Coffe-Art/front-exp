@@ -90,30 +90,30 @@ export const EventsForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     const requiredFields = ['nombreEvento', 'fecha', 'ubicacion', 'duracion', 'lugar', 'descripcion'];
-
+    
     const newErrors = {};
-
+    
     requiredFields.forEach((field) => {
       if (typeof formData[field] !== 'string' || !formData[field].trim()) {
         newErrors[field] = 'Este campo es obligatorio';
       }
     });
-
+    
     if (!Array.isArray(formData.empresasAsistente) || formData.empresasAsistente.length === 0) {
       newErrors.empresasAsistente = 'Debe seleccionar al menos una empresa';
     }
-
+    
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       setNotification('Todos los campos son requeridos');
       return;
     }
-
+    
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('https://backtesteo.onrender.com/api/evento', {
+      const response = await fetch('http://localhost:3000/api/evento/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -121,27 +121,29 @@ export const EventsForm = () => {
         },
         body: JSON.stringify({
           ...formData,
-          empresasAsistente: formData.empresasAsistente,
+          empresasAsistente: formData.empresasAsistente.join(', '), // Convertir array a string
         }),
       });
-
+    
       if (!response.ok) {
-        throw new Error('Error al crear el evento');
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
-
+    
       const newEvent = await response.json();
-      setEvents(prevEvents => [...prevEvents, newEvent]);
+      console.log('Evento creado:', newEvent); // Verificar la respuesta
+    
+      setEvents(prevEvents => [...prevEvents, newEvent]); // Actualizar eventos globales
       setNotification('Evento creado exitosamente');
       setTimeout(() => {
         setNotification('');
-        navigate('/EventsForAdmin');
+        navigate('/EventsForAdmin'); // Redirigir al componente EventsForAdmin
       }, 2000);
     } catch (error) {
       console.error('Error al crear evento:', error);
       setNotification('Error al crear el evento, intenta de nuevo');
     }
   };
-
+  
   return (
     <div 
       className="flex items-center justify-center min-h-screen bg-cover bg-center"
@@ -250,28 +252,28 @@ export const EventsForm = () => {
             {errors.descripcion && <p className="text-red-500 text-xs italic">{errors.descripcion}</p>}
           </div>
           <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="empresasAsistente">
+            <label className="block text-black text-sm font-bold mb-2">
               Empresas Asistentes
             </label>
             <Select
               isMulti
               options={empresasOptions}
               onChange={handleSelectChange}
-              className="basic-single"
-              classNamePrefix="select"
-              placeholder="Selecciona las empresas asistentes"
+              value={empresasOptions.filter(option =>
+                formData.empresasAsistente.includes(option.label)
+              )}
             />
             {errors.empresasAsistente && <p className="text-red-500 text-xs italic">{errors.empresasAsistente}</p>}
           </div>
           <div className="flex items-center justify-between">
             <button
               type="submit"
-              className="bg-darkyellow text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
               Crear Evento
             </button>
-            <NavLink to="/EventsForAdmin">
-              <FaTimes className="text-gray-500 hover:text-gray-800 text-2xl" />
+            <NavLink to="/EventsForAdmin" className="text-blue-500 hover:text-blue-800">
+              <FaTimes className="inline mr-2" /> Cancelar
             </NavLink>
           </div>
         </form>
