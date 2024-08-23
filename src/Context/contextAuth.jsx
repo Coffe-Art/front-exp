@@ -93,7 +93,7 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         setToken(null);
         setUserId(null);
-        setUserType('comprador'); // Restablecer el tipo de usuario a 'comprador'
+        setUserType('anonimo'); // Restablecer el tipo de usuario a 'comprador'
         localStorage.removeItem('token');
         localStorage.removeItem('userId');
         localStorage.removeItem('userType');
