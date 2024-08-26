@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (tipoUsuario, nombre, contrasena, correo_electronico, telefono, historia) => {
         try {
-            const response = await fetch('https://checkpoint-9tp4.onrender.com/api/auth/register', {
+            const response = await fetch('https://backtesteo.onrender.com/api/auth/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

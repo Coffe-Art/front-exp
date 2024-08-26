@@ -7,7 +7,7 @@ import { useAuth } from '../Context/contextAuth';
 
 export const SignIn = () => {
     const navigate = useNavigate();
-    const { login } = useAuth();
+    const { login, requestPasswordReset } = useAuth();
 
     const [formData, setFormData] = useState({
         email: '',
@@ -17,6 +17,7 @@ export const SignIn = () => {
 
     const [errors, setErrors] = useState({});
     const [notification, setNotification] = useState('');
+    const [forgotPassword, setForgotPassword] = useState(false);
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -50,11 +51,24 @@ export const SignIn = () => {
                     navigate('/');
                 }, 2000); // Muestra la notificación por 2 segundos antes de redirigir
             } else {
-                // Mostrar el error en la notificación
                 setNotification(result.error || 'Error desconocido. Intenta de nuevo.');
             }
         } else {
             setNotification('Por favor corrige los errores en el formulario.');
+        }
+    };
+
+    const handleForgotPassword = () => {
+        setForgotPassword(true);
+    };
+
+    const handlePasswordReset = async () => {
+        // Aquí puedes implementar la lógica para solicitar la recuperación de contraseña
+        const result = await requestPasswordReset(formData.email);
+        if (result.success) {
+            setNotification('Te hemos enviado un correo para recuperar tu contraseña.');
+        } else {
+            setNotification(result.error || 'Error desconocido. Intenta de nuevo.');
         }
     };
 
@@ -109,6 +123,28 @@ export const SignIn = () => {
                             onChange={handleChange}
                         />
                         {errors.password && <p className="text-red-500 text-xs italic">{errors.password}</p>}
+                        <div className="text-center mb-4">
+                            {!forgotPassword ? (
+                                <button
+                                    type="button"
+                                    onClick={handleForgotPassword}
+                                    className="text-darkyellow hover:underline text-sm"
+                                >
+                                    ¿Olvidaste tu contraseña?
+                                </button>
+                            ) : (
+                                <>
+                                    <p className="text-black text-sm mb-2">¿Quieres recuperar tu contraseña?</p>
+                                    <button 
+                                        type="button"
+                                        onClick={handlePasswordReset} 
+                                        className="bg-darkyellow hover:bg-lightyellow text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                    >
+                                        Enviar correo de recuperación
+                                    </button>
+                                </>
+                            )}
+                        </div>
                     </div>
                     <div className="mb-4">
                         <label className="block text-black text-sm font-bold mb-2" htmlFor="role">

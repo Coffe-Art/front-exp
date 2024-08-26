@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { Header } from './Header';
 import { Footer } from './Footer';
-import { NavLink, useLocation } from 'react-router-dom';
-import { FaSearch, FaTimes } from 'react-icons/fa';
+import { Header } from './Header';
+import { NavLink } from 'react-router-dom';
+import { FaSearch } from 'react-icons/fa'; // Importa el ícono de lupa
 import Fondo from '../../assets/FondoEmpresas.png'; // Asegúrate de que la ruta sea correcta
 
 const containerStyle = {
   width: '100%',
-  height: '600px'
+  height: '600px' // Aumenta la altura del mapa
 };
 
 const center = {
@@ -19,64 +19,64 @@ const center = {
 };
 
 export const EventsForAdmin = () => {
-  const [events, setEvents] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [currentEvents, setCurrentEvents] = useState([]);
+  const [events, setEvents] = useState([
+    { id: 1, name: 'Festival de Música', date: new Date('2024-07-30'), location: { lat: 37.7749, lng: -122.4194 }, companies: ['Empresa A', 'Empresa B'], duration: '4 horas', place: 'Central Park' },
+    { id: 2, name: 'Feria de Artesanía', date: new Date('2024-07-31'), location: { lat: 37.7749, lng: -122.4194 }, companies: ['Empresa C', 'Empresa D'], duration: '3 horas', place: 'Market Street' },
+    { id: 3, name: 'Rally de Food Trucks', date: new Date('2024-08-01'), location: { lat: 37.7849, lng: -122.4094 }, companies: ['Empresa E', 'Empresa F'], duration: '5 horas', place: 'Union Square' },
+  ]);
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [currentEvents, setCurrentEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const location = useLocation(); // Hook para detectar cambios en la ruta
+  const [newEvent, setNewEvent] = useState({
+    name: '',
+    date: new Date(),
+    location: { lat: '', lng: '' },
+    companies: [],
+    duration: '',
+    place: ''
+  });
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const idAdministrador = localStorage.getItem('userId'); // Asegúrate de que 'userId' es el nombre correcto
-
-        if (!token || !idAdministrador) {
-          console.error('Token o ID de administrador no encontrados en el localStorage');
-          return;
-        }
-
-        const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/evento/admin/${idAdministrador}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`Error ${response.status}: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        console.log('Eventos obtenidos:', data); // Verifica los datos
-        setEvents(data);
-      } catch (error) {
-        console.error('Error al obtener eventos:', error.message);
-      }
-    };
-
-    fetchEvents();
-  }, [location.pathname]); // Ejecutar cuando cambie la ruta
+  const filteredEvents = events.filter(event =>
+    event.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   useEffect(() => {
     const today = new Date();
-    const ongoingEvents = events.filter(event => new Date(event.fecha).toDateString() === today.toDateString());
-    console.log('Eventos actuales:', ongoingEvents); // Verifica los eventos actuales
+    const ongoingEvents = filteredEvents.filter(event => event.date.toDateString() === today.toDateString());
     setCurrentEvents(ongoingEvents);
-  }, [events]);
-
-  const filteredEvents = events.filter(event =>
-    event.nombreEvento.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  console.log('Eventos filtrados:', filteredEvents); // Verifica los eventos filtrados
+  }, [filteredEvents]);
 
   const handleEventClick = (event) => {
     setSelectedEvent(event);
   };
 
   const closeModal = () => {
-    setSelectedEvent(null);
+    setSelectedEvent(null); // Deselecciona el evento y cierra el modal
+  };
+
+  const handleNewEventChange = (e) => {
+    const { name, value } = e.target;
+    setNewEvent(prevEvent => ({
+      ...prevEvent,
+      [name]: value
+    }));
+  };
+
+  const handleNewEventSubmit = (e) => {
+    e.preventDefault();
+    setEvents(prevEvents => [
+      ...prevEvents,
+      { ...newEvent, id: prevEvents.length + 1, date: new Date(newEvent.date) }
+    ]);
+    setNewEvent({
+      name: '',
+      date: new Date(),
+      location: { lat: '', lng: '' },
+      companies: [],
+      duration: '',
+      place: ''
+    });
   };
 
   return (
@@ -88,7 +88,7 @@ export const EventsForAdmin = () => {
         {currentEvents.length > 0 && (
           <div className="bg-green-500 text-white text-center p-4 rounded-lg shadow-md mx-auto mb-6 max-w-md text-base">
             {currentEvents.map(event => (
-              <span key={event.idEvento} className="block">{event.nombreEvento} está ocurriendo justo ahora.</span>
+              <span key={event.id} className="block">{event.name} está ocurriendo justo ahora.</span>
             ))}
           </div>
         )}
@@ -117,8 +117,8 @@ export const EventsForAdmin = () => {
                 >
                   {filteredEvents.map(event => (
                     <Marker
-                      key={event.idEvento}
-                      position={{ lat: event.ubicacion.lat, lng: event.ubicacion.lng }}
+                      key={event.id}
+                      position={event.location}
                       onClick={() => handleEventClick(event)}
                     />
                   ))}
@@ -139,13 +139,13 @@ export const EventsForAdmin = () => {
             <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-8">
               {filteredEvents.map(event => (
                 <div
-                  key={event.idEvento}
+                  key={event.id}
                   className="border rounded-lg p-6 shadow-md bg-white cursor-pointer text-base"
                   onClick={() => handleEventClick(event)}
                 >
-                  <h3 className="font-semibold text-xl">{event.nombreEvento}</h3>
-                  <p className="text-sm">{new Date(event.fecha).toDateString()}</p>
-                  <p className="text-sm">Ubicación: {event.ubicacion.lat}, {event.ubicacion.lng}</p>
+                  <h3 className="font-semibold text-xl">{event.name}</h3>
+                  <p className="text-sm">{event.date.toDateString()}</p>
+                  <p className="text-sm">Ubicación: {event.location.lat}, {event.location.lng}</p>
                 </div>
               ))}
             </div>
@@ -166,7 +166,7 @@ export const EventsForAdmin = () => {
                 onChange={setSelectedDate}
                 value={selectedDate}
                 tileClassName={({ date }) => {
-                  const hasEvent = filteredEvents.some(event => new Date(event.fecha).toDateString() === date.toDateString());
+                  const hasEvent = filteredEvents.some(event => event.date.toDateString() === date.toDateString());
                   return hasEvent ? 'bg-yellow-300' : null;
                 }}
               />
@@ -185,21 +185,22 @@ export const EventsForAdmin = () => {
                   onClick={closeModal}
                   className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl"
                 >
-                  <FaTimes />
+                  &times;
                 </button>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <h3 className="text-2xl font-semibold text-white">{selectedEvent.nombreEvento}</h3>
+                  <h3 className="text-2xl font-semibold text-white">{selectedEvent.name}</h3>
                 </div>
               </div>
               <div className="mt-4 p-4 bg-white rounded-b-lg">
-                <p><strong>Fecha:</strong> {new Date(selectedEvent.fecha).toDateString()}</p>
-                <p><strong>Ubicación:</strong> {selectedEvent.lugar}</p>
-                <p><strong>Duración:</strong> {selectedEvent.duracion}</p>
-                <p><strong>Empresas Participantes:</strong> {selectedEvent.empresasAsistente.join(', ')}</p>
+                <p><strong>Fecha:</strong> {selectedEvent.date.toDateString()}</p>
+                <p><strong>Ubicación:</strong> {selectedEvent.place}</p>
+                <p><strong>Duración:</strong> {selectedEvent.duration}</p>
+                <p><strong>Empresas Participantes:</strong> {selectedEvent.companies.join(', ')}</p>
               </div>
             </div>
           </div>
         )}
+
       </div>
 
       <Footer />
