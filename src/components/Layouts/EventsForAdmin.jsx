@@ -5,23 +5,22 @@ import 'react-calendar/dist/Calendar.css';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { NavLink, useLocation } from 'react-router-dom';
-import { FaSearch, FaTimes, FaEdit, FaTrash } from 'react-icons/fa';
+import { FaSearch, FaTimes } from 'react-icons/fa';
 import Fondo from '../../assets/FondoEmpresas.png'; // Asegúrate de que la ruta sea correcta
 
 const containerStyle = {
   width: '100%',
-  height: '600px'
+  height: '600px',
 };
 
 const center = {
   lat: 37.7749,
-  lng: -122.4194
+  lng: -122.4194,
 };
 
 export const EventsForAdmin = () => {
   const [events, setEvents] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [currentEvents, setCurrentEvents] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState(null);
   const location = useLocation(); // Hook para detectar cambios en la ruta
@@ -58,13 +57,6 @@ export const EventsForAdmin = () => {
     fetchEvents();
   }, [location.pathname]); // Ejecutar cuando cambie la ruta
 
-  useEffect(() => {
-    const today = new Date();
-    const ongoingEvents = events.filter(event => new Date(event.fecha).toDateString() === today.toDateString());
-    console.log('Eventos actuales:', ongoingEvents); // Verifica los eventos actuales
-    setCurrentEvents(ongoingEvents);
-  }, [events]);
-
   const filteredEvents = events.filter(event =>
     event.nombreEvento.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -79,37 +71,8 @@ export const EventsForAdmin = () => {
     setSelectedEvent(null);
   };
 
-  const handleEditEvent = () => {
-    if (selectedEvent) {
-      // Lógica para editar el evento
-      // Redirige al formulario con los datos del evento seleccionado para su edición
-      window.location.href = `/EventsForm?id=${selectedEvent.idEvento}`;
-    }
-  };
-
-  const handleDeleteEvent = async () => {
-    if (selectedEvent) {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/evento/${selectedEvent.idEvento}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`Error ${response.status}: ${response.statusText}`);
-        }
-
-        setEvents(events.filter(event => event.idEvento !== selectedEvent.idEvento));
-        setSelectedEvent(null);
-        alert('Evento eliminado correctamente');
-      } catch (error) {
-        console.error('Error al eliminar evento:', error.message);
-        alert('Hubo un problema al eliminar el evento');
-      }
-    }
+  const formatDate = (dateString) => {
+    return new Date(dateString).toDateString();
   };
 
   return (
@@ -117,15 +80,6 @@ export const EventsForAdmin = () => {
       <Header />
 
       <div className="flex flex-col min-h-screen p-4 md:p-8 bg-gray-200">
-        {/* Current Event Message */}
-        {currentEvents.length > 0 && (
-          <div className="bg-green-500 text-white text-center p-4 rounded-lg shadow-md mx-auto mb-6 max-w-md text-base">
-            {currentEvents.map(event => (
-              <span key={event.idEvento} className="block">{event.nombreEvento} está ocurriendo justo ahora.</span>
-            ))}
-          </div>
-        )}
-
         <section className="flex flex-col md:flex-row gap-8">
           <div className="w-full md:w-1/2 flex flex-col items-center justify-center md:items-start">
             {/* Search */}
@@ -142,7 +96,7 @@ export const EventsForAdmin = () => {
 
             {/* Map */}
             <div className="w-full max-w-full mt-8">
-              <LoadScript googleMapsApiKey="AIzaSyB39DzLofNtQbUQSlwfqEfyuD0Eyo0Q1NU">
+              <LoadScript googleMapsApiKey="TU_API_KEY_DE_GOOGLE">
                 <GoogleMap
                   mapContainerStyle={containerStyle}
                   center={center}
@@ -177,7 +131,7 @@ export const EventsForAdmin = () => {
                   onClick={() => handleEventClick(event)}
                 >
                   <h3 className="font-semibold text-xl">{event.nombreEvento}</h3>
-                  <p className="text-sm">{new Date(event.fecha).toDateString()}</p>
+                  <p className="text-sm">{formatDate(event.fecha)}</p>
                   <p className="text-sm">Ubicación: {event.ubicacion.lat}, {event.ubicacion.lng}</p>
                 </div>
               ))}
@@ -208,50 +162,38 @@ export const EventsForAdmin = () => {
         </section>
 
         {selectedEvent && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg w-full max-w-lg relative p-6">
-              <div
-                className="relative w-full h-32 bg-cover bg-center rounded-t-lg"
-                style={{ backgroundImage: `url(${Fondo})` }}
-              >
-                <button
-                  onClick={closeModal}
-                  className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl"
-                >
-                  <FaTimes />
-                </button>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <h3 className="text-2xl font-semibold text-white">{selectedEvent.nombreEvento}</h3>
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <p><strong>Fecha:</strong> {new Date(selectedEvent.fecha).toDateString()}</p>
-                <p><strong>Ubicación:</strong> {selectedEvent.ubicacion}</p>
-                <p><strong>Duración:</strong> {selectedEvent.duracion}</p>
-                <p><strong>Lugar:</strong> {selectedEvent.lugar}</p>
-                <p><strong>Descripción:</strong> {selectedEvent.descripcion}</p>
-                <p><strong>Empresas Asistentes:</strong> {selectedEvent.empresasAsistente.join(', ')}</p>
-              </div>
-
-              <div className="flex justify-end mt-6 space-x-4">
-                <button
-                  onClick={handleEditEvent}
-                  className="text-blue-500 hover:text-blue-700 flex items-center"
-                >
-                  <FaEdit className="mr-2" /> Editar
-                </button>
-                <button
-                  onClick={handleDeleteEvent}
-                  className="text-red-500 hover:text-red-700 flex items-center"
-                >
-                  <FaTrash className="mr-2" /> Eliminar
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-lg w-full max-w-lg relative p-6">
+      <div
+        className="relative w-full h-32 bg-cover bg-center rounded-t-lg"
+        style={{ backgroundImage: `url(${Fondo})` }}
+      >
+        <button
+          onClick={closeModal}
+          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl"
+        >
+          <FaTimes />
+        </button>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <h3 className="text-2xl font-semibold text-white">{selectedEvent.nombreEvento}</h3>
+        </div>
       </div>
+      <div className="mt-4 p-4 bg-white rounded-b-lg">
+        <p><strong>Fecha:</strong> {new Date(selectedEvent.fecha).toDateString()}</p>
+        <p><strong>Ubicación:</strong> {selectedEvent.lugar}</p>
+        <p><strong>Duración:</strong> {selectedEvent.duracion}</p>
+        <p><strong>Empresas Participantes:</strong> 
+          {Array.isArray(selectedEvent.empresasAsistente) && selectedEvent.empresasAsistente.length > 0 
+            ? selectedEvent.empresasAsistente.join(', ') 
+            : 'No hay empresas participantes'}
+        </p>
+      </div>
+    </div>
+  </div>
+)}
+
+      </div>
+
       <Footer />
     </div>
   );
