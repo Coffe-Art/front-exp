@@ -142,7 +142,7 @@ export const CompaniesComprador = () => {
                     <div className="bg-white border rounded-lg overflow-hidden shadow-md flex flex-col items-center p-4 cursor-pointer mb-4">
                         <div className="flex flex-col items-center">
                             <span className="text-black text-sm text-center">
-                                Bienvenido, aquí podrá consultar información sobre sus locales y empresas.<br /><br />
+                                COMPRADOR<br /><br />
                                 Recuerde, no puede borrar una empresa con productos anteriormente registrados en esta, deberá cambiar los productos de empresa o eliminarlos primero.<br />
                                 <br />
                                 ¡Tenga un feliz día!

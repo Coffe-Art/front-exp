@@ -130,7 +130,7 @@ export const EventsComprador = () => {
           <div className="w-full md:w-1/2 flex flex-col items-center">
             {/* Centered Title and Paragraph */}
             <div className="text-center">
-              <h2 className="text-darkyellow text-4xl font-bold mt-6">Eventos Especiales</h2>
+              <h2 className="text-darkyellow text-4xl font-bold mt-6">Comprador</h2>
               <p className="max-w-2xl mt-2 mx-auto text-lg">
                 Aquí puedes ver los eventos especiales que tendrán lugar en Circacia. Descubre qué está pasando y participa en ellos.
               </p>

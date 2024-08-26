@@ -55,7 +55,7 @@ const [selectedProduct, setSelectedProduct] = useState(null);
       const result = await response.json();
 
       const productosArray = Array.isArray(result[0]) ? result[0] : [];
-      console.log('Datos de productos obtenidos:', productosArray); // <-- Aquí se muestra los datos de los productos
+      console.log('Datos de productos obtenidos:', productosArray); 
       setProductos(productosArray);
       setLoading(false);
     } catch (err) {
@@ -212,6 +212,11 @@ const [selectedProduct, setSelectedProduct] = useState(null);
       }
     });
   };
+
+  const handleAddProduct = () => {
+    navigate('/CreateProduct');
+  };
+  
   
   // Llama a la función después de que los productos estén cargados y filtrados
   useEffect(() => {
@@ -311,13 +316,23 @@ const [selectedProduct, setSelectedProduct] = useState(null);
           </div>
         </div>
       </div>
-      <div className="flex-1 p-4">
+      <div className="flex-1 p-4 ">
+      
         {loading ? (
           <p>Espere un segundo cargando productos...</p>
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : (
           <div>
+            <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-bold">Productos</h2>
+                <button
+                  onClick={() => navigate('/createProduct')}
+                  className="text-darkyellow text-xl flex items-center"
+                >
+                  <FaPlus className="mr-2" /> Crear Artesanía
+                </button>
+              </div>
             <div className="flex justify-between items-center mb-4">                  
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -347,6 +362,7 @@ const [selectedProduct, setSelectedProduct] = useState(null);
                     >
                       <FaTrash /> 
                     </button>
+                    
                   </div>
                   <button
                     onClick={(e) => {
@@ -359,8 +375,9 @@ const [selectedProduct, setSelectedProduct] = useState(null);
                   </button>
                 </div>
                 
+                
               ))}
-              
+            
             </div>
           </div>
         )}
@@ -371,7 +388,7 @@ const [selectedProduct, setSelectedProduct] = useState(null);
 {isModalOpen && selectedProduct && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
     <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-3xl">
-      <h2 className="text-xl font-bold mb-4">Detalles del producto</h2>
+      <h2 className="text-xl font-bold mb-4">Detalles de la Artesania¡</h2>
       <div className="flex flex-col md:flex-row">
         {/* Imagen */}
         <div className="relative w-full md:w-1/2 h-48 md:h-auto mb-4 md:mb-0">

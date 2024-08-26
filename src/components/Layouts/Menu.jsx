@@ -7,12 +7,12 @@ import Background from '../../assets/Fondo.png';
 export const Menu = () => {
   const navigate = useNavigate();
 
-  // Obtiene el rol de usuario desde el localStorage
-  const userRole = localStorage.getItem('userType');
+  // Obtiene el rol de usuario desde el localStorage o establece 'anonimo' por defecto
+  const userRole = localStorage.getItem('userType') || 'anonimo';
 
   const handleLogoClick = (e) => {
     e.preventDefault();
-    navigate('/#');
+    navigate('/');
   };
 
   const handleLoginClick = () => {
@@ -22,37 +22,35 @@ export const Menu = () => {
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-white">
       <div className="md:w-1/5 lg:w-1/6 bg-cover bg-center p-4 text-white flex flex-col items-center justify-center" style={{ backgroundImage: `url(${BackgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center', margin: '0' }}>
-        <a href="/#" onClick={handleLogoClick} className="mb-6">
+        <a href="/" onClick={handleLogoClick} className="mb-6">
           <img src={Logo} alt="Logo" className="h-32 w-32" style={{ margin: '0' }} />
         </a>
         <nav className="flex flex-col items-center space-y-6">
           <NavLink to="/menu" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Bienvenido</NavLink>
-          <NavLink to="/profile" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Perfil</NavLink>
-          
-          {/* Rutas para el rol 'comprador' */}
-          {userRole === 'comprador' && (
+
+          {/* Solo muestra el perfil si el usuario no es anonimo */}
+          {userRole !== 'anonimo' && (
+            <NavLink to={userRole === 'comprador' ? '/ProfileComprador' : userRole === 'administrador' ? '/ProfileForAdmin' : '/ProfileForEmpleado'} className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">
+              Perfil
+            </NavLink>
+          )}
+
+          {/* Rutas para el rol 'comprador' o 'anonimo' */}
+          {(userRole === 'comprador' || userRole === 'anonimo') && (
             <>
-              <NavLink to="/product" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Producto</NavLink>
-              <NavLink to="/Cart" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Carrito</NavLink>
-              <NavLink to="/CraftComprador" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Artesanías</NavLink>
-              <NavLink to="/CompaniesComprador" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Compañías</NavLink>
-              <NavLink to="/EventsComprador" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Eventos</NavLink>
+              <NavLink to="/ProductFav" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Favoritos</NavLink>
             </>
           )}
 
           {/* Rutas para los roles 'administrador' y 'empleado' */}
           {(userRole === 'administrador' || userRole === 'empleado') && (
             <>
-              <NavLink to="/CraftforAdmins" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Artesanías</NavLink>
-              <NavLink to="/CreateProduct" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Crear Producto</NavLink>
-              <NavLink to="/CompaniesForAdmin" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Compañías</NavLink>
-              <NavLink to="/EventsForAdmin" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Eventos</NavLink>
               <NavLink to="/SalesOverview" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ventas</NavLink>
             </>
           )}
 
           {/* Ruta común para todos */}
-          <NavLink to="/help" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ayuda</NavLink>
+          <NavLink to="/Help" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ayuda</NavLink>
 
           <button
             className="bg-darkyellow text-white px-4 py-2 rounded hover:bg-lightyellow mt-4 text-lg font-bold"

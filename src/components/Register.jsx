@@ -7,7 +7,7 @@ import Logo from '../../src/assets/Artesanías.png';
 
 export const Register = () => {
     const navigate = useNavigate();
-    const { register, notification } = useAuth();
+    const { register } = useAuth();
     
     const [formData, setFormData] = useState({
         username: '',
@@ -19,6 +19,7 @@ export const Register = () => {
     });
 
     const [errors, setErrors] = useState({});
+    const [notification, setNotification] = useState('');
 
     const handleChange = (e) => {
         const { id, value } = e.target;

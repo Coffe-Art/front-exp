@@ -6,8 +6,8 @@ import BackgroundImage from '../../assets/FondoHeader.jpg';
 export const Header = () => {
   const navigate = useNavigate();
   
-  // Obtener el tipo de usuario del localStorage
-  const userType = localStorage.getItem('userType');
+  // Obtener el tipo de usuario del localStorage, o 'anonimo' si no existe
+  const userType = localStorage.getItem('userType') || 'anonimo';
 
   const handleLoginClick = () => {
     navigate('/login');
@@ -46,7 +46,7 @@ export const Header = () => {
         >
           Menú
         </NavLink>
-        {userType === 'comprador' && (
+        {userType === 'comprador' || userType === 'anonimo' ? (
           <>
             <NavLink 
               to="/Cart" 
@@ -77,7 +77,7 @@ export const Header = () => {
               Eventos
             </NavLink>
           </>
-        )}
+        ) : null}
         {userType === 'administrador' || userType === 'empleado' ? (
           <>
             <NavLink 
@@ -104,15 +104,6 @@ export const Header = () => {
             </NavLink>
           </>
         ) : null}
-        {userType === 'anonimo' && (
-          <NavLink 
-            to="/ProfileAnon" 
-            className="nav-link text-white text-lg font-semibold hover:text-darkyellow mb-2 md:mb-0" 
-            activeClassName="font-bold"
-          >
-            Perfil Anónimo
-          </NavLink>
-        )}
       </nav>
       <div className="flex justify-center mt-4 md:mt-0">
         <button

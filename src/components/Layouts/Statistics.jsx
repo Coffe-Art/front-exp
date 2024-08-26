@@ -82,7 +82,10 @@ export const Statistics = () => {
           <Bar data={data} options={options} />
         </div>
       </div>
-      
+
+      <div>
+      <h1 className="flex justify-center text-darck text-2xl md:text-4xl font-bold mt-4 mb-6">DATOS DE ACTIVIDAD</h1>
+      <p className="flex justify-center text-center text-black text-sm md:text-lg mx-auto max-w-2xl mb-12">Muestra las acciones y eventos relevantes realizados dentro del sistema, permitiendo un seguimiento detallado de las operaciones y movimientos que se llevan a cabo.</p>
       <div className="flex flex-wrap justify-center">
         {['Productos Vendidos', 'Clientes Satisfechos', 'Productos en Inventario', 'Proveedores Asociados'].map((item, index) => (
           <div
@@ -101,6 +104,7 @@ export const Statistics = () => {
             )}
           </div>
         ))}
+        </div>
       </div>
     </div>
   );

@@ -8,9 +8,9 @@ import BackgroundImage from '../../assets/BackgroundLogin.jpg';
 import Logo from '../../assets/Artesanías.png';
 
 export const UpdateProducto = () => {
-  const { idProducto } = useParams(); // Obtiene el ID del producto de la URL
+  const { idProducto } = useParams();
   const navigate = useNavigate();
-  const { getProductoById, updateProducto } = useContext(ProductoContext); // Asegúrate de tener estos métodos en tu contexto
+  const { getProductoById, updateProducto } = useContext(ProductoContext);
   const { empresas, setEmpresas } = useEmpresa();
 
   const [formData, setFormData] = useState({
@@ -24,18 +24,13 @@ export const UpdateProducto = () => {
     idAdministrador: localStorage.getItem('userId') || '',
     materiales: '',
     empresasSeleccionadas: [],
-    imagenActual: '', // Añadir campo para la URL de la imagen actual
+    imagenActual: '', // Campo para almacenar la URL de la imagen actual
   });
-  
 
-  const [file, setFile] = useState(null);
   const [errors, setErrors] = useState({});
   const [notification, setNotification] = useState('');
   const [empresasOptions, setEmpresasOptions] = useState([]);
   const [categoriasOptions, setCategoriasOptions] = useState([]);
-  const [fileName, setFileName] = useState('');
-
-  const allowedTypes = ['image/jpeg', 'image/png'];
 
   useEffect(() => {
     const fetchEmpresas = async () => {
@@ -81,6 +76,8 @@ export const UpdateProducto = () => {
     fetchEmpresas();
   }, [setEmpresas]);
 
+
+  
   useEffect(() => {
     const fetchCategorias = () => {
       const categorias = [
@@ -122,9 +119,6 @@ export const UpdateProducto = () => {
         });
 
         if (!response.ok) {
-          if (response.status === 401) {
-            throw new Error('Token de autenticación inválido o expirado');
-          }
           throw new Error(`Error ${response.status}: ${response.statusText}`);
         }
 
@@ -140,6 +134,7 @@ export const UpdateProducto = () => {
           idAdministrador: data.idAdministrador || '',
           materiales: data.materiales || '',
           empresasSeleccionadas: data.empresasSeleccionadas || [],
+          imagenActual: data.imagen || '', // Almacena la URL de la imagen actual
         });
       } catch (error) {
         console.error('Error al obtener producto:', error.message);
@@ -157,24 +152,16 @@ export const UpdateProducto = () => {
     }));
   };
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    setFile(selectedFile);
-    setFileName(selectedFile ? selectedFile.name : '');
-  };
-
   const handleSelectChange = (selectedOptions, actionMeta) => {
     if (actionMeta.name === 'categoria') {
-      // Manejo de la categoría
       const selectedCategory = selectedOptions ? selectedOptions.value : '';
       setFormData(prevData => ({
         ...prevData,
         categoria: selectedCategory
       }));
     } else if (actionMeta.name === 'codigoempresa') {
-      // Manejo de las empresas
       const empresasSeleccionadas = selectedOptions ? selectedOptions.map(option => option.value) : [];
-      const selectedEmpresa = selectedOptions.length > 0 ? selectedOptions[0] : null; // Asumir la primera opción para 'publicadoPor'
+      const selectedEmpresa = selectedOptions.length > 0 ? selectedOptions[0] : null;
       const codigoempresa = empresasSeleccionadas.length > 0 ? empresasSeleccionadas[0] : '';
       const publicadoPor = selectedEmpresa ? selectedEmpresa.label : '';
     
@@ -191,7 +178,6 @@ export const UpdateProducto = () => {
     e.preventDefault();
     const newErrors = {};
   
-    // Validaciones
     if (!formData.nombre.trim()) newErrors.nombre = 'El nombre es obligatorio';
     if (!formData.categoria.trim()) newErrors.categoria = 'La categoría es obligatoria';
     if (formData.precio <= 0) newErrors.precio = 'El precio debe ser un número positivo';
@@ -203,14 +189,16 @@ export const UpdateProducto = () => {
   
     if (Object.keys(newErrors).length === 0) {
       try {
-        // Actualizar producto
         const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/producto/actualizarProducto/${idProducto}`, {
           method: 'PUT',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify({
+            ...formData,
+            imagen: formData.imagenActual // Enviar la URL de la imagen actual
+          }),
         });
   
         if (!response.ok) {
@@ -238,7 +226,7 @@ export const UpdateProducto = () => {
         backgroundImage: `url(${BackgroundImage})`, 
       }}
     >
-    <NavLink to="/CraftforAdmins" className="absolute top-4 left-4">
+      <NavLink to="/CraftforAdmins" className="absolute top-4 left-4">
         <FaHome className="text-darkyellow text-4xl" />
       </NavLink>
       <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full space-y-6">
@@ -259,16 +247,16 @@ export const UpdateProducto = () => {
             {errors.nombre && <p className="text-red-500 text-xs">{errors.nombre}</p>}
           </div>
           <div className="mb-4">
-  <label className="block text-gray-700">Categoría</label>
-  <Select
-    name="categoria"
-    options={categoriasOptions}
-    value={categoriasOptions.find(option => option.value === formData.categoria)}
-    onChange={handleSelectChange}
-    className="mt-1"
-  />
-  {errors.categoria && <p className="text-red-500 text-xs">{errors.categoria}</p>}
-</div>
+            <label className="block text-gray-700">Categoría</label>
+            <Select
+              name="categoria"
+              options={categoriasOptions}
+              value={categoriasOptions.find(option => option.value === formData.categoria)}
+              onChange={handleSelectChange}
+              className="mt-1"
+            />
+            {errors.categoria && <p className="text-red-500 text-xs">{errors.categoria}</p>}
+          </div>
           <div className="mb-4">
             <label className="block text-gray-700">Precio</label>
             <input
@@ -302,50 +290,35 @@ export const UpdateProducto = () => {
             {errors.cantidad && <p className="text-red-500 text-xs">{errors.cantidad}</p>}
           </div>
           <div className="mb-4">
+            <label className="block text-gray-700">Empresa Publicadora</label>
+            <Select
+              name="codigoempresa"
+              options={empresasOptions}
+              value={empresasOptions.filter(option => formData.empresasSeleccionadas.includes(option.value))}
+              onChange={handleSelectChange}
+              isMulti
+              className="mt-1"
+            />
+            {errors.codigoempresa && <p className="text-red-500 text-xs">{errors.codigoempresa}</p>}
+          </div>
+          <div className="mb-4">
             <label className="block text-gray-700">Materiales</label>
             <input
               type="text"
               name="materiales"
               value={formData.materiales}
               onChange={handleChange}
-              className="w-full border border-gray-300 rounded px-3 py-2 mt-1"
+              className={`w-full border ${errors.materiales ? 'border-red-500' : 'border-gray-300'} rounded px-3 py-2 mt-1`}
             />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Empresa</label>
-            <Select
-  name="codigoempresa"
-  options={empresasOptions}
-  value={empresasOptions.filter(option => formData.empresasSeleccionadas.includes(option.value))}
-  onChange={handleSelectChange}
-  isMulti
-  className="mt-1"
-/>
-            {errors.codigoempresa && <p className="text-red-500 text-xs">{errors.codigoempresa}</p>}
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Imagen del Producto</label>
-            <input
-              type="file"
-              accept={allowedTypes.join(',')}
-              onChange={handleFileChange}
-              className="w-full border border-gray-300 rounded px-3 py-2 mt-1"
-            />
-            <p className="text-xs text-gray-500 mt-1">{fileName ? `Archivo seleccionado: ${fileName}` : 'Selecciona una imagen (JPG o PNG)'}</p>
           </div>
           <button
             type="submit"
-            className="w-full bg-darkyellow text-white py-2 rounded hover:bg-lightyellow"
+            className="bg-darkyellow text-white font-bold py-2 px-4 rounded-full hover:bg-yellow-600 w-full"
           >
             Actualizar Producto
           </button>
-          {notification && <p className="mt-4 text-center">{notification}</p>}
         </form>
-        <div className="mt-4 text-center">
-          <NavLink to="/CraftforAdmins" className="text-darkyellow hover:underline flex items-center justify-center">
-           Volver a artesanias 
-          </NavLink>
-        </div>
+        {notification && <p className="text-green-500 text-center mt-4">{notification}</p>}
       </div>
     </div>
   );

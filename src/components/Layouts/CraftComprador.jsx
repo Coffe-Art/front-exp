@@ -79,7 +79,7 @@ export const CraftComprador = () => {
         {/* Filtro en la esquina izquierda */}
         <div className={`md:w-1/4 lg:w-1/5 bg-white border rounded-lg overflow-hidden shadow-md p-4 ${isFilterOpen ? 'block' : 'hidden md:block'}`}>
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-bold">Filtros</h2>
+            <h2 className="text-lg font-bold">Comprador</h2>
             <button onClick={toggleFilter} className="text-darkyellow text-xl">
               {/* Add icon here if needed */}
             </button>
