@@ -23,6 +23,8 @@ export const EventsForm = () => {
   const [errors, setErrors] = useState({});
   const [notification, setNotification] = useState('');
   const [empresasOptions, setEmpresasOptions] = useState([]);
+  const [charCount, setCharCount] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchEmpresas = async () => {
@@ -75,10 +77,22 @@ export const EventsForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    
+    // Contador de caracteres y validación de la descripción
+    if (name === 'descripcion') {
+      if (value.length <= 200) {
+        setFormData((prevState) => ({
+          ...prevState,
+          [name]: value,
+        }));
+        setCharCount(value.length);
+      }
+    } else {
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSelectChange = (selectedOptions) => {
@@ -90,9 +104,9 @@ export const EventsForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     
     const requiredFields = ['nombreEvento', 'fecha', 'ubicacion', 'duracion', 'lugar', 'descripcion'];
-    
     const newErrors = {};
     
     requiredFields.forEach((field) => {
@@ -108,6 +122,7 @@ export const EventsForm = () => {
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       setNotification('Todos los campos son requeridos');
+      setIsSubmitting(false);
       return;
     }
     
@@ -141,6 +156,7 @@ export const EventsForm = () => {
     } catch (error) {
       console.error('Error al crear evento:', error);
       setNotification('Error al crear el evento, intenta de nuevo');
+      setIsSubmitting(false);
     }
   };
   
@@ -176,6 +192,7 @@ export const EventsForm = () => {
               value={formData.nombreEvento}
               onChange={handleChange}
             />
+            <p className="text-gray-600 text-sm mt-2">Indica el nombre del evento al que asistirá tu empresa</p>
             {errors.nombreEvento && <p className="text-red-500 text-xs italic">{errors.nombreEvento}</p>}
           </div>
           <div className="mb-4">
@@ -205,6 +222,7 @@ export const EventsForm = () => {
               value={formData.ubicacion}
               onChange={handleChange}
             />
+            <p className="text-gray-600 text-sm mt-2">¿En qué ciudad se llevará a cabo el evento?</p>
             {errors.ubicacion && <p className="text-red-500 text-xs italic">{errors.ubicacion}</p>}
           </div>
           <div className="mb-4">
@@ -220,6 +238,7 @@ export const EventsForm = () => {
               value={formData.duracion}
               onChange={handleChange}
             />
+            <p className="text-gray-600 text-sm mt-2">Especifica la duración del evento en horas o días</p>
             {errors.duracion && <p className="text-red-500 text-xs italic">{errors.duracion}</p>}
           </div>
           <div className="mb-4">
@@ -235,6 +254,7 @@ export const EventsForm = () => {
               value={formData.lugar}
               onChange={handleChange}
             />
+            <p className="text-gray-600 text-sm mt-2">Indica el lugar exacto dentro de la ciudad donde se realizará el evento</p>
             {errors.lugar && <p className="text-red-500 text-xs italic">{errors.lugar}</p>}
           </div>
           <div className="mb-4">
@@ -248,32 +268,36 @@ export const EventsForm = () => {
               placeholder="Descripción del Evento"
               value={formData.descripcion}
               onChange={handleChange}
-            />
+              maxLength={200}
+            ></textarea>
+            <p className="text-gray-600 text-sm mt-2">Máximo 200 caracteres ({charCount}/200)</p>
             {errors.descripcion && <p className="text-red-500 text-xs italic">{errors.descripcion}</p>}
           </div>
           <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2">
+            <label className="block text-black text-sm font-bold mb-2" htmlFor="empresasAsistente">
               Empresas Asistentes
             </label>
             <Select
-              isMulti
+              id="empresasAsistente"
+              name="empresasAsistente"
               options={empresasOptions}
+              isMulti
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
+              value={formData.empresasAsistente.map(label => ({ label, value: label }))}
               onChange={handleSelectChange}
-              value={empresasOptions.filter(option =>
-                formData.empresasAsistente.includes(option.label)
-              )}
             />
             {errors.empresasAsistente && <p className="text-red-500 text-xs italic">{errors.empresasAsistente}</p>}
           </div>
           <div className="flex items-center justify-between">
-            <button
-              type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            <button 
+              type="submit" 
+              className={`bg-darkyellow hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+              disabled={isSubmitting}
             >
-              Crear Evento
+              {isSubmitting ? 'Creando...' : 'Enviar Informacion'}
             </button>
-            <NavLink to="/EventsForAdmin" className="text-blue-500 hover:text-blue-800">
-              <FaTimes className="inline mr-2" /> Cancelar
+            <NavLink to="/EventsForAdmin" className="inline-block align-baseline font-bold text-sm text-darkyellow hover:text-yellow-700">
+              <FaTimes className="text-2xl" />
             </NavLink>
           </div>
         </form>

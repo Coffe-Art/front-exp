@@ -40,7 +40,7 @@ export const LoginCompanies = () => {
         }
 
         try {
-            const response = await fetch('https://backtesteo.onrender.com/api/empresa/nuevaEmpresa', {
+            const response = await fetch('https://checkpoint-9tp4.onrender.com/api/empresa/nuevaEmpresa', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ export const LoginCompanies = () => {
                 backgroundImage: `url(${BackgroundImage})`, 
             }}
         >
-            <NavLink to="/Companies" className="absolute top-4 left-4">
+            <NavLink to="/CompaniesForAdmin" className="absolute top-4 left-4">
                 <FaHome className="text-darkyellow text-4xl" />
             </NavLink>
             <div className="relative bg-white p-5 rounded-lg shadow-md w-full max-w-md mx-4 sm:mx-8 md:mx-16 lg:mx-32">

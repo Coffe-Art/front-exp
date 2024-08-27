@@ -49,6 +49,11 @@ export const EventsForAdmin = () => {
         const data = await response.json();
         console.log('Eventos obtenidos:', data); // Verifica los datos
         setEvents(data);
+        
+        // Mostrar todos los eventos de la empresa en la consola
+        const eventosEmpresa = data.filter(event => event.idEmpresa === idAdministrador);
+        console.log('Eventos de la empresa:', eventosEmpresa);
+
       } catch (error) {
         console.error('Error al obtener eventos:', error.message);
       }
@@ -72,8 +77,10 @@ export const EventsForAdmin = () => {
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toDateString();
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+    return new Date(dateString).toLocaleDateString('es-ES', options);
   };
+  
 
   return (
     <div className="min-h-screen bg-gray-200 font-sans">
@@ -124,18 +131,25 @@ export const EventsForAdmin = () => {
             </div>
 
             <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-8">
-              {filteredEvents.map(event => (
-                <div
-                  key={event.idEvento}
-                  className="border rounded-lg p-6 shadow-md bg-white cursor-pointer text-base"
-                  onClick={() => handleEventClick(event)}
-                >
-                  <h3 className="font-semibold text-xl">{event.nombreEvento}</h3>
-                  <p className="text-sm">{formatDate(event.fecha)}</p>
-                  <p className="text-sm">Ubicación: {event.ubicacion.lat}, {event.ubicacion.lng}</p>
-                </div>
-              ))}
-            </div>
+  {filteredEvents.map(event => (
+    <div
+      key={event.idEvento}
+      className="border rounded-lg p-6 shadow-md bg-white cursor-pointer text-base"
+    >
+      <h3 className="font-semibold text-xl">{event.nombreEvento}</h3>
+      <p className="text-sm">{formatDate(event.fecha)}</p>
+      <p className="text-sm">{event.descripcion}</p>
+      <p className="text-sm">Empresa Asistente: {event.empresasAsistente}</p>
+      <button
+        onClick={() => handleEventClick(event)}
+        className="mt-4 bg-darkyellow text-white px-4 py-2 rounded hover:bg-yellow-600"
+      >
+        Ver información completa
+      </button>
+    </div>
+  ))}
+</div>
+
 
             {/* Create New Event Container */}
             <div className="border rounded-lg p-6 shadow-md bg-white mt-8 max-w-md mx-auto text-base">
@@ -179,14 +193,13 @@ export const EventsForAdmin = () => {
         </div>
       </div>
       <div className="mt-4 p-4 bg-white rounded-b-lg">
-        <p><strong>Fecha:</strong> {new Date(selectedEvent.fecha).toDateString()}</p>
-        <p><strong>Ubicación:</strong> {selectedEvent.lugar}</p>
+        <p><strong>Fecha:</strong> {formatDate(selectedEvent.fecha)}</p>
+        <p><strong>Ubicación:</strong> {selectedEvent.ubicacion}</p>
         <p><strong>Duración:</strong> {selectedEvent.duracion}</p>
         <p><strong>Empresas Participantes:</strong> 
-          {Array.isArray(selectedEvent.empresasAsistente) && selectedEvent.empresasAsistente.length > 0 
-            ? selectedEvent.empresasAsistente.join(', ') 
-            : 'No hay empresas participantes'}
+          {selectedEvent.empresasAsistente ? selectedEvent.empresasAsistente : 'No hay empresas participantes'}
         </p>
+        <p className="mt-4"><strong>Descripción:</strong> {selectedEvent.descripcion}</p>
       </div>
     </div>
   </div>
