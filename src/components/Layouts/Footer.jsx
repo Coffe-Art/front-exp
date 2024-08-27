@@ -36,15 +36,11 @@ export const Footer = () => {
           <a href="https://www.pinterest.com/" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform duration-300">
             <FaPinterestP className="text-2xl" />
           </a>
-          <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform duration-300">
+          <a href="https://youtu.be/P7kEcYwBBsk?si=30X6NEYY1LkF9Sdh/" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform duration-300">
             <FaYoutube className="text-2xl" />
-          </a>
-          <a href="https://web.whatsapp.com/" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform duration-300">
-            <FaWhatsapp className="text-2xl" />
           </a>
         </div>
       </div>
     </footer>
   );
 };
-
