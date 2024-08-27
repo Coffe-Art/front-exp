@@ -115,8 +115,8 @@ export const AuthProvider = ({ children }) => {
                 localStorage.setItem('userType', decodedToken.tipoUsuario);
             }
         } else {
-            // Si no hay token, establecer el tipo de usuario a 'comprador'
-            setUserType('comprador');
+            // Si no hay token, establecer el tipo de usuario a 'anonimo'
+            setUserType('anonimo');
         }
     }, []);
 
