@@ -105,7 +105,7 @@ export const UpdateCompany = () => {
                 prevEmpresas.map(emp => emp.codigoempresa === id ? { ...emp, ...updatedEmpresa } : emp)
             );
 
-            navigate('/companies');
+            navigate('/CompaniesForAdmin');
         } catch (error) {
             console.error('Error al actualizar la empresa:', error);
             setError('Error al actualizar la empresa.');
@@ -185,3 +185,4 @@ export const UpdateCompany = () => {
         </div>
     );
 };
+
