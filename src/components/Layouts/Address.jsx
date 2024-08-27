@@ -1,25 +1,18 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { FaHome } from 'react-icons/fa';
-import Image from '../../assets/LogoCoffe.png'; // Puedes cambiar esta imagen si es necesario
+import Image from '../../assets/LogoCoffe.png'; 
 
 export const Address = () => {
   return (
     <div className="min-h-screen bg-gray-200 flex flex-col md:flex-row">
-      {/* Sección de la Imagen de Cabecera */}
       <div className="w-full md:w-1/3 bg-darkpurple flex items-center justify-center relative">
-        <NavLink to="/Home" className="absolute top-4 left-4">
+        <NavLink to="/#" className="absolute top-4 left-4">
           <FaHome className="text-darkyellow text-4xl" />
         </NavLink>
-        <img 
-          src={Image} 
-          alt="HeaderMain" 
-          className="w-11/12 h-auto max-w-2xl p-4" // Ancho aumentado al 11/12
-          style={{ imageRendering: 'auto' }} // Asegura una buena calidad de imagen
-        />
+        <img src={Image} alt="HeaderMain" className="w-11/12 h-auto max-w-2xl p-4" style={{ imageRendering: 'auto' }} />
       </div>
 
-      {/* Sección de Contenido de Dirección */}
       <div className="w-full md:w-2/3 bg-gray-200 flex flex-col justify-center p-8">
         <div className="container mx-auto text-center">
           <h1 className="text-3xl md:text-5xl font-bold mb-8 text-darkpurple">
@@ -55,7 +48,7 @@ export const Address = () => {
           <p className="text-base md:text-lg text-gray-700 leading-relaxed">
             Teléfono: +123 456 7890<br />
             Email: contacto@coffeeart.com<br />
-            Sitio Web: <a href="https://www.coffeeart.com" className="text-darkyellow hover:underline">www.coffeeart.com</a>
+            Sitio Web: <a href="" className="text-darkyellow hover:underline">www</a>
           </p>
         </div>
       </div>
