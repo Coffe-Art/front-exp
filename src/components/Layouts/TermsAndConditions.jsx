@@ -6,23 +6,15 @@ import Image from '../../assets/LogoCoffe.png';
 export const TermsAndConditions = () => {
   return (
     <div className="min-h-screen bg-gray-200 flex flex-col md:flex-row">
-      {/* Sección de la Imagen de Cabecera */}
       <div className="w-full md:w-1/3 bg-darkpurple flex items-center justify-center relative">
-        <NavLink to="/History" className="absolute top-4 left-4">
+        <NavLink to="/#" className="absolute top-4 left-4">
           <FaHome className="text-lightyellow text-4xl" />
         </NavLink>
-        <img 
-          src={Image} 
-          alt="HeaderMain" 
-          className="w-11/12 h-auto max-w-2xl p-4" // Ancho aumentado al 11/12
-          style={{ imageRendering: 'auto' }} // Asegura una buena calidad de imagen
-        />
+        <img src={Image} alt="HeaderMain" className="w-11/12 h-auto max-w-2xl p-4" style={{ imageRendering: 'auto' }} />
       </div>
 
-      {/* Sección de Contenido de Términos y Condiciones */}
       <div className="w-full md:w-2/3 bg-gray-200 flex flex-col justify-center p-8 overflow-y-auto">
         <div className="container mx-auto max-h-[calc(100vh-8rem)] overflow-y-auto">
-          {/* Contenido centrado */}
           <div className="text-center mb-8">
             <h1 className="text-4xl md:text-5xl font-bold mb-4 text-darkyellow">
               Términos y Condiciones
@@ -31,8 +23,6 @@ export const TermsAndConditions = () => {
               Bienvenido a Coffee Art. Estos términos y condiciones describen las reglas y regulaciones para el uso del sitio web de Coffee Art. Al acceder y utilizar nuestro sitio, aceptas cumplir con estos términos. Si no estás de acuerdo con alguna parte de estos términos, no debes utilizar nuestro sitio.
             </p>
           </div>
-
-          {/* Contenido alineado a la izquierda */}
           <h2 className="text-3xl md:text-4xl font-semibold mb-6 text-darkpurple text-left">
             1. Aceptación de los Términos
           </h2>
