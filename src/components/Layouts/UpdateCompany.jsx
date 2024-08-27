@@ -10,6 +10,7 @@ export const UpdateCompany = () => {
     const [direccion, setDireccion] = useState('');
     const [descripcion, setDescripcion] = useState('');
     const [error, setError] = useState('');
+    const [notification, setNotification] = useState('');
     const [idadministrador, setIdAdministrador] = useState('');
     const navigate = useNavigate();
     const { setEmpresas } = useEmpresa();
@@ -97,15 +98,19 @@ export const UpdateCompany = () => {
                 console.error('Error en la actualización de la empresa:', errorDetails);
                 throw new Error('Error en la actualización de la empresa');
             }
-
+            
             const result = await response.json();
             console.log('Empresa actualizada exitosamente:', result);
+
+            setNotification('Empresa actualizada exitosamente');
+            setTimeout(() => {
+                setNotification('');
+                navigate('/CompaniesForAdmin');
+            }, 2000);
 
             setEmpresas(prevEmpresas =>
                 prevEmpresas.map(emp => emp.codigoempresa === id ? { ...emp, ...updatedEmpresa } : emp)
             );
-
-            navigate('/CompaniesForAdmin');
         } catch (error) {
             console.error('Error al actualizar la empresa:', error);
             setError('Error al actualizar la empresa.');
@@ -126,8 +131,13 @@ export const UpdateCompany = () => {
                 <img src={Logo} alt="Logo" className="h-24 w-24 mx-auto mb-6" />
                 <h1 className="text-2xl font-bold mb-6 text-center">Actualizar Empresa</h1>
                 {error && (
-                    <div className="bg-red-500 text-white p-2 rounded mb-4">
-                        {error}
+                    <div className="border px-4 py-3 rounded relative mb-4 bg-red-100 border-red-400 text-red-700" role="alert">
+                        <span className="block sm:inline">{error}</span>
+                    </div>
+                )}
+                {notification && (
+                    <div className={`border px-4 py-3 rounded relative mb-4 ${notification.startsWith('Error') ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700'}`} role="alert">
+                        <span className="block sm:inline">{notification}</span>
                     </div>
                 )}
                 <form onSubmit={handleSubmit}>
@@ -185,4 +195,3 @@ export const UpdateCompany = () => {
         </div>
     );
 };
-
