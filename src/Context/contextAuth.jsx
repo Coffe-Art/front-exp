@@ -93,7 +93,7 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         setToken(null);
         setUserId(null);
-        setUserType('anonimo'); // Restablecer el tipo de usuario a 'comprador'
+        setUserType('anonimo'); // Restablecer el tipo de usuario a 'anonimo'
         localStorage.removeItem('token');
         localStorage.removeItem('userId');
         localStorage.removeItem('userType');
@@ -118,6 +118,19 @@ export const AuthProvider = ({ children }) => {
             // Si no hay token, establecer el tipo de usuario a 'anonimo'
             setUserType('anonimo');
         }
+
+        // Limpiar localStorage cuando el usuario cierra la pestaña o ventana
+        const handleBeforeUnload = () => {
+            localStorage.removeItem('token');
+            localStorage.removeItem('userId');
+            localStorage.removeItem('userType');
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
     }, []);
 
     return (
