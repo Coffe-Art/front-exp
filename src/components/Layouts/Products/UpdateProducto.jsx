@@ -24,7 +24,7 @@ export const UpdateProducto = () => {
     idAdministrador: localStorage.getItem('userId') || '',
     materiales: '',
     empresasSeleccionadas: [],
-    imagenActual: '', // Campo para almacenar la URL de la imagen actual
+    imagenActual: '',
   });
 
   const [errors, setErrors] = useState({});
@@ -76,8 +76,6 @@ export const UpdateProducto = () => {
     fetchEmpresas();
   }, [setEmpresas]);
 
-
-  
   useEffect(() => {
     const fetchCategorias = () => {
       const categorias = [
@@ -134,7 +132,7 @@ export const UpdateProducto = () => {
           idAdministrador: data.idAdministrador || '',
           materiales: data.materiales || '',
           empresasSeleccionadas: data.empresasSeleccionadas || [],
-          imagenActual: data.imagen || '', // Almacena la URL de la imagen actual
+          imagenActual: data.imagen || '',
         });
       } catch (error) {
         console.error('Error al obtener producto:', error.message);
@@ -197,7 +195,7 @@ export const UpdateProducto = () => {
           },
           body: JSON.stringify({
             ...formData,
-            imagen: formData.imagenActual // Enviar la URL de la imagen actual
+            imagen: formData.imagenActual
           }),
         });
   
@@ -233,92 +231,104 @@ export const UpdateProducto = () => {
         <div className="flex justify-center">
           <img src={Logo} alt="Logo" className="w-32 mb-4" />
         </div>
-        <h1 className="text-2xl font-bold mb-4 text-center">Actualizar Producto</h1>
+        <h1 className="text-2xl font-bold mb-4">Actualizar Producto</h1>
+        {notification && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+            <span className="block sm:inline">{notification}</span>
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-gray-700">Nombre del Producto</label>
-            <input
-              type="text"
-              name="nombre"
-              value={formData.nombre}
-              onChange={handleChange}
-              className={`w-full border ${errors.nombre ? 'border-red-500' : 'border-gray-300'} rounded px-3 py-2 mt-1`}
-            />
-            {errors.nombre && <p className="text-red-500 text-xs">{errors.nombre}</p>}
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Categoría</label>
-            <Select
-              name="categoria"
-              options={categoriasOptions}
-              value={categoriasOptions.find(option => option.value === formData.categoria)}
-              onChange={handleSelectChange}
-              className="mt-1"
-            />
-            {errors.categoria && <p className="text-red-500 text-xs">{errors.categoria}</p>}
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Precio</label>
-            <input
-              type="number"
-              name="precio"
-              value={formData.precio}
-              onChange={handleChange}
-              className={`w-full border ${errors.precio ? 'border-red-500' : 'border-gray-300'} rounded px-3 py-2 mt-1`}
-            />
-            {errors.precio && <p className="text-red-500 text-xs">{errors.precio}</p>}
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Descripción</label>
-            <textarea
-              name="descripcion"
-              value={formData.descripcion}
-              onChange={handleChange}
-              className={`w-full border ${errors.descripcion ? 'border-red-500' : 'border-gray-300'} rounded px-3 py-2 mt-1`}
-            />
-            {errors.descripcion && <p className="text-red-500 text-xs">{errors.descripcion}</p>}
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Cantidad</label>
-            <input
-              type="number"
-              name="cantidad"
-              value={formData.cantidad}
-              onChange={handleChange}
-              className={`w-full border ${errors.cantidad ? 'border-red-500' : 'border-gray-300'} rounded px-3 py-2 mt-1`}
-            />
-            {errors.cantidad && <p className="text-red-500 text-xs">{errors.cantidad}</p>}
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Empresa Publicadora</label>
-            <Select
-              name="codigoempresa"
-              options={empresasOptions}
-              value={empresasOptions.filter(option => formData.empresasSeleccionadas.includes(option.value))}
-              onChange={handleSelectChange}
-              isMulti
-              className="mt-1"
-            />
-            {errors.codigoempresa && <p className="text-red-500 text-xs">{errors.codigoempresa}</p>}
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700">Materiales</label>
-            <input
-              type="text"
-              name="materiales"
-              value={formData.materiales}
-              onChange={handleChange}
-              className={`w-full border ${errors.materiales ? 'border-red-500' : 'border-gray-300'} rounded px-3 py-2 mt-1`}
-            />
+          <div className="space-y-4">
+            <div className="flex flex-col">
+              <label className="text-lg font-medium">Nombre</label>
+              <input
+                type="text"
+                name="nombre"
+                value={formData.nombre}
+                onChange={handleChange}
+                className={`border p-2 rounded ${errors.nombre ? 'border-red-500' : ''}`}
+              />
+              {errors.nombre && <p className="text-red-500 text-sm">{errors.nombre}</p>}
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-lg font-medium">Categoría</label>
+              <Select
+                options={categoriasOptions}
+                name="categoria"
+                value={categoriasOptions.find(option => option.value === formData.categoria) || ''}
+                onChange={handleSelectChange}
+                className={errors.categoria ? 'border-red-500' : ''}
+              />
+              {errors.categoria && <p className="text-red-500 text-sm">{errors.categoria}</p>}
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-lg font-medium">Precio</label>
+              <input
+                type="number"
+                name="precio"
+                value={formData.precio}
+                onChange={handleChange}
+                className={`border p-2 rounded ${errors.precio ? 'border-red-500' : ''}`}
+              />
+              {errors.precio && <p className="text-red-500 text-sm">{errors.precio}</p>}
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-lg font-medium">Descripción</label>
+              <textarea
+                name="descripcion"
+                value={formData.descripcion}
+                onChange={handleChange}
+                className={`border p-2 rounded ${errors.descripcion ? 'border-red-500' : ''}`}
+              />
+              {errors.descripcion && <p className="text-red-500 text-sm">{errors.descripcion}</p>}
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-lg font-medium">Cantidad</label>
+              <input
+                type="number"
+                name="cantidad"
+                value={formData.cantidad}
+                onChange={handleChange}
+                className={`border p-2 rounded ${errors.cantidad ? 'border-red-500' : ''}`}
+              />
+              {errors.cantidad && <p className="text-red-500 text-sm">{errors.cantidad}</p>}
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-lg font-medium">Empresa</label>
+              <Select
+                options={empresasOptions}
+                isMulti
+                name="codigoempresa"
+                value={empresasOptions.filter(option => formData.empresasSeleccionadas.includes(option.value))}
+                onChange={handleSelectChange}
+                className={errors.codigoempresa ? 'border-red-500' : ''}
+              />
+              {errors.codigoempresa && <p className="text-red-500 text-sm">{errors.codigoempresa}</p>}
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-lg font-medium">Materiales</label>
+              <input
+                type="text"
+                name="materiales"
+                value={formData.materiales}
+                onChange={handleChange}
+                className="border p-2 rounded"
+              />
+            </div>
           </div>
           <button
             type="submit"
-            className="bg-darkyellow text-white font-bold py-2 px-4 rounded-full hover:bg-yellow-600 w-full"
+            className="w-full bg-darkyellow text-white py-2 px-4 rounded mt-6"
           >
             Actualizar Producto
           </button>
         </form>
-        {notification && <p className="text-green-500 text-center mt-4">{notification}</p>}
       </div>
     </div>
   );
