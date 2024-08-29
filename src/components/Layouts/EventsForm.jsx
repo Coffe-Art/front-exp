@@ -34,7 +34,7 @@ export const EventsForm = () => {
             throw new Error('Token de autenticación no encontrado');
           }
 
-          const response = await fetch(`https://backtesteo.onrender.com/api/empresa/consultarPorAdministrador/${idAdministrador}`, {
+          const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/empresa/consultarPorAdministrador/${idAdministrador}`, {
             headers: {
               'Authorization': `Bearer ${token}`,
             },
@@ -113,7 +113,7 @@ export const EventsForm = () => {
     
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3000/api/evento/', {
+      const response = await fetch('https://checkpoint-9tp4.onrender.com/api/evento/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

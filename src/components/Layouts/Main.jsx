@@ -55,7 +55,7 @@ export const Main = () => {
       <Statistics /> {/* Usa el nuevo componente aquí */}
 
       <div className="bg-gray-200 py-16">
-        <div className="text-center mb-16 px-4">
+        <div className="text-center mb-10 px-4">
           <h1 className="text-black text-2xl md:text-4xl font-bold mb-6">PRODUCTOS MÁS VENDIDOS</h1>
           <p className="text-black text-sm md:text-lg mx-auto max-w-2xl mb-12">
             Nuestros "Productos Más Vendidos" ofrecen una visión clave de las preferencias de nuestros clientes y las tendencias actuales del mercado. Esta sección destaca los productos que han sido los más solicitados en el último período, proporcionando información valiosa sobre qué artículos están atrayendo más atención y demanda.

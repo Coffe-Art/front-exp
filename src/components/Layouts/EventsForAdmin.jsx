@@ -10,18 +10,17 @@ import Fondo from '../../assets/FondoEmpresas.png'; // Asegúrate de que la ruta
 
 const containerStyle = {
   width: '100%',
-  height: '600px'
+  height: '600px',
 };
 
 const center = {
   lat: 37.7749,
-  lng: -122.4194
+  lng: -122.4194,
 };
 
 export const EventsForAdmin = () => {
   const [events, setEvents] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [currentEvents, setCurrentEvents] = useState([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState(null);
   const location = useLocation(); // Hook para detectar cambios en la ruta
@@ -37,7 +36,7 @@ export const EventsForAdmin = () => {
           return;
         }
 
-        const response = await fetch(`http://localhost:3000/api/evento/admin/${idAdministrador}`, {
+        const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/evento/admin/${idAdministrador}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
@@ -58,13 +57,6 @@ export const EventsForAdmin = () => {
     fetchEvents();
   }, [location.pathname]); // Ejecutar cuando cambie la ruta
 
-  useEffect(() => {
-    const today = new Date();
-    const ongoingEvents = events.filter(event => new Date(event.fecha).toDateString() === today.toDateString());
-    console.log('Eventos actuales:', ongoingEvents); // Verifica los eventos actuales
-    setCurrentEvents(ongoingEvents);
-  }, [events]);
-
   const filteredEvents = events.filter(event =>
     event.nombreEvento.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -79,20 +71,15 @@ export const EventsForAdmin = () => {
     setSelectedEvent(null);
   };
 
+  const formatDate = (dateString) => {
+    return new Date(dateString).toDateString();
+  };
+
   return (
     <div className="min-h-screen bg-gray-200 font-sans">
       <Header />
 
       <div className="flex flex-col min-h-screen p-4 md:p-8 bg-gray-200">
-        {/* Current Event Message */}
-        {currentEvents.length > 0 && (
-          <div className="bg-green-500 text-white text-center p-4 rounded-lg shadow-md mx-auto mb-6 max-w-md text-base">
-            {currentEvents.map(event => (
-              <span key={event.idEvento} className="block">{event.nombreEvento} está ocurriendo justo ahora.</span>
-            ))}
-          </div>
-        )}
-
         <section className="flex flex-col md:flex-row gap-8">
           <div className="w-full md:w-1/2 flex flex-col items-center justify-center md:items-start">
             {/* Search */}
@@ -109,7 +96,7 @@ export const EventsForAdmin = () => {
 
             {/* Map */}
             <div className="w-full max-w-full mt-8">
-              <LoadScript googleMapsApiKey="AIzaSyB39DzLofNtQbUQSlwfqEfyuD0Eyo0Q1NU">
+              <LoadScript googleMapsApiKey="TU_API_KEY_DE_GOOGLE">
                 <GoogleMap
                   mapContainerStyle={containerStyle}
                   center={center}
@@ -144,7 +131,7 @@ export const EventsForAdmin = () => {
                   onClick={() => handleEventClick(event)}
                 >
                   <h3 className="font-semibold text-xl">{event.nombreEvento}</h3>
-                  <p className="text-sm">{new Date(event.fecha).toDateString()}</p>
+                  <p className="text-sm">{formatDate(event.fecha)}</p>
                   <p className="text-sm">Ubicación: {event.ubicacion.lat}, {event.ubicacion.lng}</p>
                 </div>
               ))}
@@ -175,31 +162,36 @@ export const EventsForAdmin = () => {
         </section>
 
         {selectedEvent && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg w-full max-w-lg relative p-6">
-              <div
-                className="relative w-full h-32 bg-cover bg-center rounded-t-lg"
-                style={{ backgroundImage: `url(${Fondo})` }}
-              >
-                <button
-                  onClick={closeModal}
-                  className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl"
-                >
-                  <FaTimes />
-                </button>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <h3 className="text-2xl font-semibold text-white">{selectedEvent.nombreEvento}</h3>
-                </div>
-              </div>
-              <div className="mt-4 p-4 bg-white rounded-b-lg">
-                <p><strong>Fecha:</strong> {new Date(selectedEvent.fecha).toDateString()}</p>
-                <p><strong>Ubicación:</strong> {selectedEvent.lugar}</p>
-                <p><strong>Duración:</strong> {selectedEvent.duracion}</p>
-                <p><strong>Empresas Participantes:</strong> {selectedEvent.empresasAsistente.join(', ')}</p>
-              </div>
-            </div>
-          </div>
-        )}
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white rounded-lg w-full max-w-lg relative p-6">
+      <div
+        className="relative w-full h-32 bg-cover bg-center rounded-t-lg"
+        style={{ backgroundImage: `url(${Fondo})` }}
+      >
+        <button
+          onClick={closeModal}
+          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl"
+        >
+          <FaTimes />
+        </button>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <h3 className="text-2xl font-semibold text-white">{selectedEvent.nombreEvento}</h3>
+        </div>
+      </div>
+      <div className="mt-4 p-4 bg-white rounded-b-lg">
+        <p><strong>Fecha:</strong> {new Date(selectedEvent.fecha).toDateString()}</p>
+        <p><strong>Ubicación:</strong> {selectedEvent.lugar}</p>
+        <p><strong>Duración:</strong> {selectedEvent.duracion}</p>
+        <p><strong>Empresas Participantes:</strong> 
+          {Array.isArray(selectedEvent.empresasAsistente) && selectedEvent.empresasAsistente.length > 0 
+            ? selectedEvent.empresasAsistente.join(', ') 
+            : 'No hay empresas participantes'}
+        </p>
+      </div>
+    </div>
+  </div>
+)}
+
       </div>
 
       <Footer />

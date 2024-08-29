@@ -67,7 +67,7 @@ export const AuthProvider = ({ children }) => {
 
     const register = async (tipoUsuario, nombre, contrasena, correo_electronico, telefono, historia) => {
         try {
-            const response = await fetch('https://backtesteo.onrender.com/api/auth/register', {
+            const response = await fetch('https://checkpoint-9tp4.onrender.com/api/auth/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -86,6 +86,72 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             console.error('Error al intentar registrar el usuario:', error);
             return { success: false, error: error.message };
+        }
+    };
+
+    const requestPasswordReset = async (tipoUsuario, correo_electronico) => {
+        try {
+            const response = await fetch('http://localhost:3000/api/auth/request-password-reset', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ tipoUsuario, correo_electronico }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                return { success: true, message: data.message || 'Se ha enviado un enlace para restablecer la contraseña a tu correo electrónico' };
+            } else {
+                return { success: false, error: data.message || 'Error en la solicitud de restablecimiento de contraseña' };
+            }
+        } catch (error) {
+            return { success: false, error: error.message || 'Error en la solicitud de restablecimiento de contraseña' };
+        }
+    };
+
+    const verifyResetCode = async (tipoUsuario, correo_electronico, verificationCode) => {
+        try {
+            const response = await fetch('http://localhost:3000/api/auth/verify-reset-code', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ tipoUsuario, correo_electronico, verificationCode }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                return { success: true, message: data.message || 'Código de verificación válido' };
+            } else {
+                return { success: false, error: data.message || 'Código de verificación no válido o expirado' };
+            }
+        } catch (error) {
+            return { success: false, error: error.message || 'Error en la verificación del código' };
+        }
+    };
+
+    const resetPassword = async (tipoUsuario, correo_electronico, nuevaContrasena, verificationCode) => {
+        try {
+            const response = await fetch('http://localhost:3000/api/auth/reset-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ tipoUsuario, correo_electronico, nuevaContrasena, verificationCode }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                return { success: true, message: data.message || 'Contraseña restablecida con éxito' };
+            } else {
+                return { success: false, error: data.message || 'Error al restablecer la contraseña' };
+            }
+        } catch (error) {
+            return { success: false, error: error.message || 'Error al restablecer la contraseña' };
         }
     };
 
@@ -121,7 +187,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, token, userId, userType, login, register, logout, notification }}>
+        <AuthContext.Provider value={{ user, token, userId, userType, login, register, logout, notification, requestPasswordReset, verifyResetCode, resetPassword }}>
             {children}
         </AuthContext.Provider>
     );

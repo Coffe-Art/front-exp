@@ -68,7 +68,7 @@ export const Companies = () => {
                 } else {
                     throw new Error('Formato de datos inesperado');
                 }
-            } else {    
+            } else {
                 const text = await response.text();
                 console.error('Respuesta no es JSON:', text);
                 throw new Error('Respuesta no es JSON');
