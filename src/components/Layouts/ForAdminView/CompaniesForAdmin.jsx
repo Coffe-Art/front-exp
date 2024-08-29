@@ -16,6 +16,8 @@ export const CompaniesForAdmin = () => {
     const [userId, setUserId] = useState(null);
     const [selectedEmpresa, setSelectedEmpresa] = useState(null);
     const [error, setError] = useState('');
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [empresaToDelete, setEmpresaToDelete] = useState(null);
 
     useEffect(() => {
         const storedUserId = localStorage.getItem('userId');
@@ -93,16 +95,20 @@ export const CompaniesForAdmin = () => {
     const handleUpdate = (empresa) => {
         navigate(`/UpdateCompany/${empresa.codigoempresa}`);
     };
-    
 
-    const handleDelete = async (codigoempresa) => {
+    const confirmDelete = (empresa) => {
+        setEmpresaToDelete(empresa);
+        setShowConfirmModal(true);
+    };
+
+    const handleDelete = async () => {
         try {
             const token = localStorage.getItem('token');
             if (!token) {
                 throw new Error('Token de autenticación no encontrado');
             }
             
-            const response = await fetch(`https://backtesteo.onrender.com/api/empresa/eliminar/${codigoempresa}`, {
+            const response = await fetch(`https://backtesteo.onrender.com/api/empresa/eliminar/${empresaToDelete.codigoempresa}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -124,7 +130,8 @@ export const CompaniesForAdmin = () => {
             }
 
             // Si todo salió bien, actualiza el estado
-            setEmpresas(empresas.filter(emp => emp.codigoempresa !== codigoempresa));
+            setEmpresas(empresas.filter(emp => emp.codigoempresa !== empresaToDelete.codigoempresa));
+            setShowConfirmModal(false); // Cerrar el modal de confirmación
             setError(''); // Limpiar el mensaje de error en caso de éxito
         } catch (error) {
             console.error('Error al eliminar empresa:', error.message);
@@ -178,7 +185,7 @@ export const CompaniesForAdmin = () => {
                                         className="text-darkpurple hover:text-lightpurple text-3xl"
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            handleDelete(empresa.codigoempresa);
+                                            confirmDelete(empresa);
                                         }}
                                     >
                                         <FaTrash className="text-xl" />
@@ -219,38 +226,33 @@ export const CompaniesForAdmin = () => {
                             className="ml-4 bg-darkyellow text-white hover:text-gray-200"
                             onClick={() => setError('')}
                         >
-                            <FaTimes className="w-5 h-5" />
+                            <FaTimes />
                         </button>
                     </div>
                 )}
-                {selectedEmpresa && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                        <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
-                            <div className="relative w-full h-40 bg-gray-300 rounded-t-lg overflow-hidden">
-                                <img
-                                    src={banner} // Usar la imagen importada
-                                    alt="Banner de Empresa"
-                                    className="w-full h-full object-cover"
-                                />
-                                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-10 ">
-                                    <h2 className="text-white text-xl font-bold">{selectedEmpresa.nombre}</h2>
-                                </div>
+                {/* Modal de confirmación de eliminación */}
+                {showConfirmModal && (
+                    <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+                            <div className='organizator flex flex-col justify-center'>
+                            <div className='flex justify-center'>
+                            <svg className="w-6 h-6 mr-2 text-2xl text-darkyellow"> <FaCoffee /> </svg>
+                            <h3 className="text-lg font-semibold mb-4  text-darkyellow">Confirmar eliminación</h3>
                             </div>
-                            <h3 className="text-lg font-semibold mb-2 text-center">Información de la empresa</h3>
-                            <p className="text-center mb-2"><strong className='text-darkyellow'>Dirección: </strong>{selectedEmpresa.direccion}</p>
-                            <p className="text-center mb-4"><strong className='text-darkyellow'>Descripción: </strong>{selectedEmpresa.descripcion}</p>
-                            <div className="flex justify-center">
+                            <p className="mb-4 text-center ">¿Estás seguro de que deseas eliminar la empresa "{empresaToDelete.nombre}"?</p>
+                            </div>
+                            <div className="flex justify-center gap-4">
                                 <button
-                                    className="bg-darkyellow text-white px-4 py-2 rounded mr-2"
-                                    onClick={() => navigate(`/CreateProduct`)}
+                                    className="bg-gray-300 text-black px-4 py-2 rounded-lg"
+                                    onClick={() => setShowConfirmModal(false)}
                                 >
-                                    Agregar Producto
+                                    Cancelar
                                 </button>
                                 <button
-                                    className="bg-gray-500 text-white px-4 py-2 rounded"
-                                    onClick={closeEmpresaModal}
+                                    className="text-white bg-darkpurple px-4 py-2 rounded-lg"
+                                    onClick={handleDelete}
                                 >
-                                    Cerrar
+                                    Eliminar
                                 </button>
                             </div>
                         </div>
@@ -259,5 +261,6 @@ export const CompaniesForAdmin = () => {
             </div>
             <Footer />
         </div>
+        
     );
 };

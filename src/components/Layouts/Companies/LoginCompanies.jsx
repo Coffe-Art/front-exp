@@ -10,6 +10,7 @@ export const LoginCompanies = () => {
     const [direccion, setDireccion] = useState('');
     const [descripcion, setDescripcion] = useState('');
     const [idadministrador, setIdAdministrador] = useState('');
+    const [notification, setNotification] = useState('');
 
     const navigate = useNavigate();
     const { setEmpresas } = useEmpresa(); // Obtén setEmpresas desde el contexto
@@ -64,8 +65,12 @@ export const LoginCompanies = () => {
                 { id: result.id, nombre, direccion, descripcion }
             ]);
 
-            // Redirige a la página de empresas
-            navigate('/companiesForAdmin');
+            // Muestra la notificación de éxito
+            setNotification('Empresa creada exitosamente');
+            setTimeout(() => {
+                setNotification('');
+                navigate('/companiesForAdmin');
+            }, 2000);
         } catch (error) {
             console.error('Error al crear la empresa:', error);
         }
@@ -84,6 +89,11 @@ export const LoginCompanies = () => {
             <div className="relative bg-white p-5 rounded-lg shadow-md w-full max-w-md mx-4 sm:mx-8 md:mx-16 lg:mx-32">
                 <img src={Logo} alt="Logo" className="h-24 w-24 mx-auto mb-6" />
                 <h1 className="text-2xl font-bold mb-6 text-center">Registrar Empresa</h1>
+                {notification && (
+                    <div className="border px-4 py-3 rounded relative mb-4 bg-green-100 border-green-400 text-green-700" role="alert">
+                        <span className="block sm:inline">{notification}</span>
+                    </div>
+                )}
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label className="block text-black text-sm font-bold mb-2" htmlFor="nombre">
