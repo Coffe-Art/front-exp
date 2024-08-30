@@ -53,9 +53,9 @@ export const MainPage = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left">
-            <h1 className="text-black text-2xl md:text-4xl font-bold text-center mb-8">MIRA NUESTRO VIDEO DESTACADO</h1>
+            <h1 className="text-black text-2xl md:text-4xl font-bold text-center mb-8">MIRA NUESTRO VIDEO DE INTRODUCCIÓN</h1>
               <p className="text-black text-sm md:text-lg mb-6">
-                Te invitamos a conocer más sobre nuestra labor y los productos únicos que ofrecemos a través de este video destacado. Aquí, podrás ver cómo trabajamos para resaltar la habilidad de los artesanos y ofrecerles una plataforma para mostrar su arte al mundo. Además, si estás interesado en explorar más contenido relacionado con nuestra misión y productos, puedes visitar nuestra página en YouTube para más videos y actualizaciones.
+                Te invitamos a conocer más sobre nuestra labor y los productos únicos que ofrecemos a través de este video de introducción. Aquí, podrás ver cómo trabajamos para resaltar la habilidad de los artesanos y ofrecerles una plataforma para mostrar su arte al mundo. Además, si estás interesado en explorar más contenido relacionado con nuestra misión y productos, puedes visitar nuestra página en YouTube para más videos y actualizaciones.
               </p>
               <a 
                 href="https://www.youtube.com/@CoffeArt2024" 
