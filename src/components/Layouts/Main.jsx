@@ -6,10 +6,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import HeaderImage from '../../assets/Cabecera.png';
 import { InformationMain } from './InformationMain';
 import { Statistics } from './Statistics'; // Importa el nuevo componente de estadísticas
-import imageEarring from '../../assets/AretesArtesanales.jpg';
-import imageRuana from '../../assets/RuanaArtesanal.jpg';
-import imageBracelet from '../../assets/PulserasArtesanales.jpg';
-import imageBag from '../../assets/BolsoArtesanal.jpg';
+
 
 export const Main = () => {
   const settings = {
@@ -52,30 +49,8 @@ export const Main = () => {
         </div>
       </div>
 
-      <Statistics /> {/* Usa el nuevo componente aquí */}
-
-      <div className="bg-gray-200 py-16">
-        <div className="text-center mb-10 px-4">
-          <h1 className="text-black text-2xl md:text-4xl font-bold mb-6">PRODUCTOS MÁS VENDIDOS</h1>
-          <p className="text-black text-sm md:text-lg mx-auto max-w-2xl mb-12">
-            Nuestros "Productos Más Vendidos" ofrecen una visión clave de las preferencias de nuestros clientes y las tendencias actuales del mercado. Esta sección destaca los productos que han sido los más solicitados en el último período, proporcionando información valiosa sobre qué artículos están atrayendo más atención y demanda.
-          </p>
-        </div>
-        <div className="flex flex-wrap justify-center">
-          {[
-            { image: imageEarring, title: 'Aretes Artesanales', description: 'Descripción de los aretes artesanales...' },
-            { image: imageRuana, title: 'Ruana Artesanal', description: 'Descripción de la ruana artesanal...' },
-            { image: imageBracelet, title: 'Pulseras Artesanales', description: 'Descripción de las pulseras artesanales...' },
-            { image: imageBag, title: 'Bolso Artesanal', description: 'Descripción del bolso artesanal...' },
-          ].map((product, index) => (
-            <div key={index} className="bg-darkyellow text-white rounded-lg p-4 shadow-md text-center flex flex-col justify-center items-center mx-2 mb-6 w-48 sm:w-64 lg:w-80">
-              <img src={product.image} alt={product.title} className="w-24 h-auto sm:w-32 lg:w-40" />
-              <h3 className="text-lg font-bold mt-2">{product.title}</h3>
-              <p className="text-sm mt-1">{product.description}</p>
-            </div>
-          ))}
-        </div>
-      </div>
+      <Statistics /> 
+      
     </div>
   );
 };
