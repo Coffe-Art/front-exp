@@ -1,14 +1,14 @@
 import React from 'react'
 import { Header } from '../../components/Layouts/ForView/Header'
 import { Footer } from '../../components/Layouts/ForView/Footer'
-import { MainPage } from '../../components/Layouts/MainPage'
+import { Main } from '../../components/Layouts/Main'
 
 export const Home = () => {
   
   return (
     <> 
       <Header/>
-      <MainPage/>
+      <Main/>
       <Footer />
     </>
   )
