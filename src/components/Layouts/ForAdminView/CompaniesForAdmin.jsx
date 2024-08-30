@@ -6,7 +6,7 @@ import { NavLink } from 'react-router-dom';
 import { Footer } from '../ForView/Footer';
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaTimes, FaEdit, FaTrash } from 'react-icons/fa';
-import banner from '../../../assets/FondoMenu.png'; 
+import banner from '../../../assets/FondoEmpresas.png'; 
 import { FaCoffee } from "react-icons/fa";
 
 export const CompaniesForAdmin = () => {
@@ -18,6 +18,8 @@ export const CompaniesForAdmin = () => {
     const [error, setError] = useState('');
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [empresaToDelete, setEmpresaToDelete] = useState(null);
+    const [showEmpresaModal, setShowEmpresaModal] = useState(false);
+
 
     useEffect(() => {
         const storedUserId = localStorage.getItem('userId');
@@ -81,6 +83,13 @@ export const CompaniesForAdmin = () => {
     useEffect(() => {
         if (selectedEmpresa) {
             console.log(`Empresa seleccionada: ${selectedEmpresa.nombre}`);
+        }
+    }, [selectedEmpresa]);
+
+     useEffect(() => {
+        if (selectedEmpresa) {
+            console.log(`Empresa seleccionada: ${selectedEmpresa.nombre}`);
+            setShowEmpresaModal(true); // Mostrar el modal al seleccionar una empresa
         }
     }, [selectedEmpresa]);
 
@@ -258,9 +267,39 @@ export const CompaniesForAdmin = () => {
                         </div>
                     </div>
                 )}
+                {showEmpresaModal && selectedEmpresa && (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div className="bg-white rounded-lg shadow-lg w-11/12 md:w-2/3 lg:w-1/3 relative overflow-hidden">
+            {/* Banner de Fondo */}
+            <div className="relative">
+                <img src={banner} alt="Banner" className="w-full h-40 object-cover" />
+                {/* Texto sobre el banner */}
+                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <h2 className="text-2xl font-semibold text-white">{selectedEmpresa.nombre}</h2>
+                </div>
+            </div>
+            {/* Contenido de la Modal */}
+            <div className="p-6">
+                <p className="mb-2"><strong>Dirección:</strong> {selectedEmpresa.direccion}</p>
+                <p className="mb-2"><strong>Descripción:</strong> {selectedEmpresa.descripcion}</p>
+                <p className="mb-4"><strong>ID:</strong> {selectedEmpresa.codigoempresa}</p>
+                <div className="flex justify-end">
+                    <button
+                        className= "text-white bg-darkyellow hover:bg-lightyellow px-4 py-2 rounded mr-2 flex items-center"
+                        onClick={closeEmpresaModal}
+                    >
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+)}
+
             </div>
             <Footer />
         </div>
         
     );
 };
+
