@@ -1,30 +1,25 @@
-// src/components/Statistics.js
 import React, { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
-// Registramos los componentes de Chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export const Statistics = () => {
-  // Estado para manejar el contenido expandido
   const [expanded, setExpanded] = useState(null);
 
-  // Datos para el gráfico
   const data = {
     labels: ['Productos Vendidos', 'Clientes Satisfechos', 'Productos en Inventario', 'Proveedores Asociados'],
     datasets: [
       {
         label: 'Estadísticas',
-        data: [500, 1000, 200, 50], // Datos ficticios
-        backgroundColor: ['#B89158', '#F1BF76', '#3B2A38', '#271D25'], // Colores de fondo para las barras
-        borderColor: ['#B89158', '#F1BF76', '#3B2A38', '#271D25'], // Colores del borde de las barras
+        data: [500, 1000, 200, 50],
+        backgroundColor: ['#B89158', '#F1BF76', '#3B2A38', '#271D25'],
+        borderColor: ['#B89158', '#F1BF76', '#3B2A38', '#271D25'], 
         borderWidth: 1,
       },
     ],
   };
 
-  // Opciones para el gráfico
   const options = {
     responsive: true,
     plugins: {
@@ -54,12 +49,10 @@ export const Statistics = () => {
     },
   };
 
-  // Función para manejar el clic en los contenedores
   const handleClick = (index) => {
     setExpanded(expanded === index ? null : index);
   };
 
-  // Información adicional para cada contenedor
   const info = [
     "El número total de productos vendidos se calcula sumando todas las transacciones realizadas en el último trimestre.",
     "La cantidad de clientes satisfechos se obtiene a partir de las encuestas de satisfacción y comentarios positivos.",
@@ -84,26 +77,26 @@ export const Statistics = () => {
       </div>
 
       <div>
-      <h1 className="flex justify-center text-darck text-2xl md:text-4xl font-bold mt-4 mb-6">DATOS DE ACTIVIDAD</h1>
-      <p className="flex justify-center text-center text-black text-sm md:text-lg mx-auto max-w-2xl mb-12">Muestra las acciones y eventos relevantes realizados dentro del sistema, permitiendo un seguimiento detallado de las operaciones y movimientos que se llevan a cabo.</p>
-      <div className="flex flex-wrap justify-center">
-        {['Productos Vendidos', 'Clientes Satisfechos', 'Productos en Inventario', 'Proveedores Asociados'].map((item, index) => (
-          <div
-            key={index}
-            onClick={() => handleClick(index)}
-            className={`transition-all duration-300 ease-in-out bg-darkyellow rounded-lg p-4 shadow-md text-center flex flex-col justify-center items-center mx-2 mb-4 w-48 sm:w-64 lg:w-80 cursor-pointer ${
-              expanded === index ? 'h-auto' : 'h-24'
-            }`}
-          >
-            <h3 className="text-lg font-bold text-white">{['500+', '1000+', '200+', '50+'][index]}</h3>
-            <p className="text-sm mt-1 text-white">{item}</p>
-            {expanded === index && (
-              <div className="mt-4 text-sm text-white">
-                <p>{info[index]}</p>
-              </div>
-            )}
-          </div>
-        ))}
+        <h1 className="flex justify-center text-darck text-2xl md:text-4xl font-bold mt-4 mb-6">DATOS DE ACTIVIDAD</h1>
+        <p className="flex justify-center text-center text-black text-sm md:text-lg mx-auto max-w-2xl mb-12">Muestra las acciones y eventos relevantes realizados dentro del sistema, permitiendo un seguimiento detallado de las operaciones y movimientos que se llevan a cabo.</p>
+        <div className="flex flex-wrap justify-center">
+          {['Productos Vendidos', 'Clientes Satisfechos', 'Productos en Inventario', 'Proveedores Asociados'].map((item, index) => (
+            <div
+              key={index}
+              onClick={() => handleClick(index)}
+              className={`transition-all duration-300 ease-in-out bg-darkyellow rounded-lg p-4 shadow-md text-center flex flex-col justify-center items-center mx-2 mb-4 w-60 sm:w-72 lg:w-96 cursor-pointer ${
+                expanded === index ? 'h-auto' : 'h-24'
+              }`}
+            >
+              <h3 className="text-lg font-bold text-white">{['500+', '1000+', '200+', '50+'][index]}</h3>
+              <p className="text-sm mt-1 text-white">{item}</p>
+              {expanded === index && (
+                <div className="mt-4 text-sm text-white">
+                  <p>{info[index]}</p>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </div>
