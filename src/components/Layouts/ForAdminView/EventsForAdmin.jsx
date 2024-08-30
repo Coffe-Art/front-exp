@@ -80,7 +80,6 @@ export const EventsForAdmin = () => {
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
     return new Date(dateString).toLocaleDateString('es-ES', options);
   };
-  
 
   return (
     <div className="min-h-screen bg-gray-200 font-sans">
@@ -131,25 +130,24 @@ export const EventsForAdmin = () => {
             </div>
 
             <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-8">
-  {filteredEvents.map(event => (
-    <div
-      key={event.idEvento}
-      className="border rounded-lg p-6 shadow-md bg-white cursor-pointer text-base"
-    >
-      <h3 className="font-semibold text-xl">{event.nombreEvento}</h3>
-      <p className="text-sm">{formatDate(event.fecha)}</p>
-      <p className="text-sm">{event.descripcion}</p>
-      <p className="text-sm">Empresa Asistente: {event.empresasAsistente}</p>
-      <button
-        onClick={() => handleEventClick(event)}
-        className="mt-4 bg-darkyellow text-white px-4 py-2 rounded hover:bg-yellow-600"
-      >
-        Ver información completa
-      </button>
-    </div>
-  ))}
-</div>
-
+              {filteredEvents.map(event => (
+                <div
+                  key={event.idEvento}
+                  className="border rounded-lg p-6 shadow-md bg-white cursor-pointer text-base"
+                >
+                  <h3 className="font-semibold text-xl">{event.nombreEvento}</h3>
+                  <p className="text-sm">{formatDate(event.fecha)}</p>
+                  <p className="text-sm">{event.descripcion}</p>
+                  <p className="text-sm">Empresa Asistente: {event.empresasAsistente}</p>
+                  <button
+                    onClick={() => handleEventClick(event)}
+                    className="mt-4 bg-darkyellow text-white px-4 py-2 rounded hover:bg-yellow-600"
+                  >
+                    Ver información completa
+                  </button>
+                </div>
+              ))}
+            </div>
 
             {/* Create New Event Container */}
             <div className="border rounded-lg p-6 shadow-md bg-white mt-8 max-w-md mx-auto text-base">
@@ -176,34 +174,36 @@ export const EventsForAdmin = () => {
         </section>
 
         {selectedEvent && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div className="bg-white rounded-lg w-full max-w-lg relative p-6">
-      <div
-        className="relative w-full h-32 bg-cover bg-center rounded-t-lg"
-        style={{ backgroundImage: `url(${Fondo})` }}
-      >
-        <button
-          onClick={closeModal}
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl"
-        >
-          <FaTimes />
-        </button>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <h3 className="text-2xl font-semibold text-white">{selectedEvent.nombreEvento}</h3>
-        </div>
-      </div>
-      <div className="mt-4 p-4 bg-white rounded-b-lg">
-        <p><strong>Fecha:</strong> {formatDate(selectedEvent.fecha)}</p>
-        <p><strong>Ubicación:</strong> {selectedEvent.ubicacion}</p>
-        <p><strong>Duración:</strong> {selectedEvent.duracion}</p>
-        <p><strong>Empresas Participantes:</strong> 
-          {selectedEvent.empresasAsistente ? selectedEvent.empresasAsistente : 'No hay empresas participantes'}
-        </p>
-        <p className="mt-4"><strong>Descripción:</strong> {selectedEvent.descripcion}</p>
-      </div>
-    </div>
-  </div>
-)}
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white rounded-lg shadow-lg w-11/12 md:w-2/3 lg:w-1/3 relative overflow-hidden">
+              {/* Banner de Fondo */}
+              <div className="relative">
+                <img src={Fondo} alt="Banner" className="w-full h-40 object-cover" />
+                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                  <h2 className="text-2xl font-semibold text-white">{selectedEvent.nombreEvento}</h2>
+                </div>
+              </div>
+              {/* Contenido de la Modal */}
+              <div className="p-6">
+                <p className="mb-2"><strong>Fecha:</strong> {formatDate(selectedEvent.fecha)}</p>
+                <p className="mb-2"><strong>Ubicación:</strong> {selectedEvent.ubicacion}</p>
+                <p className="mb-2"><strong>Duración:</strong> {selectedEvent.duracion}</p>
+                <p className="mb-4"><strong>Empresas Participantes:</strong> 
+                  {selectedEvent.empresasAsistente ? selectedEvent.empresasAsistente : 'No hay empresas participantes'}
+                </p>
+                <p className="mt-4"><strong>Descripción:</strong> {selectedEvent.descripcion}</p>
+                <div className="flex justify-end mt-4">
+                  <button
+                    onClick={closeModal}
+                    className="text-white bg-darkyellow hover:bg-lightyellow px-4 py-2 rounded mr-2 flex items-center"
+                  >
+                    Cerrar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
       </div>
 
