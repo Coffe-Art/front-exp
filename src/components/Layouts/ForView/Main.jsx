@@ -2,9 +2,9 @@ import React from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import HeaderImage from '../../assets/Cabecera.png';
-import { InformationMain } from './InformationMain';
-import { Statistics } from './Statistics';
+import HeaderImage from '../../../assets/Cabecera.png';
+import { InformationMain } from '../InformationMain';
+import { Statistics } from '../HomePage/Statistics';
 
 export const Main = () => {
   const settings = {
