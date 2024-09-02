@@ -48,13 +48,7 @@ export const Header = () => {
         </NavLink>
         {userType === 'comprador' || userType === 'anonimo' ? (
           <>
-            <NavLink 
-              to="/Cart" 
-              className="nav-link text-white text-lg font-semibold hover:text-darkyellow mb-2 md:mb-0" 
-              activeClassName="font-bold"
-            >
-              Carrito
-            </NavLink>
+            
             <NavLink 
               to="/CraftComprador" 
               className="nav-link text-white text-lg font-semibold hover:text-darkyellow mb-2 md:mb-0" 
