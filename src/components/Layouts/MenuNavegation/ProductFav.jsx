@@ -68,7 +68,8 @@ export const ProductFav = ({ isAuthenticated, userType }) => {
           {/* Rutas para el rol 'comprador' o 'anonimo' */}
           {(userRole === 'comprador' || userRole === 'anonimo') && (
             <>
-              <NavLink to="/ProductFav" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Favoritos</NavLink>
+               <NavLink to="/ProductFav" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Favoritos</NavLink>
+              <NavLink to="/Cart" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Carrito</NavLink>
             </>
           )}
 
