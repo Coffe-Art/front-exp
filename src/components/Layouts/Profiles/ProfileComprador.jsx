@@ -36,7 +36,6 @@ export const ProfileComprador = () => {
             Perfil
           </NavLink>
 
-          {/* Rutas para el rol 'comprador' */}
           {userRole === 'comprador' && (
             <>
               <NavLink to="/ProductFav" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Favoritos</NavLink>
@@ -44,15 +43,13 @@ export const ProfileComprador = () => {
             </>
           )}
 
-          {/* Rutas para los roles 'administrador' y 'empleado' */}
           {(userRole === 'administrador' || userRole === 'empleado') && (
             <>
               <NavLink to="/SalesOverview" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ventas</NavLink>
               
             </>
           )}
-
-          {/* Ruta común para todos */}
+          
           <NavLink to="/Help" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ayuda</NavLink>
 
           <button
