@@ -229,14 +229,14 @@ export const SignIn = () => {
                         <div className='flex flex-row justify-between min-w-full'>
                         <button
                             type="submit"
-                            className="bg-darkyellow hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            className="bg-darkyellow hover:bg-lightyellow text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                         >
                             {forgotPassword ? (verificationSent ? (codeVerified ? 'Restablecer Contraseña' : 'Verificar Código') : 'Enviar Código') : 'Iniciar Sesión'}
                         </button>
                         <button
                             type="button"
                             onClick={() => setForgotPassword(!forgotPassword)}
-                            className="text-darkyellow hover:text-yellow-600 text-sm font-bold"
+                            className="text-darkyellow hover:text-lightyellow text-sm font-bold"
                         >
                             {forgotPassword ? 'Volver a Iniciar Sesión' : '¿Olvidaste tu Contraseña?'}
                         </button>
