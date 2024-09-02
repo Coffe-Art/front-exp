@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { FaRegUserCircle } from 'react-icons/fa';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Logo from '../../../assets/Artesanías.png';
 import BackgroundImage from '../../../assets/FondoMenu.png';
@@ -7,12 +6,14 @@ import Background from '../../../assets/Fondo.png';
 import { EditableField } from './EditableField';
 
 export const ProfileForAdmin = () => {
+  // Estados para manejar los campos de usuario
   const [name, setName] = useState('Nombre de Usuario');
   const [email, setEmail] = useState('usuario@example.com');
   const [phone, setPhone] = useState('123-456-7890');
+  const [password, setPassword] = useState(''); // Campo para contraseña
+  const [history, setHistory] = useState(''); // Campo para historia
 
   const navigate = useNavigate();
-
   const userRole = localStorage.getItem('userType');
 
   const handleLogoClick = (e) => {
@@ -51,7 +52,6 @@ export const ProfileForAdmin = () => {
           {(userRole === 'administrador' || userRole === 'empleado') && (
             <>
               <NavLink to="/SalesOverview" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ventas</NavLink>
-              
             </>
           )}
 
@@ -69,11 +69,13 @@ export const ProfileForAdmin = () => {
       <div className="flex flex-col justify-center items-center md:w-4/5 lg:w-5/6">
         <div className="w-full h-screen flex justify-center items-center bg-cover bg-center p-4" style={{ backgroundImage: `url(${Background})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
           <div className="flex flex-col items-center justify-center text-center p-8 bg-white bg-opacity-70 rounded-lg max-w-lg mx-auto md:max-w-2xl w-full">
-          <img src={Logo} alt="Logo" className="h-20 w-20 text-gray-800 mb-4 mx-auto" />
-            <h1 className="text-black text-3xl md:text-5xl font-bold mb-8">Hola, artesano.</h1>
+            <img src={Logo} alt="Logo" className="h-20 w-20 text-gray-800 mb-4 mx-auto" />
+            <h1 className="text-black text-3xl md:text-5xl font-bold mb-8">Hola, administrador.</h1>
             <EditableField label="Nombre:" value={name} onChange={(e) => setName(e.target.value)} />
-            <EditableField label="Correo:" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <EditableField label="Correo Electrónico:" value={email} onChange={(e) => setEmail(e.target.value)} />
             <EditableField label="Teléfono:" value={phone} onChange={(e) => setPhone(e.target.value)} />
+            <EditableField label="Contraseña:" value={password} onChange={(e) => setPassword(e.target.value)} type="password" /> {/* Campo de contraseña */}
+            <EditableField label="Historia:" value={history} onChange={(e) => setHistory(e.target.value)} /> {/* Campo de historia */}
             <button className="bg-darkyellow text-white px-4 py-2 rounded hover:bg-lightyellow mt-8 text-lg md:text-xl font-bold">Guardar</button>
           </div>
         </div>
