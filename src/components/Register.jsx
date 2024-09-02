@@ -183,7 +183,6 @@ export const Register = () => {
                             onChange={handleChange}
                         >
                             <option value="administrador">Administrador</option>
-                            <option value="empleado">Empleado</option>
                             <option value="comprador">Comprador</option>
                         </select>
                     </div>
