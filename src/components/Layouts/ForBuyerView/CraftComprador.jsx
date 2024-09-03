@@ -200,7 +200,7 @@ export const CraftComprador = () => {
               placeholder="Precio máximo"
               className="shadow border rounded w-full py-2 px-3 mb-4"
             />
-            <button onClick={resetearPrecios} className="bg-gray-500 text-white py-2 px-4 rounded w-full mb-4">Resetear precios</button>
+            <button onClick={resetearPrecios} className="bg-darkpurple text-white py-2 px-4 rounded w-full mb-4">Resetear precios</button>
             <label className="block text-sm font-bold mb-2">Calificación</label>
             <div className="flex space-x-2 mb-4">
               {[1, 2, 3, 4, 5].map(rating => (
@@ -214,7 +214,7 @@ export const CraftComprador = () => {
           </div>
         </div>
         {/* Contenido de los productos */}
-        <div className="flex-1 p-4">
+        <div className="flex-1 p-4 items-center justify-center">
           {cargando && <p>Cargando...</p>}
           {error && <p className="text-red-500">{error}</p>}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -230,7 +230,7 @@ export const CraftComprador = () => {
                 <p className="text-darkyellow font-bold mb-2">{formatearPrecio(producto.precio)}</p>
                 <button
                   onClick={() => agregarAlCarrito(producto)}
-                  className="bg-darkyellow text-white py-2 px-4 rounded"
+                  className="bg-darkpurple text-white py-2 px-4 rounded"
                 >
                   Agregar al Carrito
                 </button>
