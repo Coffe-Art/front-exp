@@ -17,6 +17,8 @@ export const CraftComprador = () => {
   const [error, setError] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [opcionesCategorias, setOpcionesCategorias] = useState([]);
+  const [productoSeleccionado, setProductoSeleccionado] = useState(null);
+  const [modalAbierto, setModalAbierto] = useState(false);
 
   const navigate = useNavigate();
 
@@ -32,10 +34,9 @@ export const CraftComprador = () => {
 
         if (!response.ok) throw new Error('Error al obtener productos');
         const resultado = await response.json();
-
         const datosProductos = resultado.length > 0 ? resultado[0] : [];
 
-        console.log('Productos recibidos:', datosProductos); // Verifica la estructura de los datos
+        console.log('Productos recibidos:', datosProductos);
 
         setProductos(datosProductos);
         setProductosFiltrados(datosProductos); // Mostrar todos los productos por defecto
@@ -49,7 +50,6 @@ export const CraftComprador = () => {
   }, [setProductos]);
 
   useEffect(() => {
-    // Simulando la obtención de categorías
     const obtenerCategorias = () => {
       const categorias = [
         { value: 'joyeria', label: 'Joyería' },
@@ -80,7 +80,7 @@ export const CraftComprador = () => {
   }, [terminoBusqueda, categoria, precioMinimo, precioMaximo, calificacion, productos]);
 
   const filtrarProductos = (terminoBusqueda, categoria, [precioMinimo, precioMaximo], calificacion) => {
-    if (productos.length === 0) return; // Evita filtrar si no hay productos
+    if (productos.length === 0) return;
 
     console.log('Filtrando con:', { terminoBusqueda, categoria, precioMinimo, precioMaximo, calificacion });
 
@@ -91,7 +91,6 @@ export const CraftComprador = () => {
                                (producto.descripcion && producto.descripcion.toLowerCase().includes(terminoBusqueda.toLowerCase()));
       const coincideCategoria = categoria === 'todos' || (producto.categoria && producto.categoria === categoria);
 
-      // Ajuste en el filtro de precios para que 0 a 0 considere todos los productos
       const precio = parseFloat(producto.precio);
       const coincidePrecio = (precioMinimo === 0 && precioMaximo === 0) ||
                               (precio >= precioMinimo && precio <= precioMaximo);
@@ -131,23 +130,30 @@ export const CraftComprador = () => {
     setCalificacion(calificacion);
   };
 
-  // Función para formatear precios en pesos colombianos
   const formatearPrecio = (precio) => {
     return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(precio);
   };
 
-  // Función para resetear precios
   const resetearPrecios = () => {
     setPrecioMinimo(0);
     setPrecioMaximo(0);
     filtrarProductos(terminoBusqueda, categoria, [0, 0], calificacion);
   };
 
+  const abrirModal = (producto) => {
+    setProductoSeleccionado(producto);
+    setModalAbierto(true);
+  };
+
+  const cerrarModal = () => {
+    setModalAbierto(false);
+    setProductoSeleccionado(null);
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-200">
       <Header />
       <div className="flex flex-col md:flex-row flex-1">
-        {/* Filtro en la esquina izquierda */}
         <div className={`md:w-1/4 lg:w-1/5 bg-white border rounded-lg overflow-hidden shadow-md p-4 ${filtroAbierto ? 'block' : 'hidden md:block'}`}>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-bold">Comprador</h2>
@@ -179,66 +185,109 @@ export const CraftComprador = () => {
               className="shadow border rounded w-full py-2 px-3 mb-4"
             >
               <option value="todos">Todos</option>
-              {opcionesCategorias.map(categoria => (
-                <option key={categoria.value} value={categoria.value}>{categoria.label}</option>
+              {opcionesCategorias.map((opcion) => (
+                <option key={opcion.value} value={opcion.value}>{opcion.label}</option>
               ))}
             </select>
-            <label htmlFor="price" className="block text-sm font-bold mb-2">Rango de Precio</label>
-            <input
-              type="number"
-              id="precioMinimo"
-              value={precioMinimo}
-              onChange={e => setPrecioMinimo(Number(e.target.value))}
-              placeholder="Precio mínimo"
-              className="shadow border rounded w-full py-2 px-3 mb-2"
-            />
-            <input
-              type="number"
-              id="precioMaximo"
-              value={precioMaximo}
-              onChange={e => setPrecioMaximo(Number(e.target.value))}
-              placeholder="Precio máximo"
-              className="shadow border rounded w-full py-2 px-3 mb-4"
-            />
-            <button onClick={resetearPrecios} className="bg-darkpurple text-white py-2 px-4 rounded w-full mb-4">Resetear precios</button>
-            <label className="block text-sm font-bold mb-2">Calificación</label>
-            <div className="flex space-x-2 mb-4">
-              {[1, 2, 3, 4, 5].map(rating => (
-                <FaStar
-                  key={rating}
-                  className={`cursor-pointer ${rating <= calificacion ? 'text-yellow-500' : 'text-gray-400'}`}
-                  onClick={() => manejarCambioCalificacion(rating)}
-                />
-              ))}
+            <label className="block text-sm font-bold mb-2">Rango de precio</label>
+            <div className="flex mb-4">
+              <input
+                type="number"
+                value={precioMinimo}
+                onChange={(e) => setPrecioMinimo(parseFloat(e.target.value))}
+                className="shadow border rounded w-1/2 py-2 px-3 mr-2"
+                placeholder="Mínimo"
+              />
+              <input
+                type="number"
+                value={precioMaximo}
+                onChange={(e) => setPrecioMaximo(parseFloat(e.target.value))}
+                className="shadow border rounded w-1/2 py-2 px-3"
+                placeholder="Máximo"
+              />
+            </div>
+            <button onClick={resetearPrecios} className="text-darkyellow">Resetear precios</button>
+            <div className="mt-4">
+              <label className="block text-sm font-bold mb-2">Calificación</label>
+              <div className="flex">
+                {[1, 2, 3, 4, 5].map((valor) => (
+                  <button
+                    key={valor}
+                    onClick={() => manejarCambioCalificacion(valor)}
+                    className={`text-${calificacion === valor ? 'darkyellow' : 'gray-400'} mr-2`}
+                  >
+                    <FaStar />
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
-        {/* Contenido de los productos */}
-        <div className="flex-1 p-4 items-center justify-center">
-          {cargando && <p>Cargando...</p>}
-          {error && <p className="text-red-500">{error}</p>}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {productosFiltrados.map(producto => (
-              <div key={producto.idProducto} className="bg-white p-4 rounded-lg shadow-md">
-                <img
-  src={`https://imagenes224.blob.core.windows.net/imagenes224/${producto.urlProductoImg.split('/').pop()}`}
-  alt={producto.nombre}
-  className="product-image"
-/>
-                <h3 className="text-lg font-semibold mb-2">{producto.nombre}</h3>
-                <p className="text-gray-700 mb-2">{producto.descripcion}</p>
-                <p className="text-darkyellow font-bold mb-2">{formatearPrecio(producto.precio)}</p>
-                <button
-                  onClick={() => agregarAlCarrito(producto)}
-                  className="bg-darkpurple text-white py-2 px-4 rounded"
+
+        {/* Productos */}
+        <div className="flex-1 p-4">
+          <h2 className="text-2xl font-bold mb-4">Productos</h2>
+          {cargando ? (
+            <div className="text-center">Cargando...</div>
+          ) : error ? (
+            <div className="text-red-500 text-center">{error}</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {productosFiltrados.map(producto => (
+                <div
+                  key={producto.idProducto}
+                  className="bg-white p-4 rounded-lg shadow-md cursor-pointer"
+                  onClick={() => abrirModal(producto)}
                 >
-                  Agregar al Carrito
-                </button>
-              </div>
-            ))}
-          </div>
+                  <img
+                    src={producto.urlProductoImg ? `https://imagenes224.blob.core.windows.net/imagenes224/${producto.urlProductoImg.split('/').pop()}` : imgPrueba}
+                    alt={producto.nombre}
+                    className="w-full h-48 object-cover mb-4 rounded"
+                  />
+                  <h3 className="text-lg font-semibold">{producto.nombre}</h3>
+                  <p className="text-gray-600">{formatearPrecio(producto.precio)}</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Modal de Producto */}
+      {modalAbierto && productoSeleccionado && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 md:w-1/2 lg:w-1/3 relative">
+            <button
+              onClick={cerrarModal}
+              className="absolute top-2 right-2 text-darkyellow text-2xl"
+            >
+              &times;
+            </button>
+            <h3 className="text-xl font-semibold mb-4">{productoSeleccionado.nombre}</h3>
+            <img
+              src={productoSeleccionado.urlProductoImg ? `https://imagenes224.blob.core.windows.net/imagenes224/${productoSeleccionado.urlProductoImg.split('/').pop()}` : imgPrueba}
+              alt={productoSeleccionado.nombre}
+              className="w-full h-64 object-contain mb-4 rounded"
+            />
+            <p className="text-gray-600 mb-4">{formatearPrecio(productoSeleccionado.precio)}</p>
+            <p className="text-gray-800 mb-4">{productoSeleccionado.descripcion}</p>
+            <div className="flex justify-between">
+              <button
+                onClick={() => agregarAlCarrito(productoSeleccionado)}
+                className="bg-darkyellow text-white py-2 px-4 rounded"
+              >
+                Agregar al carrito
+              </button>
+              <button
+                onClick={cerrarModal}
+                className="bg-gray-300 text-gray-800 py-2 px-4 rounded"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <Footer />
     </div>
   );
