@@ -2,17 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Header } from '../ForView/Header';
 import { Footer } from '../ForView/Footer';
-import { FaCoffee } from "react-icons/fa";
+import { FaStar } from "react-icons/fa";
 
 export const CompaniesProducts = () => {
-    const { codigoempresa } = useParams(); // Obtener codigoempresa desde la URL
+    const { codigoempresa } = useParams();
     const [productos, setProductos] = useState([]);
     const [loadingMessage, setLoadingMessage] = useState('');
     const [error, setError] = useState('');
-    const navigate = useNavigate(); // Hook to navigate programmatically
+    const navigate = useNavigate();
 
     useEffect(() => {
-        console.log('Fetching productos for:', codigoempresa); // Debugging log
         if (codigoempresa) {
             fetchProductos(codigoempresa);
         }
@@ -28,11 +27,9 @@ export const CompaniesProducts = () => {
                 throw new Error('Error al obtener productos desde el servidor');
             }
     
-            const [productosData, _] = await response.json(); // Destructure the nested array
-            console.log('API Response:', productosData); // Log the products data
+            const [productosData] = await response.json();
     
             if (Array.isArray(productosData)) {
-                console.log('Productos IDs:', productosData.map(producto => producto.idProducto));
                 setProductos(productosData);
             } else {
                 throw new Error('Los datos de productos no son un array');
@@ -47,39 +44,45 @@ export const CompaniesProducts = () => {
     };
 
     const handleGoHome = () => {
-        navigate('/CompaniesComprador'); // Navigate to the homepage
+        navigate('/CompaniesComprador');
     };
 
     return (
         <div className="flex flex-col min-h-screen bg-gray-200">
             <Header />
-            <div className="container mx-auto my-8 flex-grow">
-                {loadingMessage && <p className="text-center mb-4 text-darkyellow mt-2">{loadingMessage}</p>}
-                {error && <p className="text-center mb-4 text-red-500">{error}</p>}
-                <button 
-                    onClick={handleGoHome}
-                    className="mb-4 px-4 py-2 bg-darkyellow text-white rounded hover:bg-lightyellow "
-                >
-                    Regresar 
-                </button>
-                <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                    {productos.length === 0 ? (
-                        <div className="bg-white border rounded-lg overflow-hidden shadow-md flex flex-col items-center p-4">
-                            <span className="text-black text-sm text-center">No hay productos para mostrar</span>
-                        </div>
-                    ) : (
-                        productos.map((producto) => (
-                            <div
-                                key={producto.idProducto} // Ensure this is unique
-                                className="bg-white border rounded-lg overflow-hidden shadow-md flex flex-col items-center p-4"
-                            >
-                                <FaCoffee className="w-6 h-6 text-2xl text-darkyellow" />
-                                <p className='text-darkyellow'>{producto.nombreProducto}</p> {/* Use nombreProducto */}
-                                <p className="text-center text-gray-600 mb-4">{producto.descripcion}</p>
+            <div className="flex-1 p-4">
+                {loadingMessage && <p className="text-center text-gray-600">{loadingMessage}</p>}
+                {error && <p className="text-center text-red-600">{error}</p>}
+                {!loadingMessage && !error && (
+                    <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                        {productos.map(product => (
+                            <div key={product.idProducto} className="bg-white border rounded-lg overflow-hidden shadow-md flex flex-col items-center p-4">
+                                <img
+                                    src={`https://imagenes224.blob.core.windows.net/imagenes224/${product.urlProductoImg.split('/').pop()}`}
+                                    alt={product.nombre}
+                                    className="w-full h-48 object-cover"
+                                />
+                                <h3 className="text-lg font-semibold mb-2 text-center">{product.nombre}</h3>
+                                <p className="text-center"><strong>Publicado por:</strong> {product.publicadoPor}</p>
+                                <p className="text-sm text-darkpurple mb-2 text-center">${product.precio}</p>
+                                <div className="flex items-center mb-2">
+                                    {[1, 2, 3, 4, 5].map(star => (
+                                        <FaStar
+                                            key={star}
+                                            className={`text-yellow-500 ${star <= product.rating ? 'text-yellow-500' : 'text-gray-300'}`}
+                                        />
+                                    ))}
+                                </div>
+                                <button
+                                    onClick={() => addToCart(product)}
+                                    className="bg-darkpurple text-white py-2 px-4 rounded hover:bg-purple-700"
+                                >
+                                    Añadir al Carrito
+                                </button>
                             </div>
-                        ))
-                    )}
-                </div>
+                        ))}
+                    </div>
+                )}
             </div>
             <Footer />
         </div>
