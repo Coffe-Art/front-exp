@@ -31,7 +31,9 @@ import { ProfileComprador } from './components/Layouts/Profiles/ProfileComprador
 import { ProfileForAdmin } from './components/Layouts/Profiles/ProfileForAdmin';
 import { ProfileForEmpleado } from './components/Layouts/Profiles/ProfileForEmpleado';
 import ProtectedRoute from './components/Layouts/Protection for Routes/ProtectedRoute';
-import { EventsProvider } from './Context/EventsContext'; // Importar EventsProvider
+import { EventsProvider } from './Context/EventsContext'; 
+import { CompaniesProducts } from './components/Layouts/ForBuyerView/CompaniesProducts';
+
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -73,7 +75,7 @@ function App() {
             <Route path="/CompaniesComprador" element={<ProtectedRoute element={CompaniesComprador} allowedRoles={['comprador', 'anonimo']} />} />
             <Route path="/EventsComprador" element={<ProtectedRoute element={EventsComprador} allowedRoles={['comprador', 'anonimo']} />} />
             <Route path="/ProductFav" element={<ProductFav />} />
-
+            <Route path="/CompaniesProducts/:codigoempresa" element={<CompaniesProducts />} />
             {/* Rutas para Administradores y empleados */}
             <Route path="/ProfileForAdmin" element={<ProtectedRoute element={ProfileForAdmin} allowedRoles={['administrador']} />} />
             <Route path="/ProfileForEmpleado" element={<ProtectedRoute element={ProfileForEmpleado} allowedRoles={['empleado']} />} />

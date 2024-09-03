@@ -3,10 +3,10 @@ import { useEmpresa } from '../../../Context/contextEmpresa';
 import ProductoContext from '../../../Context/contextProducto';
 import { Header } from '../ForView/Header';
 import { Footer } from '../ForView/Footer';
-import { useNavigate } from 'react-router-dom';
-import { FaEdit, FaTrash } from 'react-icons/fa';
-import banner from '../../../assets/FondoMenu.png'; 
+import banner from '../../../assets/FondoEmpresas.png'; 
 import { FaCoffee } from "react-icons/fa";
+import { NavLink, useNavigate } from 'react-router-dom';
+
 
 export const CompaniesComprador = () => {
     const { empresas, setEmpresas } = useEmpresa();
@@ -87,26 +87,26 @@ export const CompaniesComprador = () => {
 
     const closeEmpresaModal = () => {
         setSelectedEmpresa(null);
-        setLoadingMessage(''); // Limpia el mensaje de carga al cerrar la modal
+        setLoadingMessage(''); 
     };
 
     return (
         <div className="flex flex-col min-h-screen bg-gray-200">
             <Header />
-            <div className="container mx-auto my-8 flex-grow grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                <div className="bg-white border rounded-lg overflow-hidden shadow-md flex flex-col items-center p-4 cursor-pointer mb-4">
-                    <div className="flex flex-col items-center justify-center">
-                        <svg className="w-6 h-6 mr-2 text-2xl text-darkyellow"><FaCoffee /></svg>
-                        <hr className='w-52 h-1 my-3 bg-darkyellow opacity-50 border-0 '/>
-                        <span className="text-black text-sm text-center">
-                            <br />¡Bienvenido a las empresas! <br /><br />
-                            En este apartado podrá observar todas las empresas registradas en la aplicación al igual que podrá visualizar su información y los productos asociados a cada empresa.<br />
-                            <br />
-                            ¡Tenga un feliz día!
-                            <br /><br />
-                        </span>
+            <div className="flex flex-col">
+                    <div className="flex flex-col items-center justify-center text-justify p4">
+                        <div className='flex flex-row'>
+                        <br /> <p className=' text-darkyellow md:text-4xl font-bold mt-5'>¡Bienvenido a empresas!</p> <br /><br />
+                        </div>
+                        <span className="text-black text-sm text-center mt-7 px-96 md:text-lg">
+                        En esta sección, podrás explorar todas las empresas registradas en la aplicación. No solo podrás ver la información básica de cada empresa, sino que también tendrás acceso a una lista completa de los productos que están vinculados a ellas. Esto te permitirá tener una visión clara y completa de todo lo que ocurre en la plataforma.
+                        <br /><br />
+    ¡Le deseamos un excelente y productivo día!
+    <br /><br />
+</span>
                     </div>
                 </div>
+            <div className="container mx-auto my-8 flex-grow grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                 {empresas.length === 0 ? (
                     <div className="bg-white border rounded-lg overflow-hidden shadow-md flex flex-col items-center p-4 cursor-pointer">
                         <div className="flex flex-col items-center">
@@ -120,77 +120,75 @@ export const CompaniesComprador = () => {
                             className="bg-white border rounded-lg overflow-hidden shadow-md cursor-pointer flex flex-col items-center p-4"
                             onClick={() => viewEmpresa(empresa.codigoempresa)}
                         >
-                            <h3 className="text-lg font-semibold mb-2 text-center">{empresa.nombre}</h3>
-                            <p className="text-center underline text-darkyellow">{empresa.direccion}</p>
-                            <p className="text-center line-clamp-5">{empresa.descripcion}</p>
-                            <p className="text-center text-gray-600">ID: {empresa.codigoempresa}</p>
-                            <div className="flex gap-32 mt-4">
-                                <button
-                                    className="text-darkyellow hover:text-lightyellow text-3xl"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        // handleUpdate(empresa); // Este método no está definido en el código original
-                                    }}
-                                >
-                                    <FaEdit className="text-xl" />
-                                </button>
-                                <button
-                                    className="text-darkpurple hover:text-lightpurple text-3xl"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        // handleDelete(empresa.codigoempresa); // Este método no está definido en el código original
-                                    }}
-                                >
-                                    <FaTrash className="text-xl" />
-                                </button>
-                            </div>
+                        <div className='flex flex-row'>
+                        <svg className="w-6 h-6 mr-2 text-2xl text-darkyellow"><FaCoffee /></svg>
+                        <br /> <br/> 
+                        <p className=' text-darkyellow'>{empresa.nombre}</p> <br /><br />
                         </div>
+                        <hr className='w-52 h-1 my-3 bg-darkyellow opacity-50 border-0 '/>
+                        <br/> <br/> 
+                        <p className="text-center text-gray-600 mb-4">{empresa.direccion}</p>
+                        <br/> <br/> 
+                        <p className="text-center line-clamp-5 mb-5">{empresa.descripcion}</p>
+                        <br/> 
+                        <p className="text-center text-gray-600">ID: {empresa.codigoempresa}</p>
+                            
+                        </div>
+                       
                     ))
                 )}
             </div>
             {(selectedEmpresa || loadingMessage) && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg relative">
-                        <div className="relative w-full h-40 bg-gray-300 rounded-t-lg overflow-hidden">
-                            <img
-                                src={banner}
-                                alt="Banner de Empresa"
-                                className="w-full h-full object-cover"
-                            />
-                            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-10">
-                                <h2 className="text-white text-xl font-bold">
-                                    {selectedEmpresa ? selectedEmpresa.nombre : 'Cargando...'}
-                                </h2>
-                            </div>
-                        </div>
-                        {loadingMessage && (
-                            <p className="text-center mb-4 text-darkyellow">{loadingMessage}</p>
-                        )}
-                        {selectedEmpresa && (
-                            <>
-                                <h3 className="text-lg font-semibold mb-2 text-center">Información de la empresa</h3>
-                                <p className="mb-4">ID: {selectedEmpresa.codigoempresa}</p>
-                                <p className="mb-4">Nombre de la Empresa: {selectedEmpresa.nombre_empresa}</p>
-                                <p className="mb-4">Descripción: {selectedEmpresa.descripcion}</p>
-                                <p className="mb-4">Dirección: {selectedEmpresa.direccion}</p>
-                                <p className="mb-4">Fecha de Creación: {new Date(selectedEmpresa.fecha_creacion).toLocaleDateString()}</p>
-                                <p className="mb-4">Teléfono: {selectedEmpresa.telefono}</p>
-                                <p className="mb-4">Correo Electrónico: {selectedEmpresa.correo_electronico}</p>
-                                <p className="mb-4">ID del Administrador: {selectedEmpresa.idadministrador}</p>
-                                <p className="mb-4">Nombre del Administrador: {selectedEmpresa.nombre_administrador}</p>
-                                <div className="flex justify-end">
-                                    <button
-                                        className="bg-darkyellow text-white px-4 py-2 rounded"
-                                        onClick={closeEmpresaModal}
-                                    >
-                                        Cerrar
-                                    </button>
-                                </div>
-                            </>
-                        )}
-                    </div>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg relative">
+            <div className="relative w-full h-40 bg-gray-300 rounded-t-lg overflow-hidden">
+                <img
+                    src={banner}
+                    alt="Banner de Empresa"
+                    className="w-full h-full object-cover"
+                />
+                <button
+    className="absolute top-2 right-2 bg-darkyellow text-white w-6 h-6 rounded-full flex items-center justify-center text-lg font-bold z-10"
+    onClick={closeEmpresaModal}
+>
+    &times;
+</button>
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-10">
+                    <h2 className="text-white md:text-3xl font-bold"> 
+                        {selectedEmpresa ? selectedEmpresa.nombre_empresa : 'Cargando...'}
+                    </h2>
+                </div>
+                
+            </div>
+            {loadingMessage && (
+                <p className="text-center mb-4 text-darkyellow mt-2 ">{loadingMessage}</p>
+            )}
+            {selectedEmpresa && (
+                <div className='flex flex-col '>
+                    <p className="mb-4 mt-2"> <span className='font-bold'>ID de la Empresa: </span> {selectedEmpresa.codigoempresa}</p>
+                    <p className="mb-4 mt-2"><span  className='font-bold'>Nombre de la Empresa: </span> {selectedEmpresa.nombre_empresa}</p>
+                    <p className="mb-4 mt-2"><span  className='font-bold'>Descripción: </span> <br/>  {selectedEmpresa.descripcion}</p>
+                    <p className="mb-4 mt-2"><span  className='font-bold'>Dirección: </span>  {selectedEmpresa.direccion}</p>
+                    <p className="mb-4 mt-2"><span  className='font-bold'>Fecha de Creación: </span>{new Date(selectedEmpresa.fecha_creacion).toLocaleDateString()}</p>
+                    <p className="mb-4 mt-2"><span  className='font-bold'>Teléfono: </span> {selectedEmpresa.telefono}</p>
+                    <p className="mb-4 mt-2"><span  className='font-bold'>Correo Electrónico: </span> {selectedEmpresa.correo_electronico}</p>
+                    <p className="mb-4 mt-2"><span  className='font-bold'>Nombre del Encargado:  </span>{selectedEmpresa.nombre_administrador}</p>
+                    <div className="flex justify-between mt-5">
+                    <NavLink
+    to={`/CompaniesProducts/${selectedEmpresa.codigoempresa}`}
+    className="bg-darkyellow text-white px-4 py-2 rounded text-lg font-semibold"
+    activeClassName="font-bold"
+>
+    Ver productos  
+</NavLink>
+</div>
+                    
                 </div>
             )}
+        </div>
+    </div>
+)}
+
             <Footer />
         </div>
     );
