@@ -221,6 +221,7 @@ export const CraftComprador = () => {
                 ))}
               </div>
             </div>
+            
           </div>
         </div>
 
@@ -246,6 +247,14 @@ export const CraftComprador = () => {
                   />
                   <h3 className="text-lg font-semibold">{producto.nombre}</h3>
                   <p className="text-gray-600">{formatearPrecio(producto.precio)}</p>
+                  <p className="text-gray-800 mb-2"> {producto.descripcion}</p>
+
+                  <button
+                onClick={() => agregarAlCarrito(productoSeleccionado)}
+                className="bg-darkpurple text-white py-2 px-4 rounded"
+              >
+                Agregar al carrito
+              </button>
                 </div>
               ))}
             </div>
@@ -253,41 +262,50 @@ export const CraftComprador = () => {
         </div>
       </div>
 
-      {/* Modal de Producto */}
-      {modalAbierto && productoSeleccionado && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 md:w-1/2 lg:w-1/3 relative">
-            <button
-              onClick={cerrarModal}
-              className="absolute top-2 right-2 text-darkyellow text-2xl"
-            >
-              &times;
-            </button>
-            <h3 className="text-xl font-semibold mb-4">{productoSeleccionado.nombre}</h3>
-            <img
-              src={productoSeleccionado.urlProductoImg ? `https://imagenes224.blob.core.windows.net/imagenes224/${productoSeleccionado.urlProductoImg.split('/').pop()}` : imgPrueba}
-              alt={productoSeleccionado.nombre}
-              className="w-full h-64 object-contain mb-4 rounded"
-            />
-            <p className="text-gray-600 mb-4">{formatearPrecio(productoSeleccionado.precio)}</p>
-            <p className="text-gray-800 mb-4">{productoSeleccionado.descripcion}</p>
-            <div className="flex justify-between">
-              <button
-                onClick={() => agregarAlCarrito(productoSeleccionado)}
-                className="bg-darkyellow text-white py-2 px-4 rounded"
-              >
-                Agregar al carrito
-              </button>
-              <button
-                onClick={cerrarModal}
-                className="bg-gray-300 text-gray-800 py-2 px-4 rounded"
-              >
-                Cerrar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+     {/* Modal de Producto */}
+{modalAbierto && productoSeleccionado && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 md:w-1/2 lg:w-1/3 relative">
+      <button
+        onClick={cerrarModal}
+        className="absolute top-2 right-2 text-darkyellow text-2xl"
+      >
+        &times;
+      </button>
+      <h3 className="text-xl font-bold mb-4">{productoSeleccionado.nombre}</h3>
+      <img
+        src={
+          productoSeleccionado.urlProductoImg
+            ? `https://imagenes224.blob.core.windows.net/imagenes224/${productoSeleccionado.urlProductoImg.split('/').pop()}`
+            : imgPrueba
+        }
+        alt={productoSeleccionado.nombre}
+        className="w-full h-64 object-contain mb-4 rounded"
+      />
+      <p className="text-gray-600 mb-2">Precio: {formatearPrecio(productoSeleccionado.precio)}</p>
+      <p className="text-gray-800 mb-2">Descripción: {productoSeleccionado.descripcion}</p>
+      <p className="text-gray-600 mb-2">Materiales: {productoSeleccionado.materiales}</p>
+      <p className="text-gray-600 mb-2">Categoría: {productoSeleccionado.categoria}</p>
+      <p className="text-gray-600 mb-2">Cantidad disponible: {productoSeleccionado.cantidad}</p>
+      <p className="text-gray-600 mb-2">Publicado por: {productoSeleccionado.publicadoPor}</p>
+      <div className="flex justify-between mt-4">
+        <button
+          onClick={() => agregarAlCarrito(productoSeleccionado)}
+          className="bg-darkpurple text-white py-2 px-4 rounded"
+        >
+          Agregar al carrito
+        </button>
+        <button
+          onClick={cerrarModal}
+          className="bg-gray-300 text-gray-800 py-2 px-4 rounded"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
       <Footer />
     </div>
   );
