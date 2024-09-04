@@ -132,6 +132,7 @@ export const CompaniesComprador = () => {
                         <p className="text-center line-clamp-5 mb-5">{empresa.descripcion}</p>
                         <br/> 
                         <p className="text-center text-gray-600">ID: {empresa.codigoempresa}</p>
+                        
                             
                         </div>
                        
@@ -147,12 +148,7 @@ export const CompaniesComprador = () => {
                     alt="Banner de Empresa"
                     className="w-full h-full object-cover"
                 />
-                <button
-    className="absolute top-2 right-2 bg-darkyellow text-white w-6 h-6 rounded-full flex items-center justify-center text-lg font-bold z-10"
-    onClick={closeEmpresaModal}
->
-    &times;
-</button>
+            
                 <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-10">
                     <h2 className="text-white md:text-3xl font-bold"> 
                         {selectedEmpresa ? selectedEmpresa.nombre_empresa : 'Cargando...'}
@@ -173,14 +169,22 @@ export const CompaniesComprador = () => {
                     <p className="mb-4 mt-2"><span  className='font-bold'>Teléfono: </span> {selectedEmpresa.telefono}</p>
                     <p className="mb-4 mt-2"><span  className='font-bold'>Correo Electrónico: </span> {selectedEmpresa.correo_electronico}</p>
                     <p className="mb-4 mt-2"><span  className='font-bold'>Nombre del Encargado:  </span>{selectedEmpresa.nombre_administrador}</p>
-                    <div className="flex justify-between mt-5">
                     <NavLink
     to={`/CompaniesProducts/${selectedEmpresa.codigoempresa}`}
-    className="bg-darkyellow text-white px-4 py-2 rounded text-lg font-semibold"
+    className="bg-transparent text-darkyellow rounded text-lg font-semibold underline"
     activeClassName="font-bold"
 >
     Ver productos  
 </NavLink>
+                    <div className="flex justify-between mt-5">
+                    
+<button
+          onClick={closeEmpresaModal}
+          className="bg-gray-300 text-gray-800 py-2 px-4 rounded"
+        >
+          Cerrar
+        </button>
+
 </div>
                     
                 </div>
