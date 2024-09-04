@@ -156,7 +156,7 @@ export const CraftComprador = () => {
       <div className="flex flex-col md:flex-row flex-1">
         <div className={`md:w-1/4 lg:w-1/5 bg-white border rounded-lg overflow-hidden shadow-md p-4 ${filtroAbierto ? 'block' : 'hidden md:block'}`}>
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-bold">Comprador</h2>
+            <h2 className="text-lg font-bold">Bienvenido</h2>
             <button onClick={alternarFiltro} className="text-darkyellow text-xl">
               {/* Add icon here if needed */}
             </button>
@@ -227,7 +227,7 @@ export const CraftComprador = () => {
 
         {/* Productos */}
         <div className="flex-1 p-4">
-          <h2 className="text-2xl font-bold mb-4">Productos</h2>
+          <h2 className="text-2xl font-bold mb-4">Artesanias</h2>
           {cargando ? (
             <div className="text-center">Cargando...</div>
           ) : error ? (
@@ -245,13 +245,13 @@ export const CraftComprador = () => {
                     alt={producto.nombre}
                     className="w-full h-48 object-cover mb-4 rounded"
                   />
-                  <h3 className="text-lg font-semibold">{producto.nombre}</h3>
-                  <p className="text-gray-600">{formatearPrecio(producto.precio)}</p>
-                  <p className="text-gray-800 mb-2"> {producto.descripcion}</p>
+                  <h3 className="text-2xl font-semibold mt-5">{producto.nombre}</h3>
+                  <p className="text-gray-600 mt-3 mb-3">{formatearPrecio(producto.precio)}</p>
+                  <p className="text-gray-800 mb-3"> {producto.descripcion}</p>
 
                   <button
                 onClick={() => agregarAlCarrito(productoSeleccionado)}
-                className="bg-darkpurple text-white py-2 px-4 rounded"
+                className="bg-darkpurple text-white py-2 px-4 rounded mt-3"
               >
                 Agregar al carrito
               </button>
@@ -266,13 +266,10 @@ export const CraftComprador = () => {
 {modalAbierto && productoSeleccionado && (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 md:w-1/2 lg:w-1/3 relative">
-      <button
-        onClick={cerrarModal}
-        className="absolute top-2 right-2 text-darkyellow text-2xl"
-      >
-        &times;
-      </button>
-      <h3 className="text-xl font-bold mb-4">{productoSeleccionado.nombre}</h3>
+      
+      <div className='flex justify-center'>
+      <h3 className="text-xl font-bold mb-4 ">{productoSeleccionado.nombre}</h3>
+      </div>
       <img
         src={
           productoSeleccionado.urlProductoImg
@@ -282,12 +279,12 @@ export const CraftComprador = () => {
         alt={productoSeleccionado.nombre}
         className="w-full h-64 object-contain mb-4 rounded"
       />
-      <p className="text-gray-600 mb-2">Precio: {formatearPrecio(productoSeleccionado.precio)}</p>
-      <p className="text-gray-800 mb-2">Descripción: {productoSeleccionado.descripcion}</p>
-      <p className="text-gray-600 mb-2">Materiales: {productoSeleccionado.materiales}</p>
-      <p className="text-gray-600 mb-2">Categoría: {productoSeleccionado.categoria}</p>
-      <p className="text-gray-600 mb-2">Cantidad disponible: {productoSeleccionado.cantidad}</p>
-      <p className="text-gray-600 mb-2">Publicado por: {productoSeleccionado.publicadoPor}</p>
+      <p className="text-gray-600 mb-2 "> <span className='font-bold'>Precio:</span> {formatearPrecio(productoSeleccionado.precio)}</p>
+      <p className="text-gray-800 mb-2"> <span className='font-bold'>Descripción:</span> {productoSeleccionado.descripcion}</p>
+      <p className="text-gray-600 mb-2"> <span className='font-bold'>Materiales:</span> {productoSeleccionado.materiales}</p>
+      <p className="text-gray-600 mb-2"> <span className='font-bold'>Categoría:</span> {productoSeleccionado.categoria}</p>
+      <p className="text-gray-600 mb-2"> <span className='font-bold'>Cantidad disponible:</span> {productoSeleccionado.cantidad}</p>
+      <p className="text-gray-600 mb-2"> <span className='font-bold'>Publicado por:</span> {productoSeleccionado.publicadoPor}</p>
       <div className="flex justify-between mt-4">
         <button
           onClick={() => agregarAlCarrito(productoSeleccionado)}
