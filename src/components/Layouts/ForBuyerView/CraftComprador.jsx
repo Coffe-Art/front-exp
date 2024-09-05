@@ -207,20 +207,7 @@ export const CraftComprador = () => {
               />
             </div>
             <button onClick={resetearPrecios} className="text-darkyellow">Resetear precios</button>
-            <div className="mt-4">
-              <label className="block text-sm font-bold mb-2">Calificación</label>
-              <div className="flex">
-                {[1, 2, 3, 4, 5].map((valor) => (
-                  <button
-                    key={valor}
-                    onClick={() => manejarCambioCalificacion(valor)}
-                    className={`text-${calificacion === valor ? 'darkyellow' : 'gray-400'} mr-2`}
-                  >
-                    <FaStar />
-                  </button>
-                ))}
-              </div>
-            </div>
+            
             
           </div>
         </div>

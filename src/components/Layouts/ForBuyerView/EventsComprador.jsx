@@ -22,10 +22,12 @@ const defaultCenter = {
   lng: -74.2973,
 };
 
-const geocodeAddress = async (address) => {
+// Función de geocodificación actualizada para incluir la ciudad
+const geocodeAddress = async (address, city) => {
   const geocoder = new google.maps.Geocoder();
   return new Promise((resolve, reject) => {
-    geocoder.geocode({ address }, (results, status) => {
+    const fullAddress = `${address}, ${city}, Colombia`;
+    geocoder.geocode({ address: fullAddress }, (results, status) => {
       if (status === 'OK') {
         const { lat, lng } = results[0].geometry.location;
         resolve({ lat: lat(), lng: lng() });
@@ -80,18 +82,25 @@ export const EventsComprador = () => {
       console.log('Evento seleccionado:', event);
 
       const address = event.ubicacion;
+      const city = event.lugar; // Asegúrate de que este campo exista en tus datos
+
       if (!address || typeof address !== 'string' || address.trim() === '') {
         console.error('Dirección del evento no válida:', address);
         return;
       }
-      
-      const { lat, lng } = await geocodeAddress(address);
-      
+
+      if (!city || typeof city !== 'string' || city.trim() === '') {
+        console.error('Ciudad del evento no válida:', city);
+        return;
+      }
+
+      const { lat, lng } = await geocodeAddress(address, city);
+
       if (typeof lat !== 'number' || typeof lng !== 'number') {
         console.error('Coordenadas inválidas:', lat, lng);
         return;
       }
-      
+
       setMapCenter({ lat, lng });
       setSelectedEvent(event);
     } catch (error) {
@@ -121,6 +130,7 @@ export const EventsComprador = () => {
 
       <div className="flex flex-col min-h-screen p-4 md:p-8 bg-gray-200">
         <section className="flex flex-col md:flex-row gap-8">
+          {/* Mapa y Búsqueda */}
           <div className="w-full md:w-1/2 flex flex-col items-center justify-center md:items-start">
             <div className="w-full max-w-full mb-6 relative">
               <input
@@ -152,6 +162,7 @@ export const EventsComprador = () => {
             </div>
           </div>
 
+          {/* Lista de Eventos y Calendario */}
           <div className="w-full md:w-1/2 flex flex-col items-center">
             <div className="text-center">
               <h2 className="text-darkyellow text-4xl font-bold mt-6">Eventos Especiales</h2>
@@ -188,6 +199,7 @@ export const EventsComprador = () => {
           </div>
         </section>
 
+        {/* Modal de Detalle del Evento */}
         {selectedEvent && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg w-full max-w-lg relative p-6">
@@ -208,6 +220,7 @@ export const EventsComprador = () => {
               <div className="mt-4 p-4 bg-white rounded-b-lg">
                 <p><strong>Fecha: </strong> {formatDate(selectedEvent.fecha)}</p>
                 <p><strong>Ubicación: </strong> {selectedEvent.ubicacion}</p>
+                <p><strong>Ciudad: </strong> {selectedEvent.lugar}</p>
                 <p><strong>Duración: </strong> {selectedEvent.duracion}</p>
                 <p><strong>Empresas Participantes: </strong> {selectedEvent.empresasAsistente}</p>
                 <p><strong className='mb-3 '>Descripción: </strong> {selectedEvent.descripcion}</p>

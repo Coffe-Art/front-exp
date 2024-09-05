@@ -210,6 +210,21 @@ export const EventsForm = () => {
             {errors.fecha && <p className="text-red-500 text-xs italic">{errors.fecha}</p>}
           </div>
           <div className="mb-4">
+            <label className="block text-black text-sm font-bold mb-2" htmlFor="empresasAsistente">
+              Empresas Asistentes
+            </label>
+            <Select
+              id="empresasAsistente"
+              name="empresasAsistente"
+              options={empresasOptions}
+              isMulti
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
+              value={formData.empresasAsistente.map(label => ({ label, value: label }))}
+              onChange={handleSelectChange}
+            />
+            {errors.empresasAsistente && <p className="text-red-500 text-xs italic">{errors.empresasAsistente}</p>}
+          </div>
+          <div className="mb-4">
             <label className="block text-black text-sm font-bold mb-2" htmlFor="ubicacion">
               Ubicación
             </label>
@@ -222,7 +237,7 @@ export const EventsForm = () => {
               value={formData.ubicacion}
               onChange={handleChange}
             />
-            <p className="text-gray-600 text-sm mt-2">¿En qué ciudad se llevará a cabo el evento?</p>
+            <p className="text-gray-600 text-sm mt-2">Indica la dirección donde se realizará el evento</p>
             {errors.ubicacion && <p className="text-red-500 text-xs italic">{errors.ubicacion}</p>}
           </div>
           <div className="mb-4">
@@ -254,7 +269,7 @@ export const EventsForm = () => {
               value={formData.lugar}
               onChange={handleChange}
             />
-            <p className="text-gray-600 text-sm mt-2">Indica el lugar exacto dentro de la ciudad donde se realizará el evento</p>
+            <p className="text-gray-600 text-sm mt-2">¿En qué ciudad se llevará a cabo el evento?</p>
             {errors.lugar && <p className="text-red-500 text-xs italic">{errors.lugar}</p>}
           </div>
           <div className="mb-4">
@@ -272,21 +287,6 @@ export const EventsForm = () => {
             ></textarea>
             <p className="text-gray-600 text-sm mt-2">Máximo 200 caracteres ({charCount}/200)</p>
             {errors.descripcion && <p className="text-red-500 text-xs italic">{errors.descripcion}</p>}
-          </div>
-          <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="empresasAsistente">
-              Empresas Asistentes
-            </label>
-            <Select
-              id="empresasAsistente"
-              name="empresasAsistente"
-              options={empresasOptions}
-              isMulti
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-              value={formData.empresasAsistente.map(label => ({ label, value: label }))}
-              onChange={handleSelectChange}
-            />
-            {errors.empresasAsistente && <p className="text-red-500 text-xs italic">{errors.empresasAsistente}</p>}
           </div>
           <div className="flex items-center justify-between">
             <button 
