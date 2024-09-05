@@ -7,8 +7,8 @@ import { useAuth } from '../Context/contextAuth';
 
 export const SignIn = () => {
     const navigate = useNavigate();
-    const { login, requestPasswordReset, verifyResetCode, resetPassword, notification } = useAuth();
-
+    const { login, requestPasswordReset, verifyResetCode, resetPassword } = useAuth();
+    
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -21,6 +21,7 @@ export const SignIn = () => {
     const [forgotPassword, setForgotPassword] = useState(false);
     const [verificationSent, setVerificationSent] = useState(false);
     const [codeVerified, setCodeVerified] = useState(false);
+    const [notification, setNotification] = useState(null);
 
     const handleChange = useCallback((e) => {
         const { id, value } = e.target;
@@ -29,6 +30,13 @@ export const SignIn = () => {
             [id]: value
         }));
     }, []);
+
+    const showNotification = (message, isError = false) => {
+        setNotification({ message, isError });
+        setTimeout(() => {
+            setNotification(null);
+        }, 2000); // La notificación durará 2 segundos
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -63,42 +71,43 @@ export const SignIn = () => {
                         const result = await requestPasswordReset(formData.tipoUsuario, formData.email);
                         if (result.success) {
                             setVerificationSent(true);
-                            alert(result.message || 'Correo de recuperación enviado');
+                            showNotification(result.message || 'Correo de recuperación enviado');
                         } else {
-                            alert(result.error || 'Error en la solicitud de recuperación de contraseña');
+                            showNotification(result.error || 'Error en la solicitud de recuperación de contraseña', true);
                         }
                     } else if (!codeVerified) {
                         const codeResult = await verifyResetCode(formData.tipoUsuario, formData.email, formData.code);
                         if (codeResult.success) {
                             setCodeVerified(true);
-                            alert('Código verificado. Ahora puedes establecer una nueva contraseña.');
+                            showNotification('Código verificado. Ahora puedes establecer una nueva contraseña.');
                         } else {
-                            alert(codeResult.error || 'Código de verificación incorrecto');
+                            showNotification(codeResult.error || 'Código de verificación incorrecto', true);
                         }
                     } else {
                         const resetResult = await resetPassword(formData.tipoUsuario, formData.email, formData.newPassword, formData.code);
                         if (resetResult.success) {
-                            alert('Contraseña actualizada con éxito');
+                            showNotification('Contraseña actualizada con éxito');
                             setForgotPassword(false);
                             setVerificationSent(false);
                             setCodeVerified(false);
                         } else {
-                            alert(resetResult.error || 'Error al actualizar la contraseña');
+                            showNotification(resetResult.error || 'Error al actualizar la contraseña', true);
                         }
                     }
                 } else {
                     const result = await login(formData.tipoUsuario, formData.email, formData.password);
                     if (result.success) {
-                        navigate('/');
+                        showNotification('Inicio de sesión exitoso');
+                        setTimeout(() => navigate('/'), 2000); // Redirige después de mostrar la notificación
                     } else {
-                        alert(result.error || 'Error desconocido. Intenta de nuevo.');
+                        showNotification(result.error || 'Error desconocido. Intenta de nuevo.', true);
                     }
                 }
             } catch (error) {
-                alert('Hubo un problema al procesar la solicitud. Por favor, intenta de nuevo.');
+                showNotification('Hubo un problema al procesar la solicitud. Por favor, intenta de nuevo.', true);
             }
         } else {
-            alert('Por favor corrige los errores en el formulario.');
+            showNotification('Por favor corrige los errores en el formulario.', true);
         }
     };
 
@@ -116,8 +125,8 @@ export const SignIn = () => {
                     {forgotPassword ? 'Recuperar Contraseña' : 'Iniciar Sesión'}
                 </h1>
                 {notification && (
-                    <div className={`border px-4 py-3 rounded relative mb-4 ${notification.startsWith('Error') ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700'}`} role="alert">
-                        <span className="block sm:inline">{notification}</span>
+                    <div className={`border px-4 py-3 rounded relative mb-4 ${notification.isError ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700'}`} role="alert">
+                        <span className="block sm:inline">{notification.message}</span>
                     </div>
                 )}
                 <form onSubmit={handleSubmit}>
@@ -225,30 +234,27 @@ export const SignIn = () => {
                             </div>
                         </>
                     )}
-                    <div className="flex items-center flex-col justify-between">
-                        <div className='flex flex-row justify-between min-w-full'>
+                    <div className="flex items-center justify-between">
                         <button
                             type="submit"
-                            className="bg-darkyellow hover:bg-lightyellow text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            className="bg-darkyellow hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                         >
-                            {forgotPassword ? (verificationSent ? (codeVerified ? 'Restablecer Contraseña' : 'Verificar Código') : 'Enviar Código') : 'Iniciar Sesión'}
+                            {forgotPassword ? 'Recuperar Contraseña' : 'Iniciar Sesión'}
                         </button>
                         <button
                             type="button"
+                            className="inline-block align-baseline font-bold text-sm text-darkyellow hover:text-lightyellow"
                             onClick={() => setForgotPassword(!forgotPassword)}
-                            className="text-darkyellow hover:text-lightyellow text-sm font-bold"
                         >
-                            {forgotPassword ? 'Volver a Iniciar Sesión' : '¿Olvidaste tu Contraseña?'}
+                            {forgotPassword ? 'Volver a Iniciar Sesión' : 'Olvidé mi Contraseña'}
                         </button>
-                        </div>
-                        
-                        <p className="mt-4 text-center">
-                        ¿Aun no tienes una cuenta?{' '}
-                        <NavLink to="/register" className="text-darkyellow hover:underline">
+                    </div>
+                    <p className="mt-4 text-center">
+                        ¿No tienes una cuenta?{' '}
+                        <NavLink to="/Register" className="text-darkyellow hover:underline">
                             Registrate
                         </NavLink>
                     </p>
-                    </div>
                 </form>
             </div>
         </div>
