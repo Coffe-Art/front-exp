@@ -4,6 +4,8 @@ import { FaPlus, FaSearch, FaStar } from 'react-icons/fa';
 import { Header } from '../ForView/Header';
 import { Footer } from '../ForView/Footer';
 import ProductoContext from '../../../Context/contextProducto';
+import CartIcon from './CartIcon';
+
 
 export const CraftComprador = () => {
   const { productos, setProductos } = useContext(ProductoContext);
@@ -107,8 +109,27 @@ export const CraftComprador = () => {
   };
 
   const agregarAlCarrito = (producto) => {
-    setProductos(productos.map(p => p.idProducto === producto.idProducto ? { ...p, cantidad: p.cantidad - 1 } : p));
+    // Obtener el carrito del localStorage, si existe
+    const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+  
+    // Verificar si el producto ya está en el carrito
+    const productoExistente = carrito.find(item => item.idProducto === producto.idProducto);
+  
+    if (productoExistente) {
+      // Si el producto ya está en el carrito, incrementar la cantidad
+      productoExistente.cantidad += 1;
+    } else {
+      // Si el producto no está en el carrito, agregarlo con una cantidad de 1
+      carrito.push({ ...producto, cantidad: 1 });
+    }
+  
+    // Guardar el carrito actualizado en el localStorage
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+  
+    // Mensaje de confirmación o acción adicional, si es necesario
+    alert('Producto agregado al carrito');
   };
+  
 
   const alternarFiltro = () => {
     setFiltroAbierto(!filtroAbierto);
@@ -235,13 +256,12 @@ export const CraftComprador = () => {
                   <h3 className="text-2xl font-semibold mt-5">{producto.nombre}</h3>
                   <p className="text-gray-600 mt-3 mb-3">{formatearPrecio(producto.precio)}</p>
                   <p className="text-gray-800 mb-3"> {producto.descripcion}</p>
-
                   <button
-                onClick={() => agregarAlCarrito(productoSeleccionado)}
-                className="bg-darkpurple text-white py-2 px-4 rounded mt-3"
-              >
-                Agregar al carrito
-              </button>
+  onClick={() => agregarAlCarrito(productoSeleccionado)}
+  className="bg-darkyellow hover:bg-lightyellow text-white py-2 px-4 rounded mt-3"
+>
+  Agregar al carrito
+</button>
                 </div>
               ))}
             </div>
@@ -273,12 +293,12 @@ export const CraftComprador = () => {
       <p className="text-gray-600 mb-2"> <span className='font-bold'>Cantidad disponible:</span> {productoSeleccionado.cantidad}</p>
       <p className="text-gray-600 mb-2"> <span className='font-bold'>Publicado por:</span> {productoSeleccionado.publicadoPor}</p>
       <div className="flex justify-between mt-4">
-        <button
-          onClick={() => agregarAlCarrito(productoSeleccionado)}
-          className="bg-darkpurple text-white py-2 px-4 rounded"
-        >
-          Agregar al carrito
-        </button>
+      <button
+  onClick={() => agregarAlCarrito(productoSeleccionado)}
+  className="bg-darkyellow hover:bg-lightyellow text-white py-2 px-4 rounded mt-3"
+>
+  Agregar al carrito
+</button>
         <button
           onClick={cerrarModal}
           className="bg-gray-300 text-gray-800 py-2 px-4 rounded"
@@ -289,7 +309,8 @@ export const CraftComprador = () => {
     </div>
   </div>
 )}
-
+     
+     <CartIcon className="" />
       <Footer />
     </div>
   );

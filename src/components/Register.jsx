@@ -20,6 +20,7 @@ export const Register = () => {
 
     const [errors, setErrors] = useState({});
     const [notification, setNotification] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false); // Estado para controlar el botón
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -56,6 +57,8 @@ export const Register = () => {
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
+            setIsSubmitting(true); // Deshabilitar el botón
+
             try {
                 const result = await register(
                     formData.role.toLowerCase(),
@@ -76,6 +79,8 @@ export const Register = () => {
             } catch (error) {
                 console.error('Error al registrar:', error);
                 setNotification('Error al registrar, intenta de nuevo');
+            } finally {
+                setIsSubmitting(false); // Volver a habilitar el botón
             }
         }
     };
@@ -189,8 +194,9 @@ export const Register = () => {
                     <button
                         type="submit"
                         className="bg-darkyellow hover:bg-lightyellow text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+                        disabled={isSubmitting} // Deshabilitar el botón cuando se está enviando
                     >
-                        Registrarse
+                        {isSubmitting ? 'Registrando...' : 'Registrarse'}
                     </button>
                     <p className="mt-4 text-center">
                         ¿Ya tienes una cuenta?{' '}

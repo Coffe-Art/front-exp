@@ -33,13 +33,13 @@ import { ProfileForEmpleado } from './components/Layouts/Profiles/ProfileForEmpl
 import ProtectedRoute from './components/Layouts/Protection for Routes/ProtectedRoute';
 import { EventsProvider } from './Context/EventsContext'; 
 import { CompaniesProducts } from './components/Layouts/ForBuyerView/CompaniesProducts';
+import CartIcon from './components/Layouts/ForBuyerView/CartIcon';
 
 
 function App() {
   const [cart, setCart] = useState([]);
 
   useEffect(() => {
-    // Revisar si userType ya existe en localStorage, si no, establecer como 'anonimo'
     const userType = localStorage.getItem('userType');
     if (!userType) {
       localStorage.setItem('userType', 'anonimo');
@@ -49,9 +49,9 @@ function App() {
   return (
     <Router>
       <EmpresaProvider>
-        <EventsProvider> {/* Envolver con EventsProvider */}
+        <EventsProvider>
           <Routes>
-            {/* Rutas para comunes (cualquiera puede visualizarlas) */}
+            {/* Rutas para comunes */}
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -62,13 +62,10 @@ function App() {
             <Route path="/Address" element={<Address />} />
             <Route path="/TermsAndConditions" element={<TermsAndConditions />} />
             <Route path="/Statistics" element={<Statistics />} />
-
             {/* Rutas exclusivas para anonimo */}
             <Route path="/ProfileAnon" element={<ProfileAnon />} />
-
             {/* Rutas exclusivas para Comprador */}
             <Route path="/ProfileComprador" element={<ProtectedRoute element={ProfileComprador} allowedRoles={['comprador']} />} />
-
             {/* Rutas para comprador y anonimo */}
             <Route path="/Cart" element={<ProtectedRoute element={() => <Cart cart={cart} setCart={setCart} />} allowedRoles={['comprador', 'anonimo']} />} />
             <Route path="/CraftComprador" element={<ProtectedRoute element={CraftComprador} allowedRoles={['comprador', 'anonimo']} />} />
