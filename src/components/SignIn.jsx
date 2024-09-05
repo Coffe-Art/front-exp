@@ -22,6 +22,8 @@ export const SignIn = () => {
     const [verificationSent, setVerificationSent] = useState(false);
     const [codeVerified, setCodeVerified] = useState(false);
     const [notification, setNotification] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false); // Estado para controlar el envío
+
 
     const handleChange = useCallback((e) => {
         const { id, value } = e.target;
@@ -40,7 +42,10 @@ export const SignIn = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const newErrors = {};
+    if (isSubmitting) return; // Previene múltiples envíos
+    setIsSubmitting(true); // Activa el estado de envío
+
+    const newErrors = {};
 
         // Validación de campos
         if (!formData.email) {
@@ -104,11 +109,17 @@ export const SignIn = () => {
                     }
                 }
             } catch (error) {
+                
                 showNotification('Hubo un problema al procesar la solicitud. Por favor, intenta de nuevo.', true);
+            }
+            finally {
+                setIsSubmitting(false); // Desactiva el estado de envío
             }
         } else {
             showNotification('Por favor corrige los errores en el formulario.', true);
+            setIsSubmitting(false); // Desactiva el estado de envío en caso de errores
         }
+        
     };
 
     return (
@@ -235,12 +246,14 @@ export const SignIn = () => {
                         </>
                     )}
                     <div className="flex items-center justify-between">
-                        <button
-                            type="submit"
-                            className="bg-darkyellow hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        >
-                            {forgotPassword ? 'Recuperar Contraseña' : 'Iniciar Sesión'}
-                        </button>
+                    <button
+    type="submit"
+    className={`bg-darkyellow text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+    disabled={isSubmitting}
+>
+    {isSubmitting ? 'Cargando...' : forgotPassword ? (codeVerified ? 'Actualizar Contraseña' : 'Enviar Código') : 'Iniciar Sesión'}
+</button>
+
                         <button
                             type="button"
                             className="inline-block align-baseline font-bold text-sm text-darkyellow hover:text-lightyellow"
