@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mercadopago/sdk-react": "^0.0.3",
     "@react-google-maps/api": "^2.19.3",
     "all": "^0.0.0",
     "axios": "^1.7.4",

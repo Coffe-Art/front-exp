@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaPlus, FaSearch, FaStar } from 'react-icons/fa';
+import { FaSearch, FaStar } from 'react-icons/fa';
 import { Header } from '../ForView/Header';
 import { Footer } from '../ForView/Footer';
 import ProductoContext from '../../../Context/contextProducto';
-import CartIcon from './CartIcon';
-
 
 export const CraftComprador = () => {
   const { productos, setProductos } = useContext(ProductoContext);
@@ -21,6 +19,7 @@ export const CraftComprador = () => {
   const [opcionesCategorias, setOpcionesCategorias] = useState([]);
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
   const [modalAbierto, setModalAbierto] = useState(false);
+  const [carrito, setCarrito] = useState([]);
 
   const navigate = useNavigate();
 
@@ -78,58 +77,60 @@ export const CraftComprador = () => {
   }, []);
 
   useEffect(() => {
+    const filtrarProductos = (terminoBusqueda, categoria, [precioMinimo, precioMaximo], calificacion) => {
+      if (productos.length === 0) return;
+
+      console.log('Filtrando con:', { terminoBusqueda, categoria, precioMinimo, precioMaximo, calificacion });
+
+      const productosFiltrados = productos.filter(producto => {
+        if (!producto) return false;
+
+        const coincideBusqueda = (producto.nombre && producto.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase())) ||
+                                (producto.descripcion && producto.descripcion.toLowerCase().includes(terminoBusqueda.toLowerCase()));
+        const coincideCategoria = categoria === 'todos' || (producto.categoria && producto.categoria === categoria);
+
+        const precio = parseFloat(producto.precio);
+        const coincidePrecio = (precioMinimo === 0 && precioMaximo === 0) ||
+                                (precio >= precioMinimo && precio <= precioMaximo);
+        const coincideCalificacion = (calificacion === 0 || producto.rating === calificacion);
+
+        console.log('Producto:', producto, 'Coincide con:', { coincideBusqueda, coincideCategoria, coincidePrecio, coincideCalificacion });
+
+        return coincideBusqueda && coincideCategoria && coincidePrecio && coincideCalificacion;
+      });
+
+      console.log('Productos filtrados:', productosFiltrados);
+
+      setProductosFiltrados(productosFiltrados);
+    };
+
     filtrarProductos(terminoBusqueda, categoria, [precioMinimo, precioMaximo], calificacion);
   }, [terminoBusqueda, categoria, precioMinimo, precioMaximo, calificacion, productos]);
 
-  const filtrarProductos = (terminoBusqueda, categoria, [precioMinimo, precioMaximo], calificacion) => {
-    if (productos.length === 0) return;
+  useEffect(() => {
+    // Cargar carrito desde localStorage al montar el componente
+    const carritoGuardado = JSON.parse(localStorage.getItem('carrito')) || [];
+    setCarrito(carritoGuardado);
+  }, []);
 
-    console.log('Filtrando con:', { terminoBusqueda, categoria, precioMinimo, precioMaximo, calificacion });
-
-    const productosFiltrados = productos.filter(producto => {
-      if (!producto) return false;
-
-      const coincideBusqueda = (producto.nombre && producto.nombre.toLowerCase().includes(terminoBusqueda.toLowerCase())) ||
-                               (producto.descripcion && producto.descripcion.toLowerCase().includes(terminoBusqueda.toLowerCase()));
-      const coincideCategoria = categoria === 'todos' || (producto.categoria && producto.categoria === categoria);
-
-      const precio = parseFloat(producto.precio);
-      const coincidePrecio = (precioMinimo === 0 && precioMaximo === 0) ||
-                              (precio >= precioMinimo && precio <= precioMaximo);
-      const coincideCalificacion = (calificacion === 0 || producto.rating === calificacion);
-
-      console.log('Producto:', producto, 'Coincide con:', { coincideBusqueda, coincideCategoria, coincidePrecio, coincideCalificacion });
-
-      return coincideBusqueda && coincideCategoria && coincidePrecio && coincideCalificacion;
-    });
-
-    console.log('Productos filtrados:', productosFiltrados);
-
-    setProductosFiltrados(productosFiltrados);
-  };
+  useEffect(() => {
+    // Guardar carrito en localStorage cada vez que cambia
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+  }, [carrito]);
 
   const agregarAlCarrito = (producto) => {
-    // Obtener el carrito del localStorage, si existe
-    const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-  
-    // Verificar si el producto ya está en el carrito
-    const productoExistente = carrito.find(item => item.idProducto === producto.idProducto);
-  
-    if (productoExistente) {
-      // Si el producto ya está en el carrito, incrementar la cantidad
-      productoExistente.cantidad += 1;
-    } else {
-      // Si el producto no está en el carrito, agregarlo con una cantidad de 1
-      carrito.push({ ...producto, cantidad: 1 });
-    }
-  
-    // Guardar el carrito actualizado en el localStorage
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-  
-    // Mensaje de confirmación o acción adicional, si es necesario
-    alert('Producto agregado al carrito');
+    setCarrito(prevCarrito => {
+      const productoExistente = prevCarrito.find(p => p.idProducto === producto.idProducto);
+      if (productoExistente) {
+        return prevCarrito.map(p => 
+          p.idProducto === producto.idProducto 
+            ? { ...p, cantidad: p.cantidad + 1 }
+            : p
+        );
+      }
+      return [...prevCarrito, { ...producto, cantidad: 1 }];
+    });
   };
-  
 
   const alternarFiltro = () => {
     setFiltroAbierto(!filtroAbierto);
@@ -170,6 +171,15 @@ export const CraftComprador = () => {
     setModalAbierto(false);
     setProductoSeleccionado(null);
   };
+  const manejarIrACarrito = () => {
+    navigate('/Cart'); // Cambiado a la ruta /Cart
+  };
+// Función para eliminar un producto del carrito
+const eliminarDelCarrito = (idProducto) => {
+// Aquí puedes actualizar el estado del carrito para eliminar el producto
+// Ejemplo:
+setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !== idProducto));
+};
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-200">
@@ -177,7 +187,7 @@ export const CraftComprador = () => {
       <div className="flex flex-col md:flex-row flex-1">
         <div className={`md:w-1/4 lg:w-1/5 bg-white border rounded-lg overflow-hidden shadow-md p-4 ${filtroAbierto ? 'block' : 'hidden md:block'}`}>
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-bold">Bienvenido</h2>
+            <h2 className="text-lg font-bold">Filtros</h2>
             <button onClick={alternarFiltro} className="text-darkyellow text-xl">
               {/* Add icon here if needed */}
             </button>
@@ -192,6 +202,7 @@ export const CraftComprador = () => {
                   value={terminoBusqueda}
                   onChange={manejarCambioBusqueda}
                   className="shadow border rounded w-full py-2 px-3 pr-12"
+                  placeholder="Buscar productos..."
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center px-2">
                   <FaSearch className="text-darkpurple" />
@@ -210,32 +221,51 @@ export const CraftComprador = () => {
                 <option key={opcion.value} value={opcion.value}>{opcion.label}</option>
               ))}
             </select>
-            <label className="block text-sm font-bold mb-2">Rango de precio</label>
+            <label className="block text-sm font-bold mb-2">Rango de precios</label>
             <div className="flex mb-4">
               <input
                 type="number"
                 value={precioMinimo}
-                onChange={(e) => setPrecioMinimo(parseFloat(e.target.value))}
+                onChange={(e) => setPrecioMinimo(e.target.value)}
                 className="shadow border rounded w-1/2 py-2 px-3 mr-2"
-                placeholder="Mínimo"
+                placeholder="Min"
               />
               <input
                 type="number"
                 value={precioMaximo}
-                onChange={(e) => setPrecioMaximo(parseFloat(e.target.value))}
+                onChange={(e) => setPrecioMaximo(e.target.value)}
                 className="shadow border rounded w-1/2 py-2 px-3"
-                placeholder="Máximo"
+                placeholder="Max"
               />
             </div>
-            <button onClick={resetearPrecios} className="text-darkyellow">Resetear precios</button>
-            
-            
+            <button
+              onClick={manejarCambioPrecio}
+              className="bg-darkpurple text-white py-2 px-4 rounded w-full mb-2"
+            >
+              Aplicar filtros
+            </button>
+            <button
+              onClick={resetearPrecios}
+              className="bg-gray-300 text-gray-800 py-2 px-4 rounded w-full"
+            >
+              Resetear filtros
+            </button>
+            <label className="block text-sm font-bold mt-4 mb-2">Calificación</label>
+            <div className="flex">
+              {[5, 4, 3, 2, 1].map((star) => (
+                <button
+                  key={star}
+                  onClick={() => manejarCambioCalificacion(star)}
+                  className={`text-lg ${calificacion === star ? 'text-yellow-500' : 'text-gray-400'}`}
+                >
+                  <FaStar />
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-
-        {/* Productos */}
         <div className="flex-1 p-4">
-          <h2 className="text-2xl font-bold mb-4">Artesanias</h2>
+          <h2 className="text-2xl font-bold mb-4">Artesanías</h2>
           {cargando ? (
             <div className="text-center">Cargando...</div>
           ) : error ? (
@@ -245,23 +275,26 @@ export const CraftComprador = () => {
               {productosFiltrados.map(producto => (
                 <div
                   key={producto.idProducto}
-                  className="bg-white p-4 rounded-lg shadow-md cursor-pointer"
+                  className="bg-white p-4 rounded-lg shadow-md cursor-pointer transition-transform transform hover:scale-105"
                   onClick={() => abrirModal(producto)}
                 >
                   <img
-                    src={producto.urlProductoImg ? `https://imagenes224.blob.core.windows.net/imagenes224/${producto.urlProductoImg.split('/').pop()}` : imgPrueba}
+                    src={producto.urlProductoImg ? `https://imagenes224.blob.core.windows.net/imagenes224/${producto.urlProductoImg.split('/').pop()}` : 'path_to_default_image'}
                     alt={producto.nombre}
                     className="w-full h-48 object-cover mb-4 rounded"
                   />
                   <h3 className="text-2xl font-semibold mt-5">{producto.nombre}</h3>
                   <p className="text-gray-600 mt-3 mb-3">{formatearPrecio(producto.precio)}</p>
-                  <p className="text-gray-800 mb-3"> {producto.descripcion}</p>
+                  <p className="text-gray-800 mb-3">{producto.descripcion}</p>
                   <button
-  onClick={() => agregarAlCarrito(productoSeleccionado)}
-  className="bg-darkyellow hover:bg-lightyellow text-white py-2 px-4 rounded mt-3"
->
-  Agregar al carrito
-</button>
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      agregarAlCarrito(producto);
+                    }}
+                    className="bg-darkpurple text-white py-2 px-4 rounded mt-3"
+                  >
+                    Agregar al carrito
+                  </button>
                 </div>
               ))}
             </div>
@@ -269,48 +302,78 @@ export const CraftComprador = () => {
         </div>
       </div>
 
-     {/* Modal de Producto */}
-{modalAbierto && productoSeleccionado && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 md:w-1/2 lg:w-1/3 relative">
-      
-      <div className='flex justify-center'>
-      <h3 className="text-xl font-bold mb-4 ">{productoSeleccionado.nombre}</h3>
-      </div>
+      {/* Carrito */}
+<div className="fixed top-32 right-4 bg-white border rounded-lg shadow-lg p-4 w-80">
+<h2 className="text-xl font-bold mb-4">Carrito</h2>
+{carrito.length === 0 ? (
+  <p>El carrito está vacío.</p>
+) : (
+  carrito.map(producto => (
+    <div key={producto.idProducto} className="flex flex-col items-center mb-4 border-b pb-4">
       <img
-        src={
-          productoSeleccionado.urlProductoImg
-            ? `https://imagenes224.blob.core.windows.net/imagenes224/${productoSeleccionado.urlProductoImg.split('/').pop()}`
-            : imgPrueba
-        }
-        alt={productoSeleccionado.nombre}
-        className="w-full h-64 object-contain mb-4 rounded"
+        src={producto.urlProductoImg ? `https://imagenes224.blob.core.windows.net/imagenes224/${producto.urlProductoImg.split('/').pop()}` : 'path_to_default_image'}
+        alt={producto.nombre}
+        className="w-24 h-24 object-cover mb-2"
       />
-      <p className="text-gray-600 mb-2 "> <span className='font-bold'>Precio:</span> {formatearPrecio(productoSeleccionado.precio)}</p>
-      <p className="text-gray-800 mb-2"> <span className='font-bold'>Descripción:</span> {productoSeleccionado.descripcion}</p>
-      <p className="text-gray-600 mb-2"> <span className='font-bold'>Materiales:</span> {productoSeleccionado.materiales}</p>
-      <p className="text-gray-600 mb-2"> <span className='font-bold'>Categoría:</span> {productoSeleccionado.categoria}</p>
-      <p className="text-gray-600 mb-2"> <span className='font-bold'>Cantidad disponible:</span> {productoSeleccionado.cantidad}</p>
-      <p className="text-gray-600 mb-2"> <span className='font-bold'>Publicado por:</span> {productoSeleccionado.publicadoPor}</p>
-      <div className="flex justify-between mt-4">
-      <button
-  onClick={() => agregarAlCarrito(productoSeleccionado)}
-  className="bg-darkyellow hover:bg-lightyellow text-white py-2 px-4 rounded mt-3"
->
-  Agregar al carrito
-</button>
+      <div className="text-center">
+        <span className="block font-semibold">{producto.nombre}</span>
+        <span>{producto.cantidad} x {formatearPrecio(producto.precio)}</span>
+        {/* Botón de eliminar */}
         <button
-          onClick={cerrarModal}
-          className="bg-gray-300 text-gray-800 py-2 px-4 rounded"
+          onClick={() => eliminarDelCarrito(producto.idProducto)}
+          className="mt-2 text-red-600 hover:text-red-800"
         >
-          Cerrar
+          Eliminar
         </button>
       </div>
     </div>
-  </div>
+  ))
 )}
-     
-     <CartIcon className="" />
+<button
+  onClick={manejarIrACarrito}
+  className="bg-darkyellow text-white px-4 py-2 rounded mt-4 w-full"
+>
+  Generar compra
+</button>
+</div>
+
+
+      {/* Modal de Producto */}
+      {modalAbierto && productoSeleccionado && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 md:w-1/2 lg:w-1/3 relative">
+            <div className='flex justify-center'>
+              <h3 className="text-xl font-bold mb-4">{productoSeleccionado.nombre}</h3>
+            </div>
+            <img
+              src={productoSeleccionado.urlProductoImg ? `https://imagenes224.blob.core.windows.net/imagenes224/${productoSeleccionado.urlProductoImg.split('/').pop()}` : 'path_to_default_image'}
+              alt={productoSeleccionado.nombre}
+              className="w-full h-64 object-contain mb-4 rounded"
+            />
+            <p className="text-gray-600 mb-2"><span className='font-bold'>Precio:</span> {formatearPrecio(productoSeleccionado.precio)}</p>
+            <p className="text-gray-800 mb-2"><span className='font-bold'>Descripción:</span> {productoSeleccionado.descripcion}</p>
+            <p className="text-gray-600 mb-2"><span className='font-bold'>Materiales:</span> {productoSeleccionado.materiales}</p>
+            <p className="text-gray-600 mb-2"><span className='font-bold'>Categoría:</span> {productoSeleccionado.categoria}</p>
+            <p className="text-gray-600 mb-2"><span className='font-bold'>Cantidad disponible:</span> {productoSeleccionado.cantidad}</p>
+            <p className="text-gray-600 mb-2"><span className='font-bold'>Publicado por:</span> {productoSeleccionado.publicadoPor}</p>
+            <div className="flex justify-between mt-4">
+              <button
+                onClick={() => agregarAlCarrito(productoSeleccionado)}
+                className="bg-darkpurple text-white py-2 px-4 rounded"
+              >
+                Agregar al carrito
+              </button>
+              <button
+                onClick={cerrarModal}
+                className="bg-gray-300 text-gray-800 py-2 px-4 rounded"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </div>
   );
