@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (tipoUsuario, correo_electronico, contrasena) => {
         try {
-            const response = await fetch('https://backtesteo.onrender.com/api/auth/login', {
+            const response = await fetch('https://checkpoint-9tp4.onrender.com/api/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -91,7 +91,7 @@ export const AuthProvider = ({ children }) => {
 
     const requestPasswordReset = async (tipoUsuario, correo_electronico) => {
         try {
-            const response = await fetch('http://localhost:3000/api/auth/request-password-reset', {
+            const response = await fetch('https://checkpoint-9tp4.onrender.com/api/auth/request-password-reset', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ export const AuthProvider = ({ children }) => {
 
     const verifyResetCode = async (tipoUsuario, correo_electronico, verificationCode) => {
         try {
-            const response = await fetch('http://localhost:3000/api/auth/verify-reset-code', {
+            const response = await fetch('https://checkpoint-9tp4.onrender.com/api/auth/verify-reset-code', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -135,7 +135,7 @@ export const AuthProvider = ({ children }) => {
 
     const resetPassword = async (tipoUsuario, correo_electronico, nuevaContrasena, verificationCode) => {
         try {
-            const response = await fetch('http://localhost:3000/api/auth/reset-password', {
+            const response = await fetch('https://checkpoint-9tp4.onrender.com/api/auth/reset-password', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

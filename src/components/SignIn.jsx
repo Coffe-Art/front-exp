@@ -107,7 +107,7 @@ export const SignIn = () => {
             className="flex items-center justify-center min-h-screen bg-cover bg-center"
             style={{ backgroundImage: `url(${BackgroundImage})` }}
         >
-            <NavLink to="/" className="absolute top-4 left-4">
+            <NavLink to="/login" className="absolute top-4 left-4">
                 <FaHome className="text-darkyellow text-4xl" />
             </NavLink>
             <div className="relative bg-white p-8 rounded-lg shadow-md w-full max-w-md mx-4 sm:mx-8 md:mx-16 lg:mx-32">
@@ -225,20 +225,29 @@ export const SignIn = () => {
                             </div>
                         </>
                     )}
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center flex-col justify-between">
+                        <div className='flex flex-row justify-between min-w-full'>
                         <button
                             type="submit"
-                            className="bg-darkyellow hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            className="bg-darkyellow hover:bg-lightyellow text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                         >
                             {forgotPassword ? (verificationSent ? (codeVerified ? 'Restablecer Contraseña' : 'Verificar Código') : 'Enviar Código') : 'Iniciar Sesión'}
                         </button>
                         <button
                             type="button"
                             onClick={() => setForgotPassword(!forgotPassword)}
-                            className="text-darkyellow hover:text-yellow-600 text-sm font-bold"
+                            className="text-darkyellow hover:text-lightyellow text-sm font-bold"
                         >
                             {forgotPassword ? 'Volver a Iniciar Sesión' : '¿Olvidaste tu Contraseña?'}
                         </button>
+                        </div>
+                        
+                        <p className="mt-4 text-center">
+                        ¿Aun no tienes una cuenta?{' '}
+                        <NavLink to="/register" className="text-darkyellow hover:underline">
+                            Registrate
+                        </NavLink>
+                    </p>
                     </div>
                 </form>
             </div>
