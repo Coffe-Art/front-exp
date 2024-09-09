@@ -246,18 +246,7 @@ setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !==
             >
               Resetear filtros
             </button>
-            <label className="block text-sm font-bold mt-4 mb-2">Calificación</label>
-            <div className="flex">
-              {[5, 4, 3, 2, 1].map((star) => (
-                <button
-                  key={star}
-                  onClick={() => manejarCambioCalificacion(star)}
-                  className={`text-lg ${calificacion === star ? 'text-yellow-500' : 'text-gray-400'}`}
-                >
-                  <FaStar />
-                </button>
-              ))}
-            </div>
+         
           </div>
         </div>
         <div className="flex-1 p-4">

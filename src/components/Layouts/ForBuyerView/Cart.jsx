@@ -65,7 +65,15 @@ export const Cart = () => {
             <h1 className="text-4xl font-bold text-gray-800 mb-4">Carrito de compras</h1>
 
             {carrito.length === 0 ? (
-              <p className="text-lg">El carrito está vacío.</p>
+              <div className="text-center">
+                <p className="text-lg mb-4">No hay nada por aquí... ¡Agrega Artesanías para hacer una compra!</p>
+                <button
+                  onClick={() => navigate('/CraftComprador')}
+                  className="bg-darkyellow text-white px-6 py-2 rounded hover:bg-lightyellow text-lg"
+                >
+                  Ver productos
+                </button>
+              </div>
             ) : (
               <div className="w-full">
                 {carrito.map(producto => (
@@ -89,24 +97,26 @@ export const Cart = () => {
               </div>
             )}
 
-            <div className="flex justify-center w-full mt-6">
-              <button
-                onClick={() => navigate('/CraftComprador')}
-                className="bg-darkyellow text-white px-4 py-2 rounded m-1 hover:bg-lightyellow text-xl font-bold"
-              >
-                Seguir Comprando
-              </button>
-            </div>
+            {carrito.length > 0 && (
+              <div className="flex justify-center w-full mt-6">
+                <button
+                  onClick={() => navigate('/CraftComprador')}
+                  className="bg-darkyellow text-white px-4 py-2 rounded m-1 hover:bg-lightyellow text-xl font-bold"
+                >
+                  Seguir Comprando
+                </button>
+              </div>
+            )}
 
-            {/* Mostrar el botón de Mercado Pago */}
-            {preferenceId ? (
+            {/* Mostrar el botón de Mercado Pago solo si hay productos en el carrito */}
+            {preferenceId && carrito.length > 0 ? (
               <Wallet
                 initialization={{ preferenceId }}
                 customization={{ texts: { valueProp: 'smart_option' } }}
               />
-            ) : (
+            ) : carrito.length > 0 ? (
               <p>Cargando botón de pago...</p>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
