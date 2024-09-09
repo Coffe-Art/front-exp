@@ -114,20 +114,7 @@ export const ProductFav = ({ isAuthenticated, userType }) => {
                 ))}
               </div>
 
-              <div>
-                <h2 className="text-2xl font-bold text-darkyellow mb-4">Productos más comprados</h2>
-                {popularProducts.map((product) => (
-                  <div key={product.id} className="flex items-center justify-between bg-gray-200 px-4 py-2 rounded-lg mb-2">
-                    <span className="text-lg">{product.name}</span>
-                    <button
-                      className="text-darkyellow"
-                      onClick={() => handleRemovePopular(product.id)}
-                    >
-                      X
-                    </button>
-                  </div>
-                ))}
-              </div>
+             
             </div>
           </div>
         </div>
