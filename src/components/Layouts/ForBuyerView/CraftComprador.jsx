@@ -4,6 +4,7 @@ import { FaSearch, FaStar } from 'react-icons/fa';
 import { Header } from '../ForView/Header';
 import { Footer } from '../ForView/Footer';
 import ProductoContext from '../../../Context/contextProducto';
+import CartIcon from './CartIcon';
 
 export const CraftComprador = () => {
   const { productos, setProductos } = useContext(ProductoContext);
@@ -245,7 +246,18 @@ setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !==
             >
               Resetear filtros
             </button>
-            
+            <label className="block text-sm font-bold mt-4 mb-2">Calificación</label>
+            <div className="flex">
+              {[5, 4, 3, 2, 1].map((star) => (
+                <button
+                  key={star}
+                  onClick={() => manejarCambioCalificacion(star)}
+                  className={`text-lg ${calificacion === star ? 'text-yellow-500' : 'text-gray-400'}`}
+                >
+                  <FaStar />
+                </button>
+              ))}
+            </div>
           </div>
         </div>
         <div className="flex-1 p-4">
@@ -286,42 +298,7 @@ setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !==
         </div>
       </div>
 
-      {/* Carrito */}
-<div className="fixed top-32 right-4 bg-white border rounded-lg shadow-lg p-4 w-80">
-<h2 className="text-xl font-bold mb-4">Carrito</h2>
-{carrito.length === 0 ? (
-  <p>El carrito está vacío.</p>
-) : (
-  carrito.map(producto => (
-    <div key={producto.idProducto} className="flex flex-col items-center mb-4 border-b pb-4">
-      <img
-        src={producto.urlProductoImg ? `https://imagenes224.blob.core.windows.net/imagenes224/${producto.urlProductoImg.split('/').pop()}` : 'path_to_default_image'}
-        alt={producto.nombre}
-        className="w-24 h-24 object-cover mb-2"
-      />
-      <div className="text-center">
-        <span className="block font-semibold">{producto.nombre}</span>
-        <span>{producto.cantidad} x {formatearPrecio(producto.precio)}</span>
-        {/* Botón de eliminar */}
-        <button
-          onClick={() => eliminarDelCarrito(producto.idProducto)}
-          className="mt-2 text-red-600 hover:text-red-800"
-        >
-          Eliminar
-        </button>
-      </div>
-    </div>
-  ))
-)}
-<button
-  onClick={manejarIrACarrito}
-  className="bg-darkyellow text-white px-4 py-2 rounded mt-4 w-full"
->
-  Generar compra
-</button>
-</div>
-
-
+    
       {/* Modal de Producto */}
       {modalAbierto && productoSeleccionado && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -357,7 +334,7 @@ setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !==
           </div>
         </div>
       )}
-
+      <CartIcon /> {/* Añade el icono flotante */}
       <Footer />
     </div>
   );
