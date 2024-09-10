@@ -17,8 +17,21 @@ export const Cart = () => {
     // Cargar carrito desde localStorage
     const carritoGuardado = JSON.parse(localStorage.getItem('carrito')) || [];
     setCarrito(carritoGuardado);
+
     // Crear preferencia al cargar el componente
     crearPreferencia(carritoGuardado);
+
+    // Limpiar carrito al cerrar la pestaña
+    const handleTabClose = () => {
+      localStorage.removeItem('carrito');
+    };
+
+    // Escuchar el evento beforeunload
+    window.addEventListener('beforeunload', handleTabClose);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleTabClose);
+    };
   }, []);
 
   const crearPreferencia = async (productos) => {

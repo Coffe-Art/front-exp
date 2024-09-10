@@ -5,6 +5,8 @@ import { Header } from '../ForView/Header';
 import { Footer } from '../ForView/Footer';
 import ProductoContext from '../../../Context/contextProducto';
 import CartIcon from './CartIcon';
+import { FaCoffee } from "react-icons/fa";
+
 
 export const CraftComprador = () => {
   const { productos, setProductos } = useContext(ProductoContext);
@@ -50,6 +52,8 @@ export const CraftComprador = () => {
     };
     obtenerProductos();
   }, [setProductos]);
+
+  
 
   useEffect(() => {
     const obtenerCategorias = () => {
@@ -119,20 +123,34 @@ export const CraftComprador = () => {
     localStorage.setItem('carrito', JSON.stringify(carrito));
   }, [carrito]);
 
+  const [notificacionVisible, setNotificacionVisible] = useState(false);
+  const [productoNotificado, setProductoNotificado] = useState(null);
+  
+  useEffect(() => {
+    if (notificacionVisible) {
+      const timer = setTimeout(() => {
+        setNotificacionVisible(false);
+      }, 3000); // La notificación desaparecerá después de 3 segundos
+      return () => clearTimeout(timer); // Limpia el temporizador si se desmonta el componente
+    }
+  }, [notificacionVisible]);
+  
   const agregarAlCarrito = (producto) => {
-    setCarrito(prevCarrito => {
-      const productoExistente = prevCarrito.find(p => p.idProducto === producto.idProducto);
+    setCarrito((prevCarrito) => {
+      const productoExistente = prevCarrito.find((p) => p.idProducto === producto.idProducto);
       if (productoExistente) {
-        return prevCarrito.map(p => 
-          p.idProducto === producto.idProducto 
-            ? { ...p, cantidad: p.cantidad + 1 }
-            : p
+        return prevCarrito.map((p) =>
+          p.idProducto === producto.idProducto ? { ...p, cantidad: p.cantidad + 1 } : p
         );
       }
       return [...prevCarrito, { ...producto, cantidad: 1 }];
     });
+  
+    // Mostrar notificación
+    setProductoNotificado(producto);
+    setNotificacionVisible(true);
   };
-
+  
   const alternarFiltro = () => {
     setFiltroAbierto(!filtroAbierto);
   };
@@ -192,6 +210,11 @@ setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !==
             <button onClick={alternarFiltro} className="text-darkyellow text-xl">
               {/* Add icon here if needed */}
             </button>
+            {notificacionVisible && (
+  <div className="fixed bottom-4 right-4 bg-white text-darkyellow py-2 px-4 rounded shadow-lg z-50 border-solid border-3 border-darkyellow flex flex-row"> <FaCoffee className='mr-2' size={24}/>
+    {productoNotificado ? `Añadido ${productoNotificado.nombre} al carrito` : 'Producto añadido al carrito'}
+  </div>
+)}
           </div>
           <div>
             <div className="flex items-center mb-4">
