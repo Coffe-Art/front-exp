@@ -19,7 +19,8 @@ export const Register = () => {
     });
 
     const [errors, setErrors] = useState({});
-    const [notification, setNotification] = useState('');
+    const [notification, setNotification] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false); // Estado para controlar el botón
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -56,6 +57,8 @@ export const Register = () => {
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
+            setIsSubmitting(true); // Deshabilitar el botón
+
             try {
                 const result = await register(
                     formData.role.toLowerCase(),
@@ -66,15 +69,18 @@ export const Register = () => {
                 );
                 
                 if (result.success) {
+                    setNotification('¡Registro exitoso!');
                     setTimeout(() => {
                         navigate('/login');
-                    }, 2000); // Muestra la notificación por 2 segundos antes de redirigir
+                    }, 2000);
                 } else {
                     setNotification('Error al registrar, intenta de nuevo');
                 }
             } catch (error) {
                 console.error('Error al registrar:', error);
                 setNotification('Error al registrar, intenta de nuevo');
+            } finally {
+                setIsSubmitting(false); // Volver a habilitar el botón
             }
         }
     };
@@ -93,7 +99,10 @@ export const Register = () => {
                 <img src={Logo} alt="Logo" className="h-24 w-24 mx-auto mb-6" />
                 <h1 className="text-2xl font-bold mb-6 text-center">Registrarse</h1>
                 {notification && (
-                    <div className={`bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4`} role="alert">
+                    <div 
+                        className={`border rounded px-4 py-3 mb-4 relative ${notification.includes('Error') ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700'}`} 
+                        role="alert"
+                    >
                         <span className="block sm:inline">{notification}</span>
                     </div>
                 )}
@@ -179,15 +188,15 @@ export const Register = () => {
                             onChange={handleChange}
                         >
                             <option value="administrador">Administrador</option>
-                            <option value="empleado">Empleado</option>
                             <option value="comprador">Comprador</option>
                         </select>
                     </div>
                     <button
                         type="submit"
                         className="bg-darkyellow hover:bg-lightyellow text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+                        disabled={isSubmitting} // Deshabilitar el botón cuando se está enviando
                     >
-                        Registrarse
+                        {isSubmitting ? 'Registrando...' : 'Registrarse'}
                     </button>
                     <p className="mt-4 text-center">
                         ¿Ya tienes una cuenta?{' '}
