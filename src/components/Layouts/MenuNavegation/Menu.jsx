@@ -19,6 +19,12 @@ export const Menu = () => {
     navigate('/#');
   };
 
+  // Función para cerrar la sesión y borrar el localStorage
+  const handleLogout = () => {
+    localStorage.clear(); // Limpia el localStorage
+    navigate('/login'); // Redirige al login o página inicial
+  };
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-white">
       <div className="md:w-1/5 lg:w-1/6 bg-cover bg-center p-4 text-white flex flex-col items-center justify-center" style={{ backgroundImage: `url(${BackgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center', margin: '0' }}>
@@ -35,23 +41,20 @@ export const Menu = () => {
             </NavLink>
           )}
 
-         {/* Rutas para el rol 'comprador' o 'anonimo' */}
-         {(userRole === 'comprador' ) && (
+          {/* Rutas para el rol 'comprador' o 'anonimo' */}
+          {(userRole === 'comprador') && (
             <>
               <NavLink to="/ProductFav" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Favoritos</NavLink>
               <NavLink to="/Cart" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Carrito</NavLink>
             </>
-            
           )}
 
-           {/* Rutas para el rol 'comprador' o 'anonimo' */}
-           {( userRole === 'anonimo') && (
+          {/* Rutas para el rol 'anonimo' */}
+          {userRole === 'anonimo' && (
             <>
               <NavLink to="/Cart" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Carrito</NavLink>
             </>
-            
           )}
-
 
           {/* Rutas para los roles 'administrador' y 'empleado' */}
           {(userRole === 'administrador' || userRole === 'empleado') && (
@@ -69,6 +72,16 @@ export const Menu = () => {
           >
             Regresar
           </button>
+
+          {/* Botón para cerrar sesión, visible solo si no es 'anonimo' */}
+          {userRole !== 'anonimo' && (
+            <button
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 mt-4 text-lg font-bold"
+              onClick={handleLogout}
+            >
+              Cerrar Sesión
+            </button>
+          )}
         </nav>
       </div>
       <div className="flex flex-col justify-center items-center md:w-4/5 lg:w-5/6">
