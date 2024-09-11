@@ -22,8 +22,10 @@ export const Menu = () => {
   // Función para cerrar la sesión y borrar el localStorage
   const handleLogout = () => {
     localStorage.clear(); // Limpia el localStorage
-    navigate('/login'); // Redirige al login o página inicial
+    navigate('/'); // Redirige al login o página inicial
+    window.location.reload(); // Recarga la página
   };
+  
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-white">
@@ -76,7 +78,7 @@ export const Menu = () => {
           {/* Botón para cerrar sesión, visible solo si no es 'anonimo' */}
           {userRole !== 'anonimo' && (
             <button
-              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 mt-4 text-lg font-bold"
+              className="bg-darkpurple text-white px-4 py-2 rounded hover:bg-lightpurple mt-4 text-lg font-bold"
               onClick={handleLogout}
             >
               Cerrar Sesión
