@@ -3,59 +3,68 @@ import { useNavigate } from 'react-router-dom';
 import { initMercadoPago, Wallet } from '@mercadopago/sdk-react';
 import Background from '../../../assets/Fondo.png';
 
-// Inicializa Mercado Pago con tu clave pública y define el idioma
 initMercadoPago('TEST-2868a009-6464-42e1-b1a9-3977749af2fa', {
-  locale: 'es-CO', // Define el idioma a español (Colombia)
+  locale: 'es-CO', 
 });
 
 export const Cart = () => {
   const navigate = useNavigate();
   const [preferenceId, setPreferenceId] = useState(null);
   const [carrito, setCarrito] = useState([]);
+  const [userType, setUserType] = useState(null);
 
+  // Cargar userType desde localStorage al montar el componente
   useEffect(() => {
-    // Cargar carrito desde localStorage
+    const storedUserType = localStorage.getItem('userType'); // Obtener el userType del localStorage
+    if (storedUserType) {
+      setUserType(storedUserType.replace(/"/g, '')); // Elimina comillas si es necesario
+    }
+    console.log("UserType al cargar el componente:", storedUserType);
+
     const carritoGuardado = JSON.parse(localStorage.getItem('carrito')) || [];
     setCarrito(carritoGuardado);
 
-    // Crear preferencia al cargar el componente
+    const crearPreferencia = async (productos) => {
+      try {
+        const response = await fetch('https://checkpoint-9tp4.onrender.com/api/payment/preference', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(productos),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error en la solicitud: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setPreferenceId(data.preferenceId);
+      } catch (error) {
+        console.error('Error al crear la preferencia de pago:', error);
+      }
+    };
+
     crearPreferencia(carritoGuardado);
 
-    // Limpiar carrito al cerrar la pestaña
     const handleTabClose = () => {
       localStorage.removeItem('carrito');
     };
 
-    // Escuchar el evento beforeunload
     window.addEventListener('beforeunload', handleTabClose);
-
     return () => {
       window.removeEventListener('beforeunload', handleTabClose);
     };
   }, []);
 
-  const crearPreferencia = async (productos) => {
-    try {
-      const response = await fetch('https://checkpoint-9tp4.onrender.com/api/payment/preference', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(productos),
-      });
+  useEffect(() => {
+    console.log("Valor de userType actualizado:", userType);
+  }, [userType]);
 
-      if (!response.ok) {
-        throw new Error(`Error en la solicitud: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('ID de preferencia recibido:', data.preferenceId);
-      setPreferenceId(data.preferenceId);
-    } catch (error) {
-      console.error('Error al crear la preferencia de pago:', error);
-    }
-  };
+  useEffect(() => {
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+  }, [carrito]);
 
   const formatearPrecio = (precio) => {
-    return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'COP' }).format(precio);
+    return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'COP' }).format(precio || 0);
   };
 
   const calcularTotal = () => {
@@ -121,15 +130,36 @@ export const Cart = () => {
               </div>
             )}
 
-            {/* Mostrar el botón de Mercado Pago solo si hay productos en el carrito */}
-            {preferenceId && carrito.length > 0 ? (
-              <Wallet
-                initialization={{ preferenceId }}
-                customization={{ texts: { valueProp: 'smart_option' } }}
-              />
-            ) : carrito.length > 0 ? (
-              <p>Cargando botón de pago...</p>
-            ) : null}
+            {carrito.length > 0 && (
+              <>
+                {userType === 'comprador' ? (
+                  preferenceId ? (
+                    <div>
+                      <Wallet
+                        initialization={{ preferenceId }}
+                        customization={{ texts: { valueProp: 'smart_option' } }}
+                      />
+                    </div>
+                  ) : (
+                    <p>Cargando botón de pago...</p>
+                  )
+                ) : (
+                  <button
+                    onClick={() => navigate('/login')}
+                    className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 text-lg mt-4"
+                  >
+                    Iniciar sesión para realizar la compra
+                  </button>
+                )}
+              </>
+            )}
+
+            <button
+              onClick={() => navigate(-1)}
+              className="bg-gray-700 text-white px-4 py-2 rounded mb-4 hover:bg-gray-900 text-lg mt-3"
+            >
+              Volver
+            </button>
           </div>
         </div>
       </div>
