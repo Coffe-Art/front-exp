@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaPlus, FaSearch, FaEdit, FaTrash } from 'react-icons/fa';
+import { FaPlus, FaSearch, FaEdit, FaTrash, FaCoffee } from 'react-icons/fa';
 import { Header } from '../ForView/Header';
 import { Footer } from '../ForView/Footer';
 import ProductoContext from '../../../Context/contextProducto';
 import Select from 'react-select';
 import { useParams } from 'react-router-dom';
 import imgPrueba from '../../../assets/ruana.jpg'
+
 
 export const CraftforAdmins = () => {
   const { productos, setProductos } = useContext(ProductoContext);
@@ -15,7 +16,7 @@ export const CraftforAdmins = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [category, setCategory] = useState('all');
   const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(500);
+  const [maxPrice, setMaxPrice] = useState(0);
   const [selectedCompany, setSelectedCompany] = useState('all');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -29,19 +30,19 @@ export const CraftforAdmins = () => {
   });
   const [errors, setErrors] = useState({});
 
-  
+  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
+const [selectedProduct, setSelectedProduct] = useState(null);
+
 
   const navigate = useNavigate();
   const userId = localStorage.getItem('userId');
-
   const [isModalOpen, setIsModalOpen] = useState(false);
-const [selectedProduct, setSelectedProduct] = useState(null);
 
 
 useEffect(() => {
   const getProductosByIdAdministrador = async () => {
     if (!userId) {
-      setError('Usuario no autenticado');
+      setError('Usuario no autenticado');y
       setLoading(false);
       return;
     }
@@ -169,27 +170,10 @@ useEffect(() => {
 
   const handleEdit = (idProducto) => navigate(`/updateProduct/${idProducto}`);
 
-  const handleDelete = async (idProducto) => {
-    if (window.confirm('¿Estás seguro de que quieres eliminar este producto?')) {
-      try {
-        const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/producto/eliminar/${idProducto}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-  
-        if (!response.ok) {
-          const errorDetails = await response.json();
-          throw new Error(`Error ${response.status}: ${errorDetails.message || 'No details available'}`);
-        }
-  
-        setProductos(prevProductos => prevProductos.filter(product => product.idProducto !== idProducto));
-      } catch (err) {
-        setError(`Failed to delete product: ${err.message}`);
-      }
-    }
+  const handleDelete = (product) => {
+    openConfirmDeleteModal(product);
   };
+  
   
 
   const handleCardClick = (idProducto) => {
@@ -242,6 +226,40 @@ useEffect(() => {
     setIsModalOpen(false);
     setSelectedProduct(null);
   };
+
+  const openConfirmDeleteModal = (product) => {
+    setSelectedProduct(product);
+    setIsConfirmDeleteOpen(true);
+  };
+  
+  const closeConfirmDeleteModal = () => {
+    setIsConfirmDeleteOpen(false);
+    setSelectedProduct(null);
+  };
+  
+  const confirmDelete = async () => {
+    if (!selectedProduct) return;
+  
+    try {
+      const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/producto/eliminar/${selectedProduct.idProducto}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+  
+      if (!response.ok) {
+        const errorDetails = await response.json();
+        throw new Error(`Error ${response.status}: ${errorDetails.message || 'No details available'}`);
+      }
+  
+      setProductos(prevProductos => prevProductos.filter(product => product.idProducto !== selectedProduct.idProducto));
+      closeConfirmDeleteModal();
+    } catch (err) {
+      setError(`Failed to delete product: ${err.message}`);
+    }
+  };
+  
 
 
   return (
@@ -382,16 +400,17 @@ className='shadow border rounded w-1/2 py-2 px-3'
                   <div className="flex justify-between mt-auto">
                     <button
                       onClick={() => handleEdit(product.idProducto)}
-                      className="text-darkyellow hover:text-lightyellow text-2xl"
+                      className="text-darkyellow hover:text-lightyellow text-3xl"
                     >
                       <FaEdit />
                     </button>
                     <button
-                      onClick={() => handleDelete(product.idProducto)}
-                      className="text-darkpurple hover:text-lightpurple text-2xl"
-                    >
-                      <FaTrash /> 
-                    </button>
+  onClick={(e) => { e.stopPropagation(); handleDelete(product); }}
+  className="text-darkpurple hover:text-lightpurple text-3xl"
+>
+  <FaTrash className="mr-1" /> 
+</button>
+
                     
                   </div>
                   <button
@@ -413,6 +432,33 @@ className='shadow border rounded w-1/2 py-2 px-3'
         )}
       </div>
     </div>
+    {isConfirmDeleteOpen && (
+  <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+  <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+      <div className='organizator flex flex-col justify-center'>
+      <div className='flex justify-center'>
+      <svg className="w-6 h-6 mr-2 text-2xl text-darkyellow"> <FaCoffee /> </svg>
+      <h3 className="text-lg font-semibold mb-4  text-darkyellow">Confirmar eliminación</h3>
+      </div>
+      <p className='mb-4 text-center '>¿Estás seguro de que quieres eliminar el producto "{selectedProduct ? selectedProduct.nombre : ''}"?</p>      </div>
+      <div className="flex justify-center gap-4">
+        <button
+          onClick={closeConfirmDeleteModal}
+          className="bg-gray-300 text-black px-4 py-2 rounded-lg"
+        >
+          Cancelar
+        </button>
+        <button
+          onClick={confirmDelete}
+          className="text-white bg-darkpurple px-4 py-2 rounded-lg"
+        >
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     <Footer />
 {/* Modal */}
 {isModalOpen && selectedProduct && (
