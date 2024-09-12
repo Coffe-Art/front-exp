@@ -267,7 +267,7 @@ setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !==
               onClick={resetearPrecios}
               className="bg-gray-300 text-gray-800 py-2 px-4 rounded w-full"
             >
-              Resetear filtros
+              Resetear Precio
             </button>
          
           </div>

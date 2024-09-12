@@ -29,6 +29,8 @@ export const CraftforAdmins = () => {
   });
   const [errors, setErrors] = useState({});
 
+  
+
   const navigate = useNavigate();
   const userId = localStorage.getItem('userId');
 
@@ -36,7 +38,7 @@ export const CraftforAdmins = () => {
 const [selectedProduct, setSelectedProduct] = useState(null);
 
 
-  useEffect(() => {
+useEffect(() => {
   const getProductosByIdAdministrador = async () => {
     if (!userId) {
       setError('Usuario no autenticado');
@@ -55,7 +57,7 @@ const [selectedProduct, setSelectedProduct] = useState(null);
       const result = await response.json();
 
       const productosArray = Array.isArray(result[0]) ? result[0] : [];
-      console.log('Datos de productos obtenidos:', productosArray); 
+      console.log('Productos obtenidos:', productosArray); // <---- Agrega este log para verificar los productos obtenidos
       setProductos(productosArray);
       setLoading(false);
     } catch (err) {
@@ -67,12 +69,11 @@ const [selectedProduct, setSelectedProduct] = useState(null);
   getProductosByIdAdministrador();
 }, [userId, setProductos]);
 
-
   useEffect(() => {
     // Simulando la obtención de categorías
     const fetchCategorias = () => {
-      // Aquí debes reemplazar esto con la lógica para obtener las categorías reales
       const categorias = [
+        { value: 'all', label: 'Todos' }, // Agrega esta opción
         { value: 'joyeria', label: 'Joyería' },
         { value: 'ropa_y_accesorios', label: 'Ropa y Accesorios' },
         { value: 'ceramica', label: 'Cerámica' },
@@ -88,44 +89,45 @@ const [selectedProduct, setSelectedProduct] = useState(null);
         { value: 'productos_ecologicos', label: 'Productos Ecológicos' },
         { value: 'productos_para_mascotas', label: 'Productos para Mascotas' },
         { value: 'otro', label: 'Otro' },
-    ];
-    
-    setCategoriasOptions(categorias);
-    
+      ];
+      
+      setCategoriasOptions(categorias);
     };
+    
 
     fetchCategorias();
   }, []);
 
   const handleSelectChange = (selectedOptions, actionMeta) => {
     if (actionMeta.name === 'categoria') {
-      setFormData(prevData => ({
-        ...prevData,
-        categoria: selectedOptions ? selectedOptions.value : ''
-      }));
+      setCategory(selectedOptions ? selectedOptions.value : 'all'); // Asegúrate de que `category` esté configurado correctamente
     } else if (actionMeta.name === 'codigoempresa') {
       const empresasSeleccionadas = selectedOptions ? selectedOptions.map(option => option.value) : [];
-      const selectedEmpresa = selectedOptions ? selectedOptions[0] : null; // Tomar la primera empresa seleccionada
+      const selectedEmpresa = selectedOptions ? selectedOptions[0] : null;
       const codigoempresa = empresasSeleccionadas.length > 0 ? empresasSeleccionadas[0] : '';
-      const publicadoPor = selectedEmpresa ? selectedEmpresa.label : ''; // Obtener el nombre de la empresa seleccionada
-
+      const publicadoPor = selectedEmpresa ? selectedEmpresa.label : '';
+  
       setFormData(prevData => ({
         ...prevData,
         empresasSeleccionadas: empresasSeleccionadas,
         codigoempresa: codigoempresa,
-        publicadoPor: publicadoPor // Actualizar el campo publicadoPor
+        publicadoPor: publicadoPor
       }));
     }
   };
-
+  
   useEffect(() => {
     filterProducts();
   }, [searchTerm, category, minPrice, maxPrice, selectedCompany, productos, isCheckboxChecked]);
+  
+
 
   const filterProducts = () => {
+    console.log('Filtrando productos con:', { searchTerm, category, minPrice, maxPrice, selectedCompany, productos, isCheckboxChecked });
+    
     const filtered = productos.filter(product => {
       if (!product || typeof product !== 'object') return false;
-
+  
       const {
         nombre = '',
         descripcion = '',
@@ -133,29 +135,35 @@ const [selectedProduct, setSelectedProduct] = useState(null);
         precio = 0,
         publicadoPor = ''
       } = product;
-
-      // Conversión a número para manejar el precio
+  
       const numericPrecio = Number(precio);
-
+  
       return (
         (nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
          descripcion.toLowerCase().includes(searchTerm.toLowerCase())) &&
         (category === 'all' || categoria === category) &&
-        (isCheckboxChecked || (numericPrecio >= minPrice && numericPrecio <= maxPrice)) &&
+        (isCheckboxChecked ? 
+          (minPrice === 0 && maxPrice === 0) || (numericPrecio >= minPrice && numericPrecio <= maxPrice) 
+          : true) &&
         (selectedCompany === 'all' || publicadoPor === selectedCompany)
       );
     });
-
+  
+    console.log('Productos filtrados:', filtered);
     setFilteredProducts(filtered);
   };
+  
+  
+  
+  const handlePriceChange = () => filterProducts();
 
+  
   const toggleFilter = () => setIsFilterOpen(prev => !prev);
 
   const handleSearchChange = (e) => setSearchTerm(e.target.value);
 
   const handleCategoryChange = (e) => setCategory(e.target.value);
 
-  const handlePriceChange = () => filterProducts();
 
   const handleCompanyChange = (e) => setSelectedCompany(e.target.value);
 
@@ -269,35 +277,57 @@ const [selectedProduct, setSelectedProduct] = useState(null);
               Categoría
             </label>
             <Select
-              id="categoria"
-              name="categoria"
-              options={categoriasOptions}
-              className="basic-single"
-              classNamePrefix="select"
-              placeholder="Seleccionar Categoría"
-              value={categoriasOptions.find(option => option.value === formData.categoria)}
-              onChange={handleSelectChange}
-            />
+  id="categoria"
+  name="categoria"
+  options={categoriasOptions}
+  className="basic-single"
+  classNamePrefix="select"
+  placeholder="Seleccionar Categoría"
+  value={categoriasOptions.find(option => option.value === category)} // Usa `category` en lugar de `formData.categoria`
+  onChange={handleSelectChange}
+/>
+
+
             {errors.categoria && <p className="text-red-500 text-xs italic">{errors.categoria}</p>}
           </div>
           <label htmlFor="price" className="block text-sm font-bold mb-2">Rango de Precio</label>
           <div className="flex items-center mb-4">
-            <input
-              type="number"
-              min="0"
-              value={minPrice}
-              onChange={(e) => setMinPrice(Number(e.target.value))}
-              className="shadow border rounded w-full py-2 px-3 mr-2"
-            />
-            <span className="text-gray-500">a</span>
-            <input
-              type="number"
-              min="0"
-              value={maxPrice}
-              onChange={(e) => setMaxPrice(Number(e.target.value))}
-              className="shadow border rounded w-full py-2 px-3 ml-2"
-            />
-          </div>
+          
+          <input
+          className='shadow border rounded w-1/2 py-2 px-3'
+  id="minPrice"
+  type="number"
+  value={minPrice}
+  onChange={(e) => {
+    setMinPrice(e.target.value);
+    handlePriceChange();
+  }}
+/>
+<input
+className='shadow border rounded w-1/2 py-2 px-3'
+  id="maxPrice"
+  type="number"
+  value={maxPrice}
+  onChange={(e) => {
+    setMaxPrice(e.target.value);
+    handlePriceChange();
+  }}
+/>
+</div>
+
+<button
+  onClick={() => {
+    setMinPrice(0);
+    setMaxPrice(0);
+    handlePriceChange();
+  }}
+  className="bg-gray-300 text-gray-800 mt-5 mb-5 py-2 px-4 rounded w-full"
+>
+  Resetear Precio
+</button>
+
+
+
           <label htmlFor="company" className="block text-sm font-bold mb-2">Empresa</label>
           <select id="company" value={selectedCompany} onChange={handleCompanyChange} className="shadow border rounded w-full py-2 px-3">
             <option value="all">Todas</option>
