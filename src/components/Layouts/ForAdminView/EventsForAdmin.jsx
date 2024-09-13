@@ -5,7 +5,7 @@ import 'react-calendar/dist/Calendar.css';
 import { Header } from '../ForView/Header';
 import { Footer } from '../ForView/Footer';
 import { NavLink, useLocation } from 'react-router-dom';
-import { FaSearch } from 'react-icons/fa';
+import { FaSearch, FaPlus, FaEdit, FaTrash, FaCoffee } from 'react-icons/fa';
 import Fondo from '../../../assets/FondoEmpresas.png';
 
 const containerStyle = {
@@ -170,19 +170,40 @@ export const EventsForAdmin = () => {
 
             <div className='overflow-y-auto overflow-x-hidden'  style={{ height: '55rem' }}>
 
-<div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mt-8">
+<div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 mt-8">
   {filteredEvents.map(event => (
     <div
-      key={event.idEvento}
-      className="border rounded-lg p-6 shadow-md bg-white cursor-pointer text-base"
-      onClick={() => handleEventClick(event)}
-    >
-      <h3 className="font-semibold text-xl">{event.nombreEvento}</h3>
-      <p className="text-sm">{formatDate(event.fecha)}</p>
-      <p className="text-sm">{event.descripcion}</p>
-      <p className="text-sm">Empresa Asistente: {event.empresasAsistente || 'N/A'}</p>
+    key={event.idEvento}
+    className="border rounded-lg p-5 shadow-md bg-white cursor-pointer text-base flex flex-col justify-between" style={{ height: '30rem', width: '20rem' }} // Ajusta el padding y la altura de la tarjeta
+    onClick={() => handleEventClick(event)}
+  >
+    <div>
+      <h3 className="font-semibold text-2xl">{event.nombreEvento}</h3>
+      <br/><br/>
+      <p className="text-base">{formatDate(event.fecha)}</p>
+      <br/>
+      <p className="text-base">{event.descripcion}</p>
+      <br/>
+      <p className="text-base">Empresa Asistente: {event.empresasAsistente || 'N/A'}</p>
+      <br/>
     </div>
+    <div className="flex justify-between gap-4 mt-4">
+      <button
+        className="text-darkyellow hover:text-lightyellow text-3xl"
+      >
+        <FaEdit />
+      </button>
+      <button
+        className="text-darkpurple hover:text-lightpurple text-3xl"
+      >
+        <FaTrash />
+      </button>
+    </div>
+  </div>
+  
+    
   ))}
+   
 </div>
 
 </div>
