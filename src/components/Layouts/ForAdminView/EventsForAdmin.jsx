@@ -37,36 +37,42 @@ export const EventsForAdmin = () => {
   const [center, setCenter] = useState({ lat: 4.5709, lng: -74.2973 }); // Center of Colombia
   const location = useLocation();
 
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+const [eventToDelete, setEventToDelete] = useState(null);
+
+
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         const token = localStorage.getItem('token');
         const idAdministrador = localStorage.getItem('userId');
-
+  
         if (!token || !idAdministrador) {
           console.error('Token o ID de administrador no encontrados en el localStorage');
           return;
         }
-
+  
         const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/evento/admin/${idAdministrador}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
         });
-
+  
         if (!response.ok) {
           throw new Error(`Error ${response.status}: ${response.statusText}`);
         }
-
+  
         const data = await response.json();
+        console.log('Eventos obtenidos:', data); // Agrega este console.log para verificar la estructura
         setEvents(data);
       } catch (error) {
         console.error('Error al obtener eventos:', error.message);
       }
     };
-
+  
     fetchEvents();
   }, [location.pathname]);
+  
 
   const filteredEvents = events.filter(event =>
     event.nombreEvento.toLowerCase().includes(searchQuery.toLowerCase())
@@ -93,6 +99,42 @@ export const EventsForAdmin = () => {
     return new Date(dateString).toLocaleDateString('es-ES', options);
   };
 
+
+  const handleDeleteEvent = (event) => {
+    setEventToDelete(event);
+    setShowConfirmModal(true);
+  };
+
+  const confirmDeleteEvent = async () => {
+    if (!eventToDelete) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('Token no encontrado en el localStorage');
+        return;
+      }
+  
+      const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/evento/${eventToDelete.idEvento}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+  
+      // Actualiza la lista de eventos después de la eliminación
+      setEvents(prevEvents => prevEvents.filter(event => event.idEvento !== eventToDelete.idEvento));
+      setShowConfirmModal(false); // Cierra el modal
+    } catch (error) {
+      console.error('Error al eliminar el evento:', error.message);
+    }
+  };
+  
+  
   return (
     <div className="min-h-screen bg-gray-200 font-sans">
       <Header />
@@ -171,10 +213,11 @@ export const EventsForAdmin = () => {
             <div className='overflow-y-auto overflow-x-hidden'  style={{ height: '55rem' }}>
 
 <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 mt-8">
-  {filteredEvents.map(event => (
-    <div
+{filteredEvents.map(event => (
+  <div
     key={event.idEvento}
-    className="border rounded-lg p-5 shadow-md bg-white cursor-pointer text-base flex flex-col justify-between" style={{ height: '30rem', width: '20rem' }} // Ajusta el padding y la altura de la tarjeta
+    className="border rounded-lg p-5 shadow-md bg-white cursor-pointer text-base flex flex-col justify-between"
+    style={{ height: '30rem', width: '20rem' }}
     onClick={() => handleEventClick(event)}
   >
     <div>
@@ -188,21 +231,21 @@ export const EventsForAdmin = () => {
       <br/>
     </div>
     <div className="flex justify-between gap-4 mt-4">
-      <button
-        className="text-darkyellow hover:text-lightyellow text-3xl"
-      >
+      <button className="text-darkyellow hover:text-lightyellow text-3xl">
         <FaEdit />
       </button>
-      <button
-        className="text-darkpurple hover:text-lightpurple text-3xl"
-      >
-        <FaTrash />
-      </button>
+      <FaTrash
+  className='text-darkpurple hover:text-lightpurple text-3xl'
+  onClick={(e) => {
+    e.stopPropagation(); // Evita que el clic se propague al contenedor del evento
+    handleDeleteEvent(event); // Muestra el modal de confirmación
+  }}
+/>
+
     </div>
   </div>
-  
-    
-  ))}
+))}
+
    
 </div>
 
@@ -243,6 +286,35 @@ export const EventsForAdmin = () => {
           </div>
         )}
       </div>
+
+      {showConfirmModal && (
+  <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+      <div className='flex flex-col justify-center'>
+        <div className='flex justify-center'>
+          <svg className="w-6 h-6 mr-2 text-2xl text-darkyellow"><FaCoffee /></svg>
+          <h3 className="text-lg font-semibold mb-4 text-darkyellow">Confirmar eliminación</h3>
+        </div>
+        <p className="mb-4 text-center">¿Estás seguro de que deseas eliminar el evento "{eventToDelete?.nombreEvento}"?</p>
+      </div>
+      <div className="flex justify-center gap-4">
+        <button
+          className="bg-gray-300 text-black px-4 py-2 rounded-lg"
+          onClick={() => setShowConfirmModal(false)}
+        >
+          Cancelar
+        </button>
+        <button
+          className="text-white bg-darkpurple px-4 py-2 rounded-lg"
+          onClick={confirmDeleteEvent}
+        >
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
 
       <Footer />
     </div>
