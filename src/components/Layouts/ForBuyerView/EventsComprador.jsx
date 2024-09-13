@@ -167,7 +167,7 @@ export const EventsComprador = () => {
             <div className="text-center">
               <h2 className="text-darkyellow text-4xl font-bold mt-6">Eventos Especiales</h2>
               <p className="max-w-2xl mt-2 mx-auto text-lg">
-                Aquí puedes ver los eventos especiales que tendrán lugar en Circacia. Descubre qué está pasando y participa en ellos.
+                Aquí puedes ver los eventos especiales que tendrán lugar en diferentes partes. Descubre qué está pasando y participa en ellos.
               </p>
             </div>
 
