@@ -106,10 +106,9 @@ export const SalesOverview = ({ isAuthenticated, userType }) => {
 
             <div className="w-full max-w-lg mb-8">
               <div className="mb-4">
-                <h2 className="text-2xl font-bold text-darkyellow mb-4">Producto Mejor Calificado</h2>
+                <h2 className="text-2xl font-bold text-darkyellow mb-4">Producto Más Vendido</h2>
                 <div className="flex items-center justify-between bg-gray-200 px-4 py-2 rounded-lg mb-2">
-                  <span className="text-lg">{bestRatedProduct.name}</span>
-                  <span className="text-darkyellow">⭐ {bestRatedProduct.rating}</span>
+                  <span className="text-lg flex justify-center self-center">{bestRatedProduct.name}</span>
                 </div>
                 <p className="text-gray-700 mb-2">
                   Ventas Totales: <span className="font-bold">{bestRatedProduct.totalSales}</span>

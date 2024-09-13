@@ -207,12 +207,6 @@ export const EventsComprador = () => {
                 className="relative w-full h-32 bg-cover bg-center rounded-t-lg"
                 style={{ backgroundImage: `url(${Fondo})` }}
               >
-                <button
-                  onClick={closeModal}
-                  className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-xl"
-                >
-                  &times;
-                </button>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <h3 className="text-2xl font-semibold text-white">{selectedEvent.nombreEvento}</h3>
                 </div>
@@ -225,11 +219,11 @@ export const EventsComprador = () => {
                 <p><strong>Empresas Participantes: </strong> {selectedEvent.empresasAsistente}</p>
                 <p><strong className='mb-3 '>Descripción: </strong> {selectedEvent.descripcion}</p>
                 <button
-                  onClick={closeModal}
-                  className="bg-gray-300 text-gray-800 py-2 px-4 rounded mt-3"
-                >
-                  Cerrar
-                </button>
+                    onClick={closeModal}
+                    className="text-white bg-darkyellow hover:bg-lightyellow px-4 py-2 rounded mr-2 flex items-center mt-10"
+                  >
+                    Cerrar
+                  </button>
               </div>
             </div>
           </div>
