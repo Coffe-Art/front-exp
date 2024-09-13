@@ -153,7 +153,6 @@ export const SignIn = () => {
                             aria-required="true"
                         >
                             <option value="administrador">Administrador</option>
-                            <option value="empleado">Empleado</option>
                             <option value="comprador">Comprador</option>
                         </select>
                         {errors.tipoUsuario && <p className="text-red-500 text-xs italic">{errors.tipoUsuario}</p>}

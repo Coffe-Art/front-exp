@@ -36,6 +36,14 @@ export const ProductDetail = () => {
     setSelectedImageIndex(index);
   };
 
+   // Función para cerrar la sesión y borrar el localStorage
+   const handleLogout = () => {
+    localStorage.clear(); // Limpia el localStorage
+    navigate('/'); // Redirige al login o página inicial
+    window.location.reload(); // Recarga la página
+  };
+
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-200 p-4">
       <div className="max-w-4xl mx-auto bg-white border rounded-lg overflow-hidden shadow-md">

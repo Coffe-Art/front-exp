@@ -24,6 +24,13 @@ export const ProfileComprador = () => {
     navigate('/#');
   };
 
+         // Función para cerrar la sesión y borrar el localStorage
+         const handleLogout = () => {
+          localStorage.clear(); // Limpia el localStorage
+          navigate('/'); // Redirige al login o página inicial
+          window.location.reload(); // Recarga la página
+        };
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-white">
       <div className="md:w-1/5 lg:w-1/6 bg-cover bg-center p-4 text-white flex flex-col items-center justify-center" style={{ backgroundImage: `url(${BackgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
@@ -38,7 +45,6 @@ export const ProfileComprador = () => {
 
           {userRole === 'comprador' && (
             <>
-              <NavLink to="/ProductFav" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Favoritos</NavLink>
               <NavLink to="/Cart" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Carrito</NavLink>
             </>
           )}
@@ -58,6 +64,13 @@ export const ProfileComprador = () => {
           >
             Regresar
           </button>
+          <button
+      className="bg-darkpurple text-white px-4 py-2 rounded hover:bg-lightpurple mt-4 text-lg font-bold"
+      onClick={handleLogout}
+    >
+      Cerrar Sesión
+    </button>
+          
         </nav>
       </div>
       <div className="flex flex-col justify-center items-center md:w-4/5 lg:w-5/6">

@@ -109,6 +109,13 @@ export const Help = () => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+         // Función para cerrar la sesión y borrar el localStorage
+         const handleLogout = () => {
+          localStorage.clear(); // Limpia el localStorage
+          navigate('/'); // Redirige al login o página inicial
+          window.location.reload(); // Recarga la página
+        };
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-white">
       <div
@@ -132,7 +139,6 @@ export const Help = () => {
           {/* Rutas para el rol 'comprador' o 'anonimo' */}
           {(userRole === 'comprador' ) && (
             <>
-              <NavLink to="/ProductFav" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Favoritos</NavLink>
               <NavLink to="/Cart" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Carrito</NavLink>
             </>
             
@@ -162,6 +168,17 @@ export const Help = () => {
           >
             Regresar
           </button>
+   
+
+  {/* Botón para cerrar sesión, visible solo si no es 'anonimo' */}
+  {userRole !== 'anonimo' && (
+    <button
+      className="bg-darkpurple text-white px-4 py-2 rounded hover:bg-lightpurple mt-4 text-lg font-bold"
+      onClick={handleLogout}
+    >
+      Cerrar Sesión
+    </button>
+  )}
         </nav>
         </div>
       </div>

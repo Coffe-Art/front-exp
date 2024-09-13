@@ -54,6 +54,15 @@ export const SalesOverview = ({ isAuthenticated, userType }) => {
     }
   };
 
+
+   // Función para cerrar la sesión y borrar el localStorage
+   const handleLogout = () => {
+    localStorage.clear(); // Limpia el localStorage
+    navigate('/'); // Redirige al login o página inicial
+    window.location.reload(); // Recarga la página
+  };
+
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-200">
       {/* Panel de Navegación */}
@@ -95,6 +104,15 @@ export const SalesOverview = ({ isAuthenticated, userType }) => {
           >
             Regresar
           </button>
+          {/* Botón para cerrar sesión, visible solo si no es 'anonimo' */}
+          {userRole !== 'anonimo' && (
+            <button
+              className="bg-darkpurple text-white px-4 py-2 rounded hover:bg-lightpurple mt-4 text-lg font-bold"
+              onClick={handleLogout}
+            >
+              Cerrar Sesión
+            </button>
+          )}
         </nav>
       </div>
 

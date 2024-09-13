@@ -25,6 +25,8 @@ export const Menu = () => {
     navigate('/'); // Redirige al login o página inicial
     window.location.reload(); // Recarga la página
   };
+
+  
   
 
   return (
@@ -46,7 +48,6 @@ export const Menu = () => {
           {/* Rutas para el rol 'comprador' o 'anonimo' */}
           {(userRole === 'comprador') && (
             <>
-              <NavLink to="/ProductFav" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Favoritos</NavLink>
               <NavLink to="/Cart" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Carrito</NavLink>
             </>
           )}
