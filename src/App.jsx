@@ -34,6 +34,7 @@ import ProtectedRoute from './components/Layouts/Protection for Routes/Protected
 import { EventsProvider } from './Context/EventsContext'; 
 import { CompaniesProducts } from './components/Layouts/ForBuyerView/CompaniesProducts';
 import CartIcon from './components/Layouts/ForBuyerView/CartIcon';
+import {EventsUpdateForm} from './components/Layouts/Events/EventsUpdateForm'
 
 
 function App() {
@@ -86,7 +87,7 @@ function App() {
             <Route path="/SalesOverview" element={<ProtectedRoute element={SalesOverview} allowedRoles={['administrador', 'empleado']} />} />
             <Route path="/UpdateCompany/:id" element={<ProtectedRoute element={UpdateCompany} allowedRoles={['administrador', 'empleado']} />} />
             <Route path="/UpdateProduct/:idProducto" element={<ProtectedRoute element={UpdateProducto} allowedRoles={['administrador', 'empleado']} />} />
-          </Routes>
+            <Route path="/EventsUpdateForm/:id" element={<EventsUpdateForm />} />          </Routes>
         </EventsProvider>
       </EmpresaProvider>
     </Router>

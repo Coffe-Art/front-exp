@@ -7,6 +7,7 @@ import { Footer } from '../ForView/Footer';
 import { NavLink, useLocation } from 'react-router-dom';
 import { FaSearch, FaPlus, FaEdit, FaTrash, FaCoffee } from 'react-icons/fa';
 import Fondo from '../../../assets/FondoEmpresas.png';
+import { Link } from 'react-router-dom';
 
 const containerStyle = {
   width: '100%',
@@ -231,9 +232,7 @@ const [eventToDelete, setEventToDelete] = useState(null);
       <br/>
     </div>
     <div className="flex justify-between gap-4 mt-4">
-      <button className="text-darkyellow hover:text-lightyellow text-3xl">
-        <FaEdit />
-      </button>
+   
       <FaTrash
   className='text-darkpurple hover:text-lightpurple text-3xl'
   onClick={(e) => {

@@ -1,165 +1,213 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, NavLink } from 'react-router-dom';
+import { useNavigate, NavLink, useParams } from 'react-router-dom';
 import BackgroundImage from '../../../assets/BackgroundLogin.jpg'; 
 import { FaHome, FaTimes } from 'react-icons/fa';
 import Logo from '../../../assets/Artesanías.png';
 import Select from 'react-select'; 
 import { useEvents } from '../../../Context/EventsContext';
 
-export const EventsForm = () => {
-  const navigate = useNavigate();
-  const { setEvents } = useEvents();
-  const [formData, setFormData] = useState({
+export const EventsUpdateForm = () => {
+  const { id } = useParams(); // Obtén el ID del evento desde la URL
+  const [event, setEvent] = useState({
     nombreEvento: '',
     fecha: '',
+    empresasAsistente: [],
     ubicacion: '',
     duracion: '',
     lugar: '',
-    descripcion: '',
-    empresasAsistente: [],
-    idAdministrador: localStorage.getItem('userId') || '',
+    descripcion: ''
   });
-
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [notification, setNotification] = useState(null);
   const [errors, setErrors] = useState({});
-  const [notification, setNotification] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [empresasOptions, setEmpresasOptions] = useState([]);
   const [charCount, setCharCount] = useState(0);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
+
+  const dateValue = new Date(value).toISOString().split('T')[0]; // Eliminar esta línea
+const formattedDate = new Date(fecha).toISOString(); // Eliminar esta línea
+
+
+
 
   useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) throw new Error('Token no encontrado');
+        const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/evento/${id}`, {
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
+        const data = await response.json();
+        console.log('Evento obtenido:', data);
+  
+        // Convierte la fecha a formato YYYY-MM-DD
+        const parsedDate = new Date(data.fecha);
+        if (isNaN(parsedDate.getTime())) throw new Error('Fecha no válida');
+        const formattedDate = parsedDate.toISOString().split('T')[0];
+  
+        setEvent(prevEvent => ({
+          ...data,
+          fecha: formattedDate
+        }));
+      } catch (error) {
+        console.error('Error al obtener el evento:', error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+
     const fetchEmpresas = async () => {
       try {
         const idAdministrador = localStorage.getItem('userId');
-        if (idAdministrador) {
-          const token = localStorage.getItem('token');
-          if (!token) {
-            throw new Error('Token de autenticación no encontrado');
+        if (!idAdministrador) {
+          throw new Error('ID de administrador no encontrado');
+        }
+    
+        const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('Token de autenticación no encontrado');
+        }
+    
+        const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/empresa/consultarPorAdministrador/${idAdministrador}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+    
+        if (!response.ok) {
+          if (response.status === 401) {
+            throw new Error('Token de autenticación inválido o expirado');
           }
-
-          const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/empresa/consultarPorAdministrador/${idAdministrador}`, {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-            },
-          });
-
-          if (!response.ok) {
-            if (response.status === 401) {
-              throw new Error('Token de autenticación inválido o expirado');
-            }
-            throw new Error(`Error ${response.status}: ${response.statusText}`);
-          }
-
-          const contentType = response.headers.get("content-type");
-          if (contentType && contentType.indexOf("application/json") !== -1) {
-            const data = await response.json();
-            if (Array.isArray(data) && Array.isArray(data[0])) {
-              const empresas = data[0];
-              const options = empresas.map((empresa) => ({
-                value: empresa.codigoempresa,
-                label: empresa.nombre,
-              }));
-              setEmpresasOptions(options);
-            } else {
-              throw new Error('Formato de datos inesperado');
-            }
+          throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+    
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          console.log('Empresas:', data); // Agregado para depuración
+    
+          // Asegúrate de que estamos extrayendo el array correcto de datos
+          const empresasArray = data[0];
+          if (Array.isArray(empresasArray)) {
+            const options = empresasArray.map((empresa) => ({
+              value: empresa.codigoempresa,
+              label: empresa.nombre,
+            }));
+            setEmpresasOptions(options);
           } else {
-            const text = await response.text();
-            throw new Error('Respuesta no es JSON');
+            throw new Error('Formato de datos inesperado');
           }
+        } else {
+          const text = await response.text();
+          throw new Error('Respuesta no es JSON');
         }
       } catch (error) {
         console.error('Error al obtener empresas:', error.message);
       }
     };
 
+    fetchEvent();
     fetchEmpresas();
-  }, []);
+  }, [id]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    
-    // Contador de caracteres y validación de la descripción
-    if (name === 'descripcion') {
-      if (value.length <= 200) {
-        setFormData((prevState) => ({
-          ...prevState,
-          [name]: value,
-        }));
-        setCharCount(value.length);
-      }
-    } else {
-      setFormData((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
+
+
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+  setIsSubmitting(true);
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('Token no encontrado en el localStorage');
+      return;
     }
-  };
+
+    const { nombreEvento, fecha, empresasAsistente, ubicacion, duracion, lugar, descripcion } = event;
+
+    // Convertir la fecha al formato ISO para enviarla al backend
+    const formattedDate = new Date(fecha);
+    if (isNaN(formattedDate.getTime())) {
+      throw new Error('Fecha no válida');
+    }
+    const isoDate = formattedDate.toISOString();
+
+    const simplifiedEvent = {
+      nombreEvento,
+      fecha: isoDate,
+      empresasAsistente,
+      ubicacion,
+      duracion,
+      lugar,
+      descripcion
+    };
+
+    console.log('Datos del evento a enviar:', simplifiedEvent);
+
+    const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/evento/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(simplifiedEvent),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+
+    setNotification('Evento actualizado exitosamente');
+    setTimeout(() => navigate('/events'), 2000);
+  } catch (error) {
+    console.error('Error al guardar el evento:', error.message);
+    setErrors({ ...errors, global: 'Error al actualizar el evento. Inténtalo de nuevo.' });
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
+const handleChange = (e) => {
+  const { name, value } = e.target;
+  if (name === 'fecha') {
+    const dateValue = new Date(value).toISOString().split('T')[0]; // Convierte el valor si es fecha
+    setEvent(prevEvent => ({ ...prevEvent, [name]: dateValue }));  // Guarda la fecha formateada
+  } else {
+    setEvent(prevEvent => ({ ...prevEvent, [name]: value }));
+  }
+};
+
+
+
+  
+  
+  
+
+
+  
+  
 
   const handleSelectChange = (selectedOptions) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      empresasAsistente: selectedOptions ? selectedOptions.map(option => option.label) : [],
+    const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
+    setEvent(prevEvent => ({
+      ...prevEvent,
+      empresasAsistente: selectedValues
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    const requiredFields = ['nombreEvento', 'fecha', 'ubicacion', 'duracion', 'lugar', 'descripcion'];
-    const newErrors = {};
-    
-    requiredFields.forEach((field) => {
-      if (typeof formData[field] !== 'string' || !formData[field].trim()) {
-        newErrors[field] = 'Este campo es obligatorio';
-      }
-    });
-    
-    if (!Array.isArray(formData.empresasAsistente) || formData.empresasAsistente.length === 0) {
-      newErrors.empresasAsistente = 'Debe seleccionar al menos una empresa';
-    }
-    
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      setNotification('Todos los campos son requeridos');
-      setIsSubmitting(false);
-      return;
-    }
-    
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('https://checkpoint-9tp4.onrender.com/api/evento/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          ...formData,
-          empresasAsistente: formData.empresasAsistente.join(', '), // Convertir array a string
-        }),
-      });
-    
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-    
-      const newEvent = await response.json();
-      console.log('Evento creado:', newEvent); // Verificar la respuesta
-    
-      setEvents(prevEvents => [...prevEvents, newEvent]); // Actualizar eventos globales
-      setNotification('Evento creado exitosamente');
-      setTimeout(() => {
-        setNotification('');
-        navigate('/EventsForAdmin'); // Redirigir al componente EventsForAdmin
-      }, 2000);
-    } catch (error) {
-      console.error('Error al crear evento:', error);
-      setNotification('Error al crear el evento, intenta de nuevo');
-      setIsSubmitting(false);
-    }
+  const handleDescriptionChange = (e) => {
+    setEvent(prevEvent => ({
+      ...prevEvent,
+      descripcion: e.target.value
+    }));
+    setCharCount(e.target.value.length);
   };
-  
+
   return (
     <div 
       className="flex items-center justify-center min-h-screen bg-cover bg-center"
@@ -172,13 +220,18 @@ export const EventsForm = () => {
       </NavLink>
       <div className="relative bg-white p-6 rounded-lg shadow-md w-full max-w-md mx-4 sm:mx-6 md:mx-10 lg:mx-20">
         <img src={Logo} alt="Logo" className="h-24 w-24 mx-auto mb-6" />
-        <h1 className="text-2xl font-bold mb-6 text-center">Crear Nuevo Evento</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">Actualizar Evento</h1>
         {notification && (
           <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
             <span className="block sm:inline">{notification}</span>
           </div>
         )}
-        <form onSubmit={handleSubmit}>
+        {errors.global && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <span className="block sm:inline">{errors.global}</span>
+          </div>
+        )}
+        <form onSubmit={handleSave}>
           <div className="mb-4">
             <label className="block text-black text-sm font-bold mb-2" htmlFor="nombreEvento">
               Nombre del Evento
@@ -189,7 +242,7 @@ export const EventsForm = () => {
               name="nombreEvento"
               className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Nombre del Evento"
-              value={formData.nombreEvento}
+              value={event?.nombreEvento || ''}
               onChange={handleChange}
             />
             <p className="text-gray-600 text-sm mt-2">Indica el nombre del evento al que asistirá tu empresa</p>
@@ -204,7 +257,7 @@ export const EventsForm = () => {
               id="fecha"
               name="fecha"
               className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-              value={formData.fecha}
+              value={event?.fecha || ''}
               onChange={handleChange}
             />
             {errors.fecha && <p className="text-red-500 text-xs italic">{errors.fecha}</p>}
@@ -218,8 +271,7 @@ export const EventsForm = () => {
               name="empresasAsistente"
               options={empresasOptions}
               isMulti
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-              value={formData.empresasAsistente.map(label => ({ label, value: label }))}
+              value={empresasOptions.filter(option => event.empresasAsistente.includes(option.value))}
               onChange={handleSelectChange}
             />
             {errors.empresasAsistente && <p className="text-red-500 text-xs italic">{errors.empresasAsistente}</p>}
@@ -234,10 +286,9 @@ export const EventsForm = () => {
               name="ubicacion"
               className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Ubicación del Evento"
-              value={formData.ubicacion}
+              value={event?.ubicacion || ''}
               onChange={handleChange}
             />
-            <p className="text-gray-600 text-sm mt-2">Indica la dirección donde se realizará el evento</p>
             {errors.ubicacion && <p className="text-red-500 text-xs italic">{errors.ubicacion}</p>}
           </div>
           <div className="mb-4">
@@ -250,10 +301,9 @@ export const EventsForm = () => {
               name="duracion"
               className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Duración del Evento"
-              value={formData.duracion}
+              value={event?.duracion || ''}
               onChange={handleChange}
             />
-            <p className="text-gray-600 text-sm mt-2">Especifica la duración del evento en horas o días</p>
             {errors.duracion && <p className="text-red-500 text-xs italic">{errors.duracion}</p>}
           </div>
           <div className="mb-4">
@@ -266,10 +316,9 @@ export const EventsForm = () => {
               name="lugar"
               className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Lugar del Evento"
-              value={formData.lugar}
+              value={event?.lugar || ''}
               onChange={handleChange}
             />
-            <p className="text-gray-600 text-sm mt-2">¿En qué ciudad se llevará a cabo el evento?</p>
             {errors.lugar && <p className="text-red-500 text-xs italic">{errors.lugar}</p>}
           </div>
           <div className="mb-4">
@@ -281,23 +330,22 @@ export const EventsForm = () => {
               name="descripcion"
               className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Descripción del Evento"
-              value={formData.descripcion}
-              onChange={handleChange}
-              maxLength={200}
-            ></textarea>
-            <p className="text-gray-600 text-sm mt-2">Máximo 200 caracteres ({charCount}/200)</p>
+              value={event?.descripcion || ''}
+              onChange={handleDescriptionChange}
+            />
+            <p className="text-gray-600 text-sm mt-2">Caracteres: {charCount}</p>
             {errors.descripcion && <p className="text-red-500 text-xs italic">{errors.descripcion}</p>}
           </div>
           <div className="flex items-center justify-between">
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className={`bg-darkyellow hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'Creando...' : 'Enviar Informacion'}
+              {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
             </button>
-            <NavLink to="/EventsForAdmin" className="inline-block align-baseline font-bold text-sm text-darkyellow hover:text-yellow-700">
-              <FaTimes className="text-2xl" />
+            <NavLink to="/events">
+              <FaTimes className="text-red-500 text-2xl" />
             </NavLink>
           </div>
         </form>
