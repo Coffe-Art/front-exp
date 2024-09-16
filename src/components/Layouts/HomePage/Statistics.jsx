@@ -1,30 +1,26 @@
-// src/components/Statistics.js
 import React, { useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
-// Registramos los componentes de Chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export const Statistics = () => {
-  // Estado para manejar el contenido expandido
+ 
   const [expanded, setExpanded] = useState(null);
 
-  // Datos para el gráfico
   const data = {
     labels: ['Productos Vendidos', 'Clientes Satisfechos', 'Productos en Inventario', 'Proveedores Asociados'],
     datasets: [
       {
         label: 'Estadísticas',
-        data: [500, 1000, 200, 50], // Datos ficticios
-        backgroundColor: ['#B89158', '#F1BF76', '#3B2A38', '#271D25'], // Colores de fondo para las barras
-        borderColor: ['#B89158', '#F1BF76', '#3B2A38', '#271D25'], // Colores del borde de las barras
+        data: [500, 1000, 200, 50],
+        backgroundColor: ['#B89158', '#F1BF76', '#3B2A38', '#271D25'],
+        borderColor: ['#B89158', '#F1BF76', '#3B2A38', '#271D25'],
         borderWidth: 1,
       },
     ],
   };
 
-  // Opciones para el gráfico
   const options = {
     responsive: true,
     plugins: {
@@ -54,12 +50,10 @@ export const Statistics = () => {
     },
   };
 
-  // Función para manejar el clic en los contenedores
   const handleClick = (index) => {
     setExpanded(expanded === index ? null : index);
   };
 
-  // Información adicional para cada contenedor
   const info = [
     "El número total de productos vendidos se calcula sumando todas las transacciones realizadas en el último trimestre.",
     "La cantidad de clientes satisfechos se obtiene a partir de las encuestas de satisfacción y comentarios positivos.",
