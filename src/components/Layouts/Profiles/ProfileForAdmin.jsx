@@ -6,12 +6,11 @@ import Background from '../../../assets/Fondo.png';
 import { EditableField } from './EditableField';
 
 export const ProfileForAdmin = () => {
-  // Estados para manejar los campos de usuario
   const [name, setName] = useState('Nombre de Usuario');
   const [email, setEmail] = useState('usuario@example.com');
   const [phone, setPhone] = useState('123-456-7890');
-  const [password, setPassword] = useState(''); // Campo para contraseña
-  const [history, setHistory] = useState(''); // Campo para historia
+  const [password, setPassword] = useState(''); 
+  const [history, setHistory] = useState(''); 
 
   const navigate = useNavigate();
   const userRole = localStorage.getItem('userType');
@@ -25,11 +24,10 @@ export const ProfileForAdmin = () => {
     navigate('/#');
   };
 
-    // Función para cerrar la sesión y borrar el localStorage
     const handleLogout = () => {
-      localStorage.clear(); // Limpia el localStorage
-      navigate('/'); // Redirige al login o página inicial
-      window.location.reload(); // Recarga la página
+      localStorage.clear(); 
+      navigate('/'); 
+      window.location.reload(); 
     };
 
   return (
@@ -44,7 +42,6 @@ export const ProfileForAdmin = () => {
             Perfil
           </NavLink>
 
-          {/* Rutas para el rol 'comprador' */}
           {userRole === 'comprador' && (
             <>
               <NavLink to="/ProductFav" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Producto Favorito</NavLink>
@@ -55,14 +52,12 @@ export const ProfileForAdmin = () => {
             </>
           )}
 
-          {/* Rutas para los roles 'administrador' y 'empleado' */}
           {(userRole === 'administrador' || userRole === 'empleado') && (
             <>
               <NavLink to="/SalesOverview" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ventas</NavLink>
             </>
           )}
 
-          {/* Ruta común para todos */}
           <NavLink to="/Help" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ayuda</NavLink>
 
           <button
@@ -83,12 +78,10 @@ export const ProfileForAdmin = () => {
         <div className="w-full h-screen flex justify-center items-center bg-cover bg-center p-4" style={{ backgroundImage: `url(${Background})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
           <div className="flex flex-col items-center justify-center text-center p-8 bg-white bg-opacity-70 rounded-lg max-w-lg mx-auto md:max-w-2xl w-full">
             <img src={Logo} alt="Logo" className="h-20 w-20 text-gray-800 mb-4 mx-auto" />
-            <h1 className="text-black text-3xl md:text-5xl font-bold mb-8">Hola, administrador.</h1>
+            <h1 className="text-black text-3xl md:text-5xl font-bold mb-8">¡Bienvenido al perfil de administrador!</h1>
             <EditableField label="Nombre:" value={name} onChange={(e) => setName(e.target.value)} />
             <EditableField label="Correo Electrónico:" value={email} onChange={(e) => setEmail(e.target.value)} />
             <EditableField label="Teléfono:" value={phone} onChange={(e) => setPhone(e.target.value)} />
-            <EditableField label="Contraseña:" value={password} onChange={(e) => setPassword(e.target.value)} type="password" /> {/* Campo de contraseña */}
-            <EditableField label="Historia:" value={history} onChange={(e) => setHistory(e.target.value)} /> {/* Campo de historia */}
             <button className="bg-darkyellow text-white px-4 py-2 rounded hover:bg-lightyellow mt-8 text-lg md:text-xl font-bold">Guardar</button>
           </div>
         </div>
