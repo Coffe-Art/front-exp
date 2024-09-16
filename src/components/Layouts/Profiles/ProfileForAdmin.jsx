@@ -82,6 +82,7 @@ export const ProfileForAdmin = () => {
             <EditableField label="Nombre:" value={name} onChange={(e) => setName(e.target.value)} />
             <EditableField label="Correo Electrónico:" value={email} onChange={(e) => setEmail(e.target.value)} />
             <EditableField label="Teléfono:" value={phone} onChange={(e) => setPhone(e.target.value)} />
+
             <button className="bg-darkyellow text-white px-4 py-2 rounded hover:bg-lightyellow mt-8 text-lg md:text-xl font-bold">Guardar</button>
           </div>
         </div>
