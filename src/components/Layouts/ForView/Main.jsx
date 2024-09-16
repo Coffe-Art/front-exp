@@ -22,12 +22,12 @@ export const Main = () => {
           <img src={HeaderImage} alt="HeaderMain" className="block mx-auto max-w-full h-auto" />
         </div>
 
-        <div className="w-full md:w-1/2 flex flex-col justify-center items-center">
-          <div className="container mx-auto px-4 flex flex-col items-center">
-            <h1 className="text-2xl md:text-4xl font-bold mb-4 text-center">
+        <div className="w-full md:w-1/2 flex flex-col justify-center items-center md:items-start text-center md:text-left">
+          <div className="container mx-auto px-4">
+            <h1 className="text-2xl md:text-4xl font-bold mb-4 text-darkpurple">
               COFFE ART
             </h1>
-            <p className="text-sm md:text-lg text-center px-2 md:px-8 py-2 max-w-3xl">
+            <p className="text-sm md:text-lg px-2 md:px-8 py-2 max-w-3xl mx-auto">
               Buscamos poner en valor y resaltar el incuestionable y valioso trabajo de los artesanos, promoviendo activamente sus productos únicos y auténticos, que son verdaderas expresiones de su arte y habilidades. Además, como una parte integral de nuestra misión, ofrecemos procesos y métodos diseñados para mejorar y ayudar en la gestión de sus negocios.
             </p>
           </div>
@@ -53,7 +53,7 @@ export const Main = () => {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left">
-            <h1 className="text-black text-2xl md:text-4xl font-bold text-center mb-8">MIRA NUESTRO VIDEO DESTACADO</h1>
+              <h1 className="text-black text-2xl md:text-4xl font-bold mb-8">MIRA NUESTRO VIDEO DESTACADO</h1>
               <p className="text-black text-sm md:text-lg mb-6">
                 Te invitamos a conocer más sobre nuestra labor y los productos únicos que ofrecemos a través de este video destacado. Aquí, podrás ver cómo trabajamos para resaltar la habilidad de los artesanos y ofrecerles una plataforma para mostrar su arte al mundo. Además, si estás interesado en explorar más contenido relacionado con nuestra misión y productos, puedes visitar nuestra página en YouTube para más videos y actualizaciones.
               </p>
@@ -68,13 +68,14 @@ export const Main = () => {
             </div>
             <div className="md:w-1/2 flex justify-center">
               <iframe 
-                width="560" 
-                height="315" 
+                width="100%" 
+                height="auto" 
                 src="https://www.youtube.com/embed/P7kEcYwBBsk" 
                 title="Video destacado" 
                 frameBorder="0" 
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                 allowFullScreen
+                className="aspect-video"
               ></iframe>
             </div>
           </div>
