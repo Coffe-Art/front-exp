@@ -22,7 +22,7 @@ export const SignIn = () => {
     const [verificationSent, setVerificationSent] = useState(false);
     const [codeVerified, setCodeVerified] = useState(false);
     const [notification, setNotification] = useState(null);
-    const [isSubmitting, setIsSubmitting] = useState(false); // Estado para controlar el envío
+    const [isSubmitting, setIsSubmitting] = useState(false); 
 
 
     const handleChange = useCallback((e) => {
@@ -37,17 +37,16 @@ export const SignIn = () => {
         setNotification({ message, isError });
         setTimeout(() => {
             setNotification(null);
-        }, 2000); // La notificación durará 2 segundos
+        }, 2000); 
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    if (isSubmitting) return; // Previene múltiples envíos
-    setIsSubmitting(true); // Activa el estado de envío
+    if (isSubmitting) return; 
+    setIsSubmitting(true); 
 
     const newErrors = {};
 
-        // Validación de campos
         if (!formData.email) {
             newErrors.email = 'El correo electrónico es obligatorio';
         }
