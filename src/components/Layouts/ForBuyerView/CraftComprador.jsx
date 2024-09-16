@@ -273,7 +273,9 @@ setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !==
           </div>
         </div>
         <div className="flex-1 p-4">
-          <h2 className="text-2xl font-bold mb-4">Artesanías</h2>
+        <h2 className="text-darkyellow md:text-4xl font-bold mt-5 mb-8 text-center">¡Bienvenido a Artesanías!</h2>
+
+
           {cargando ? (
             <div className="text-center">Cargando...</div>
           ) : error ? (
@@ -299,7 +301,7 @@ setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !==
                       e.stopPropagation();
                       agregarAlCarrito(producto);
                     }}
-                    className="bg-darkpurple text-white py-2 px-4 rounded mt-3"
+                    className="bg-darkpurple text-white py-2 px-4 rounded mt-3 hover:bg-lightpurplee"
                   >
                     Agregar al carrito
                   </button>
@@ -310,8 +312,6 @@ setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !==
         </div>
       </div>
 
-    
-      {/* Modal de Producto */}
       {modalAbierto && productoSeleccionado && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 md:w-1/2 lg:w-1/3 relative">
@@ -346,7 +346,7 @@ setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !==
           </div>
         </div>
       )}
-      <CartIcon /> {/* Añade el icono flotante */}
+      <CartIcon />
       <Footer />
     </div>
   );
