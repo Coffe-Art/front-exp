@@ -221,7 +221,7 @@ export const CompaniesForAdmin = () => {
                             </svg>
                             <span className="text-black text-sm text-center">Agregar una empresa nueva</span>
                             <NavLink to="/LoginCompanies" className="text-darkyellow hover:underline text-sm ml-2">
-                                Registrar Empresa
+                                Agregar Empresa
                             </NavLink>
                         </div>
                     </div>

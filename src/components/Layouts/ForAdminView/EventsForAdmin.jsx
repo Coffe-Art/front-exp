@@ -206,7 +206,7 @@ const [eventToDelete, setEventToDelete] = useState(null);
   <h3 className="text-xl font-semibold mb-4">¿Vas a Asisitir a un Evento?</h3>
   <p className="mb-4">
     <NavLink to="/EventsForm" className="text-darkyellow font-bold hover:underline">
-      Anotar Evento
+      Agregar Evento
     </NavLink>
   </p>
 </div>

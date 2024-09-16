@@ -378,7 +378,7 @@ className='shadow border rounded w-1/2 py-2 px-3'
                   onClick={() => navigate('/createProduct')}
                   className="text-darkyellow text-xl flex items-center"
                 >
-                  <FaPlus className="mr-2" /> Crear Artesanía
+                  <FaPlus className="mr-2" /> Agregar Artesanía
                 </button>
               </div>
             <div className="flex justify-between items-center mb-4">                  
