@@ -8,20 +8,19 @@ import { Bar } from 'react-chartjs-2';
 export const SalesOverview = ({ isAuthenticated, userType }) => {
   const navigate = useNavigate();
   const [showAccessMessage, setShowAccessMessage] = useState(false);
-  // Obtiene el rol de usuario desde el localStorage
+
   const userRole = localStorage.getItem('userType');
 
-  // Datos de ejemplo para las estadísticas de ventas
   const bestRatedProduct = {
     id: 1,
     name: 'Café Especial Premium',
     rating: 4.9,
     totalSales: 320,
-    revenue: 9600, // En dólares
+    revenue: 9600,
   };
 
   const totalSales = 1450;
-  const totalRevenue = 42000; // En dólares
+  const totalRevenue = 42000;
   const totalOrders = 230;
 
   const salesData = {
@@ -31,7 +30,7 @@ export const SalesOverview = ({ isAuthenticated, userType }) => {
         label: 'Estadísticas de Ventas',
         data: [totalSales, totalRevenue, totalOrders],
         backgroundColor: ['#B89158', '#3B2A38', '#271D25'],
-        borderWidth: 0, // Eliminar el borde alrededor de las barras
+        borderWidth: 0,
       },
     ],
   };
@@ -54,18 +53,16 @@ export const SalesOverview = ({ isAuthenticated, userType }) => {
     }
   };
 
-
-   // Función para cerrar la sesión y borrar el localStorage
    const handleLogout = () => {
-    localStorage.clear(); // Limpia el localStorage
-    navigate('/'); // Redirige al login o página inicial
-    window.location.reload(); // Recarga la página
+    localStorage.clear(); 
+    navigate('/'); 
+    window.location.reload();
   };
 
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-200">
-      {/* Panel de Navegación */}
+
       <div className="md:w-1/4 lg:w-1/6 bg-cover bg-center p-4 text-white flex flex-col items-center justify-center" style={{ backgroundImage: `url(${BackgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
         <a href="/#" onClick={handleLogoClick} className="mb-6">
           <img src={Logo} alt="Logo" className="h-32 w-32" />
@@ -76,7 +73,6 @@ export const SalesOverview = ({ isAuthenticated, userType }) => {
             Perfil
           </NavLink>
 
-          {/* Rutas para el rol 'comprador' */}
           {userRole === 'comprador' && (
             <>
               <NavLink to="/ProductFav" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Producto Favorito</NavLink>
@@ -87,7 +83,6 @@ export const SalesOverview = ({ isAuthenticated, userType }) => {
             </>
           )}
 
-          {/* Rutas para los roles 'administrador' y 'empleado' */}
           {(userRole === 'administrador' || userRole === 'empleado') && (
             <>
               <NavLink to="/SalesOverview" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ventas</NavLink>
@@ -95,7 +90,6 @@ export const SalesOverview = ({ isAuthenticated, userType }) => {
             </>
           )}
 
-          {/* Ruta común para todos */}
           <NavLink to="/Help" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ayuda</NavLink>
 
           <button
@@ -104,7 +98,7 @@ export const SalesOverview = ({ isAuthenticated, userType }) => {
           >
             Regresar
           </button>
-          {/* Botón para cerrar sesión, visible solo si no es 'anonimo' */}
+
           {userRole !== 'anonimo' && (
             <button
               className="bg-darkpurple text-white px-4 py-2 rounded hover:bg-lightpurple mt-4 text-lg font-bold"
