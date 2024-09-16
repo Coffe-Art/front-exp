@@ -54,6 +54,15 @@ export const SalesOverview = ({ isAuthenticated, userType }) => {
     }
   };
 
+
+   // Función para cerrar la sesión y borrar el localStorage
+   const handleLogout = () => {
+    localStorage.clear(); // Limpia el localStorage
+    navigate('/'); // Redirige al login o página inicial
+    window.location.reload(); // Recarga la página
+  };
+
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-200">
       {/* Panel de Navegación */}
@@ -95,6 +104,15 @@ export const SalesOverview = ({ isAuthenticated, userType }) => {
           >
             Regresar
           </button>
+          {/* Botón para cerrar sesión, visible solo si no es 'anonimo' */}
+          {userRole !== 'anonimo' && (
+            <button
+              className="bg-darkpurple text-white px-4 py-2 rounded hover:bg-lightpurple mt-4 text-lg font-bold"
+              onClick={handleLogout}
+            >
+              Cerrar Sesión
+            </button>
+          )}
         </nav>
       </div>
 
@@ -106,10 +124,9 @@ export const SalesOverview = ({ isAuthenticated, userType }) => {
 
             <div className="w-full max-w-lg mb-8">
               <div className="mb-4">
-                <h2 className="text-2xl font-bold text-darkyellow mb-4">Producto Mejor Calificado</h2>
+                <h2 className="text-2xl font-bold text-darkyellow mb-4">Producto Más Vendido</h2>
                 <div className="flex items-center justify-between bg-gray-200 px-4 py-2 rounded-lg mb-2">
-                  <span className="text-lg">{bestRatedProduct.name}</span>
-                  <span className="text-darkyellow">⭐ {bestRatedProduct.rating}</span>
+                  <span className="text-lg flex justify-center self-center">{bestRatedProduct.name}</span>
                 </div>
                 <p className="text-gray-700 mb-2">
                   Ventas Totales: <span className="font-bold">{bestRatedProduct.totalSales}</span>

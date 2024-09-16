@@ -14,7 +14,7 @@
     "@react-google-maps/api": "^2.19.3",
     "all": "^0.0.0",
     "axios": "^1.7.4",
-    "chart.js": "^4.4.3",
+    "chart.js": "^4.4.4",
     "date-fns": "^3.6.0",
     "flask": "^0.2.10",
     "gh-pages": "^6.1.1",

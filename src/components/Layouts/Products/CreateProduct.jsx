@@ -172,6 +172,10 @@ export const CreateProduct = () => {
     if (formData.empresasSeleccionadas.length === 0) {
       newErrors.codigoempresa = 'Debes seleccionar al menos una empresa';
     }
+    if (!file) {
+      newErrors.file = 'La imagen del producto es obligatoria';
+    }
+    
 
     setErrors(newErrors);
 
@@ -324,19 +328,19 @@ export const CreateProduct = () => {
             <p className="text-gray-700 text-sm mt-2">¡Separa los materiales por comas! :)</p>
           </div>
           <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="file">
-              Imágenes
-            </label>
-            <input
-              type="file"
-              id="file"
-              name="file"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-              accept="image/jpeg, image/png"
-              onChange={handleFileChange}
-            />
-            {fileName && <p className="text-gray-700 text-sm mt-2">{fileName}</p>} {/* Nombre del archivo */}
-          </div>
+  <label className="block text-black text-sm font-bold mb-2" htmlFor="imagen">
+    Imagen del Producto
+  </label>
+  <input
+    type="file"
+    id="imagen"
+    name="imagen"
+    accept="image/*"
+    onChange={handleFileChange}
+  />
+  {errors.file && <p className="text-red-500 text-xs italic">{errors.file}</p>}
+</div>
+
           <div className="flex items-center justify-between">
             <button
               type="submit"

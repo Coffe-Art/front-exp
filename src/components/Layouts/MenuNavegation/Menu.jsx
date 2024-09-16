@@ -10,6 +10,11 @@ export const Menu = () => {
   // Obtiene el rol de usuario desde el localStorage o establece 'anonimo' por defecto
   const userRole = localStorage.getItem('userType') || 'anonimo';
 
+  // Función para capitalizar la primera letra
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
   const handleLogoClick = (e) => {
     e.preventDefault();
     navigate('/');
@@ -17,6 +22,13 @@ export const Menu = () => {
 
   const handleLoginClick = () => {
     navigate('/#');
+  };
+
+  // Función para cerrar la sesión y borrar el localStorage
+  const handleLogout = () => {
+    localStorage.clear(); // Limpia el localStorage
+    navigate('/'); // Redirige al login o página inicial
+    window.location.reload(); // Recarga la página
   };
 
   return (
@@ -35,23 +47,19 @@ export const Menu = () => {
             </NavLink>
           )}
 
-         {/* Rutas para el rol 'comprador' o 'anonimo' */}
-         {(userRole === 'comprador' ) && (
-            <>
-              <NavLink to="/ProductFav" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Favoritos</NavLink>
-              <NavLink to="/Cart" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Carrito</NavLink>
-            </>
-            
-          )}
-
-           {/* Rutas para el rol 'comprador' o 'anonimo' */}
-           {( userRole === 'anonimo') && (
+          {/* Rutas para el rol 'comprador' o 'anonimo' */}
+          {(userRole === 'comprador') && (
             <>
               <NavLink to="/Cart" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Carrito</NavLink>
             </>
-            
           )}
 
+          {/* Rutas para el rol 'anonimo' */}
+          {userRole === 'anonimo' && (
+            <>
+              <NavLink to="/Cart" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Carrito</NavLink>
+            </>
+          )}
 
           {/* Rutas para los roles 'administrador' y 'empleado' */}
           {(userRole === 'administrador' || userRole === 'empleado') && (
@@ -69,15 +77,28 @@ export const Menu = () => {
           >
             Regresar
           </button>
+
+          {/* Botón para cerrar sesión, visible solo si no es 'anonimo' */}
+          {userRole !== 'anonimo' && (
+            <button
+              className="bg-darkpurple text-white px-4 py-2 rounded hover:bg-lightpurple mt-4 text-lg font-bold"
+              onClick={handleLogout}
+            >
+              Cerrar Sesión
+            </button>
+          )}
         </nav>
       </div>
       <div className="flex flex-col justify-center items-center md:w-4/5 lg:w-5/6">
         <div className="w-full h-screen flex justify-center items-center bg-cover bg-center" style={{ backgroundImage: `url(${Background})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
           <div className="flex flex-col items-center justify-center text-center p-8 bg-white bg-opacity-80 rounded-lg max-w-lg mx-auto md:max-w-2xl w-full">
             <img src={Logo} alt="Logo" className="h-20 w-20 text-gray-800 mb-4 mx-auto" />
-            <h1 className="text-black text-3xl md:text-4xl font-bold mb-4">¡Bienvenido!</h1>
-            <p className="text-gray-800 text-lg mb-6">Gracias por visitar nuestro espacio para ti. Inicia sesión para disfrutar de todas las funcionalidades que tiene Coffe Art.</p>
-            <NavLink to="/login" className="bg-darkyellow text-white px-6 py-3 rounded hover:bg-lightyellow text-lg font-bold">Iniciar sesión</NavLink>
+            <h1 className="text-black text-3xl md:text-4xl font-bold mb-7">¡Bienvenido!</h1>
+            <p className="text-gray-800 text-1xl mb-6">
+              Gracias por visitar Coffe Art.<br/> Esta plataforma ha sido creada con el objetivo de apoyar a los artesanos colombianos, brindándoles una herramienta para gestionar de manera eficiente sus negocios y potenciar la venta de sus productos. En Coffe Art, creemos en el valor de la artesanía y la cultura colombiana, y nos enorgullece ser parte de esta comunidad que trabaja día a día para mostrar su talento al mundo. Te invitamos a explorar nuestra web y a unirte a esta iniciativa que busca impulsar el crecimiento de los artesanos locales.
+            </p>
+            {/* Mostrar el rol del usuario con la primera letra en mayúscula */}
+            <p className='text-2xl mt-4'><span className='font-bold text-2xl text-darkyellow'>Has ingresado como: </span>{capitalizeFirstLetter(userRole)}</p>
           </div>
         </div>
       </div>
