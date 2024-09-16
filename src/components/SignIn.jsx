@@ -22,7 +22,7 @@ export const SignIn = () => {
     const [verificationSent, setVerificationSent] = useState(false);
     const [codeVerified, setCodeVerified] = useState(false);
     const [notification, setNotification] = useState(null);
-    const [isSubmitting, setIsSubmitting] = useState(false); 
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
 
     const handleChange = useCallback((e) => {
@@ -37,32 +37,32 @@ export const SignIn = () => {
         setNotification({ message, isError });
         setTimeout(() => {
             setNotification(null);
-        }, 2000); 
+        }, 2000);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    if (isSubmitting) return; 
+    if (isSubmitting) return;
     setIsSubmitting(true); 
 
     const newErrors = {};
 
         if (!formData.email) {
-            newErrors.email = 'El correo electrónico es obligatorio';
+            newErrors.email = 'El campo del correo electrónico es obligatorio.';
         }
         if (forgotPassword) {
             if (!verificationSent && !formData.tipoUsuario) {
                 newErrors.tipoUsuario = 'El tipo de usuario es obligatorio';
             }
             if (verificationSent && !codeVerified && !formData.code) {
-                newErrors.code = 'El código de verificación es obligatorio';
+                newErrors.code = 'El campo del código de verificación es obligatorio.';
             }
             if (codeVerified && !formData.newPassword) {
-                newErrors.newPassword = 'La nueva contraseña es obligatoria';
+                newErrors.newPassword = 'El campo de la nueva contraseña es obligatorio.';
             }
         } else {
             if (!formData.password) {
-                newErrors.password = 'La contraseña es obligatoria';
+                newErrors.password = 'El campo de la contraseña es obligatorio.';
             }
         }
 
@@ -75,34 +75,34 @@ export const SignIn = () => {
                         const result = await requestPasswordReset(formData.tipoUsuario, formData.email);
                         if (result.success) {
                             setVerificationSent(true);
-                            showNotification(result.message || 'Correo de recuperación enviado');
+                            showNotification(result.message || 'El correo de recuperación ha sido enviado con éxito.');
                         } else {
-                            showNotification(result.error || 'Error en la solicitud de recuperación de contraseña', true);
+                            showNotification(result.error || 'Hubo un problema al procesar tu solicitud de recuperación de contraseña. Por favor, intenta nuevamente.', true);
                         }
                     } else if (!codeVerified) {
                         const codeResult = await verifyResetCode(formData.tipoUsuario, formData.email, formData.code);
                         if (codeResult.success) {
                             setCodeVerified(true);
-                            showNotification('Código verificado. Ahora puedes establecer una nueva contraseña.');
+                            showNotification('El código ha sido verificado con éxito. Ahora puedes establecer una nueva contraseña.');
                         } else {
-                            showNotification(codeResult.error || 'Código de verificación incorrecto', true);
+                            showNotification(codeResult.error || 'El código de verificación ingresado es incorrecto.', true);
                         }
                     } else {
                         const resetResult = await resetPassword(formData.tipoUsuario, formData.email, formData.newPassword, formData.code);
                         if (resetResult.success) {
-                            showNotification('Contraseña actualizada con éxito');
+                            showNotification('¡Tu contraseña ha sido actualizada correctamente!');
                             setForgotPassword(false);
                             setVerificationSent(false);
                             setCodeVerified(false);
                         } else {
-                            showNotification(resetResult.error || 'Error al actualizar la contraseña', true);
+                            showNotification(resetResult.error || 'Hubo un problema al intentar actualizar la contraseña.', true);
                         }
                     }
                 } else {
                     const result = await login(formData.tipoUsuario, formData.email, formData.password);
                     if (result.success) {
-                        showNotification('Inicio de sesión exitoso');
-                        setTimeout(() => navigate('/'), 2000); // Redirige después de mostrar la notificación
+                        showNotification('¡Inicio de sesión exitoso!');
+                        setTimeout(() => navigate('/'), 2000);
                     } else {
                         showNotification(result.error || 'Error desconocido. Intenta de nuevo.', true);
                     }
@@ -112,11 +112,11 @@ export const SignIn = () => {
                 showNotification('Hubo un problema al procesar la solicitud. Por favor, intenta de nuevo.', true);
             }
             finally {
-                setIsSubmitting(false); // Desactiva el estado de envío
+                setIsSubmitting(false);
             }
         } else {
-            showNotification('Por favor corrige los errores en el formulario.', true);
-            setIsSubmitting(false); // Desactiva el estado de envío en caso de errores
+            showNotification('Por favor, asegúrate de completar correctamente el formulario.', true);
+            setIsSubmitting(false); 
         }
         
     };
