@@ -20,7 +20,7 @@ export const Register = () => {
 
     const [errors, setErrors] = useState({});
     const [notification, setNotification] = useState(null);
-    const [isSubmitting, setIsSubmitting] = useState(false); // Estado para controlar el botón
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleChange = (e) => {
         const { id, value } = e.target;
@@ -34,54 +34,70 @@ export const Register = () => {
         e.preventDefault();
         const newErrors = {};
 
-        // Validaciones
         if (!formData.username.trim()) {
-            newErrors.username = 'El nombre de usuario es obligatorio';
+            newErrors.username = 'Por favor, ingresa un nombre de usuario válido.';
         }
         if (!formData.email.includes('@')) {
-            newErrors.email = 'El correo debe contener "@"';
+            newErrors.email = 'El correo electrónico ingresado debe contener el símbolo "@" para ser válido.';
         }
         if (formData.password.length < 6) {
-            newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
+            newErrors.password = 'La contraseña debe tener al menos 6 caracteres.';
         }
         if (!/\d/.test(formData.password)) {
-            newErrors.password = 'La contraseña debe contener al menos un número';
+            newErrors.password = 'La contraseña debe contener al menos un número.';
         }
         if (formData.password !== formData.confirmPassword) {
-            newErrors.confirmPassword = 'Las contraseñas no coinciden';
+            newErrors.confirmPassword = 'Las contraseñas ingresadas no coinciden.';
         }
         if (formData.phone.length < 10) {
-            newErrors.phone = 'El número de teléfono debe tener al menos 10 dígitos';
+            newErrors.phone = 'El número de teléfono debe tener al menos 10 dígitos.';
         }
 
         setErrors(newErrors);
 
         if (Object.keys(newErrors).length === 0) {
-            setIsSubmitting(true); // Deshabilitar el botón
+            setIsSubmitting(true);
 
             try {
+               
                 const result = await register(
-                    formData.role.toLowerCase(),
-                    formData.username,
-                    formData.password,
-                    formData.email,
-                    formData.phone
+                  formData.role.toLowerCase(),
+                  formData.username,
+                  formData.password,
+                  formData.email,
+                  formData.phone
                 );
-                
+              
                 if (result.success) {
-                    setNotification('¡Registro exitoso!');
-                    setTimeout(() => {
-                        navigate('/login');
-                    }, 2000);
+                  setNotification({
+                    message: '¡Registro exitoso!',
+                    type: 'success'
+                  });
+                  
+                  setTimeout(() => {
+                    navigate('/login');
+                  }, 2000);
                 } else {
-                    setNotification('Error al registrar, intenta de nuevo');
+                  setNotification({
+                    message: 'Error al registrar, intenta de nuevo',
+                    type: 'error'
+                  });
                 }
             } catch (error) {
                 console.error('Error al registrar:', error);
-                setNotification('Error al registrar, intenta de nuevo');
+                setNotification({
+                    message: 'Por favor, intenta de nuevo.',
+                    type: 'error'
+                });
             } finally {
-                setIsSubmitting(false); // Volver a habilitar el botón
+                setIsSubmitting(false);
             }
+        } else {
+            setNotification({
+                message: 'Por favor, asegúrate de completar correctamente el formulario.',
+                type: 'error'
+            });
+            setIsSubmitting(false);
         }
     };
 
@@ -100,10 +116,10 @@ export const Register = () => {
                 <h1 className="text-2xl font-bold mb-6 text-center">Registrarse</h1>
                 {notification && (
                     <div 
-                        className={`border rounded px-4 py-3 mb-4 relative ${notification.includes('Error') ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700'}`} 
+                        className={`border rounded px-4 py-3 mb-4 relative ${notification.type === 'error' ? 'bg-red-100 border-red-400 text-red-700' : 'bg-green-100 border-green-400 text-green-700'}`} 
                         role="alert"
                     >
-                        <span className="block sm:inline">{notification}</span>
+                        <span className="block sm:inline">{notification.message}</span>
                     </div>
                 )}
                 <form onSubmit={handleSubmit}>
@@ -194,14 +210,14 @@ export const Register = () => {
                     <button
                         type="submit"
                         className="bg-darkyellow hover:bg-lightyellow text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
-                        disabled={isSubmitting} // Deshabilitar el botón cuando se está enviando
+                        disabled={isSubmitting}
                     >
                         {isSubmitting ? 'Registrando...' : 'Registrarse'}
                     </button>
                     <p className="mt-4 text-center">
                         ¿Ya tienes una cuenta?{' '}
                         <NavLink to="/SignIn" className="text-darkyellow hover:underline">
-                            Inicia sesión
+                            Iniciar sesión
                         </NavLink>
                     </p>
                 </form>
