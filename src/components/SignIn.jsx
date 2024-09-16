@@ -244,23 +244,25 @@ export const SignIn = () => {
                             </div>
                         </>
                     )}
-                    <div className="flex items-center justify-between">
-                    <button
+                    <div className="flex flex-col items-center space-y-4">
+  <button
     type="submit"
-    className={`bg-darkyellow text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+    className={`bg-darkyellow hover:bg-lightyellow text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full ${
+      isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-lightyellow active:bg-lightyellow transition-colors duration-300'
+    }`}
     disabled={isSubmitting}
->
+  >
     {isSubmitting ? 'Cargando...' : forgotPassword ? (codeVerified ? 'Actualizar Contraseña' : 'Enviar Código') : 'Iniciar Sesión'}
-</button>
+  </button>
 
-                        <button
-                            type="button"
-                            className="inline-block align-baseline font-bold text-sm text-darkyellow hover:text-lightyellow"
-                            onClick={() => setForgotPassword(!forgotPassword)}
-                        >
-                            {forgotPassword ? 'Volver a Iniciar Sesión' : 'Olvidé mi Contraseña'}
-                        </button>
-                    </div>
+  <button
+    type="button"
+    className="inline-block font-bold text-sm text-darkyellow hover:text-lightyellow"
+    onClick={() => setForgotPassword(!forgotPassword)}
+  >
+    {forgotPassword ? 'Volver a Iniciar Sesión' : 'Olvidé mi Contraseña'}
+  </button>
+</div>
                     <p className="mt-4 text-center">
                         ¿No tienes una cuenta?{' '}
                         <NavLink to="/Register" className="text-darkyellow hover:underline">
