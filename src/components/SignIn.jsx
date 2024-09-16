@@ -127,7 +127,7 @@ export const SignIn = () => {
             style={{ backgroundImage: `url(${BackgroundImage})` }}
         >
             <NavLink to="/login" className="absolute top-4 left-4">
-                <FaHome className="text-darkyellow text-4xl" />
+                <FaHome className="text-darkyellow text-4xl hover:text-lightyellow" />
             </NavLink>
             <div className="relative bg-white p-8 rounded-lg shadow-md w-full max-w-md mx-4 sm:mx-8 md:mx-16 lg:mx-32">
                 <img src={Logo} alt="Logo" className="h-24 w-24 mx-auto mb-6" />
