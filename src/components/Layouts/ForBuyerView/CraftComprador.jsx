@@ -43,7 +43,7 @@ export const CraftComprador = () => {
         console.log('Productos recibidos:', datosProductos);
 
         setProductos(datosProductos);
-        setProductosFiltrados(datosProductos); // Mostrar todos los productos por defecto
+        setProductosFiltrados(datosProductos); 
       } catch (err) {
         setError(err.message);
       } finally {
@@ -113,13 +113,13 @@ export const CraftComprador = () => {
   }, [terminoBusqueda, categoria, precioMinimo, precioMaximo, calificacion, productos]);
 
   useEffect(() => {
-    // Cargar carrito desde localStorage al montar el componente
+    
     const carritoGuardado = JSON.parse(localStorage.getItem('carrito')) || [];
     setCarrito(carritoGuardado);
   }, []);
 
   useEffect(() => {
-    // Guardar carrito en localStorage cada vez que cambia
+    
     localStorage.setItem('carrito', JSON.stringify(carrito));
   }, [carrito]);
 
@@ -130,8 +130,8 @@ export const CraftComprador = () => {
     if (notificacionVisible) {
       const timer = setTimeout(() => {
         setNotificacionVisible(false);
-      }, 3000); // La notificación desaparecerá después de 3 segundos
-      return () => clearTimeout(timer); // Limpia el temporizador si se desmonta el componente
+      }, 3000); 
+      return () => clearTimeout(timer);
     }
   }, [notificacionVisible]);
   
@@ -145,8 +145,7 @@ export const CraftComprador = () => {
       }
       return [...prevCarrito, { ...producto, cantidad: 1 }];
     });
-  
-    // Mostrar notificación
+
     setProductoNotificado(producto);
     setNotificacionVisible(true);
   };
@@ -191,12 +190,11 @@ export const CraftComprador = () => {
     setProductoSeleccionado(null);
   };
   const manejarIrACarrito = () => {
-    navigate('/Cart'); // Cambiado a la ruta /Cart
+    navigate('/Cart');
   };
-// Función para eliminar un producto del carrito
+
 const eliminarDelCarrito = (idProducto) => {
-// Aquí puedes actualizar el estado del carrito para eliminar el producto
-// Ejemplo:
+
 setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !== idProducto));
 };
 
@@ -208,7 +206,6 @@ setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !==
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-bold">Filtros</h2>
             <button onClick={alternarFiltro} className="text-darkyellow text-xl">
-              {/* Add icon here if needed */}
             </button>
             {notificacionVisible && (
   <div className="fixed bottom-4 right-4 bg-white text-darkyellow py-2 px-4 rounded shadow-lg z-50 border-solid border-3 border-darkyellow flex flex-row"> <FaCoffee className='mr-2' size={24}/>
