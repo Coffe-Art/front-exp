@@ -14,8 +14,8 @@ export const MaterialsForm = () => {
     descripcion: '',
     lugarDeVenta: '',
     correoContacto: '',
-    telefonoContacto: '',
-    tipoDeVenta: '',
+    TelefonoContacto: '',
+    TipoDeVenta: '',
     codigoEmpresa: '',
     idAdministrador: ''
   });
@@ -129,8 +129,8 @@ export const MaterialsForm = () => {
           descripcion: '',
           lugarDeVenta: '',
           correoContacto: '',
-          telefonoContacto: '',
-          tipoDeVenta: '',
+          TelefonoContacto: '',
+          TipoDeVenta: '',
           codigoEmpresa: '',
           idAdministrador: formData.idAdministrador
         });
@@ -272,29 +272,29 @@ export const MaterialsForm = () => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="telefonoContacto">
+            <label className="block text-black text-sm font-bold mb-2" htmlFor="TelefonoContacto">
               Teléfono de Contacto
             </label>
             <input
               type="text"
-              id="telefonoContacto"
-              name="telefonoContacto"
+              id="TelefonoContacto"
+              name="TelefonoContacto"
               className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-              value={formData.telefonoContacto}
+              value={formData.TelefonoContacto}
               onChange={handleChange}
             />
           </div>
 
           <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="tipoDeVenta">
+            <label className="block text-black text-sm font-bold mb-2" htmlFor="TipoDeVenta">
               Tipo de Venta
             </label>
             <input
               type="text"
-              id="tipoDeVenta"
-              name="tipoDeVenta"
+              id="TipoDeVenta"
+              name="TipoDeVenta"
               className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-              value={formData.tipoDeVenta}
+              value={formData.TipoDeVenta}
               onChange={handleChange}
             />
           </div>
