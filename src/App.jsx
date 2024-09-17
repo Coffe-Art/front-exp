@@ -36,7 +36,12 @@ import { CompaniesProducts } from './components/Layouts/ForBuyerView/CompaniesPr
 import CartIcon from './components/Layouts/ForBuyerView/CartIcon';
 import {EventsUpdateForm} from './components/Layouts/Events/EventsUpdateForm'
 import  {MaterialsForAdmin}  from './components/Layouts/ForAdminView/MaterialsForAdmin';
-import { MaterialsForm } from './components/Layouts/Materials/MaterialsForm';
+import  {MaterialsForm}  from './components/Layouts/Materials/MaterialsForm';
+import { MaterialsUpdateForm } from './components/Layouts/Materials/MaterialsUpdateForm';
+
+
+
+
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -90,9 +95,9 @@ function App() {
             <Route path="/UpdateProduct/:idProducto" element={<ProtectedRoute element={UpdateProducto} allowedRoles={['administrador', 'empleado']} />} />
             <Route path="/MaterialsForAdmin" element={<ProtectedRoute element={MaterialsForAdmin} allowedRoles={['administrador', 'empleado']} />} />
             <Route path="/MaterialsForm" element={<ProtectedRoute element={MaterialsForm} allowedRoles={['administrador', 'empleado']} />} />
-            <Route path="/EventsUpdateForm/:id" element={<EventsUpdateForm />} />     
-     
-            </Routes>
+            <Route path="/MaterialsUpdateForm" element={<ProtectedRoute element={MaterialsUpdateForm} allowedRoles={['administrador', 'empleado']} />} />
+            <Route path="/EventsUpdateForm/:id"  element={<ProtectedRoute element={MaterialsUpdateForm} allowedRoles={['administrador', 'empleado']} />} />         
+             </Routes>
         </EventsProvider>
       </EmpresaProvider>
     </Router>

@@ -43,7 +43,7 @@ export const CraftComprador = () => {
         console.log('Productos recibidos:', datosProductos);
 
         setProductos(datosProductos);
-        setProductosFiltrados(datosProductos); // Mostrar todos los productos por defecto
+        setProductosFiltrados(datosProductos); 
       } catch (err) {
         setError(err.message);
       } finally {
@@ -113,13 +113,13 @@ export const CraftComprador = () => {
   }, [terminoBusqueda, categoria, precioMinimo, precioMaximo, calificacion, productos]);
 
   useEffect(() => {
-    // Cargar carrito desde localStorage al montar el componente
+    
     const carritoGuardado = JSON.parse(localStorage.getItem('carrito')) || [];
     setCarrito(carritoGuardado);
   }, []);
 
   useEffect(() => {
-    // Guardar carrito en localStorage cada vez que cambia
+    
     localStorage.setItem('carrito', JSON.stringify(carrito));
   }, [carrito]);
 
@@ -130,8 +130,8 @@ export const CraftComprador = () => {
     if (notificacionVisible) {
       const timer = setTimeout(() => {
         setNotificacionVisible(false);
-      }, 3000); // La notificación desaparecerá después de 3 segundos
-      return () => clearTimeout(timer); // Limpia el temporizador si se desmonta el componente
+      }, 3000); 
+      return () => clearTimeout(timer);
     }
   }, [notificacionVisible]);
   
@@ -145,8 +145,7 @@ export const CraftComprador = () => {
       }
       return [...prevCarrito, { ...producto, cantidad: 1 }];
     });
-  
-    // Mostrar notificación
+
     setProductoNotificado(producto);
     setNotificacionVisible(true);
   };
@@ -191,12 +190,11 @@ export const CraftComprador = () => {
     setProductoSeleccionado(null);
   };
   const manejarIrACarrito = () => {
-    navigate('/Cart'); // Cambiado a la ruta /Cart
+    navigate('/Cart');
   };
-// Función para eliminar un producto del carrito
+
 const eliminarDelCarrito = (idProducto) => {
-// Aquí puedes actualizar el estado del carrito para eliminar el producto
-// Ejemplo:
+
 setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !== idProducto));
 };
 
@@ -208,7 +206,6 @@ setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !==
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-bold">Filtros</h2>
             <button onClick={alternarFiltro} className="text-darkyellow text-xl">
-              {/* Add icon here if needed */}
             </button>
             {notificacionVisible && (
   <div className="fixed bottom-4 right-4 bg-white text-darkyellow py-2 px-4 rounded shadow-lg z-50 border-solid border-3 border-darkyellow flex flex-row"> <FaCoffee className='mr-2' size={24}/>
@@ -273,7 +270,9 @@ setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !==
           </div>
         </div>
         <div className="flex-1 p-4">
-          <h2 className="text-2xl font-bold mb-4">Artesanías</h2>
+        <h2 className="text-darkyellow md:text-4xl font-bold mt-5 mb-8 text-center">¡Bienvenido a Artesanías!</h2>
+
+
           {cargando ? (
             <div className="text-center">Cargando...</div>
           ) : error ? (
@@ -299,7 +298,7 @@ setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !==
                       e.stopPropagation();
                       agregarAlCarrito(producto);
                     }}
-                    className="bg-darkpurple text-white py-2 px-4 rounded mt-3"
+                    className="bg-darkpurple text-white py-2 px-4 rounded mt-3 hover:bg-lightpurplee"
                   >
                     Agregar al carrito
                   </button>
@@ -310,8 +309,6 @@ setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !==
         </div>
       </div>
 
-    
-      {/* Modal de Producto */}
       {modalAbierto && productoSeleccionado && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 md:w-1/2 lg:w-1/3 relative">
@@ -346,7 +343,7 @@ setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !==
           </div>
         </div>
       )}
-      <CartIcon /> {/* Añade el icono flotante */}
+      <CartIcon />
       <Footer />
     </div>
   );
