@@ -201,6 +201,3 @@ export const EventsComprador = () => {
     </div>
   );
 };
-    </div>
-  );
-};
