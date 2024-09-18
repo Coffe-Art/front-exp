@@ -11,6 +11,8 @@ export const CreateProduct = () => {
   const navigate = useNavigate();
   const { createProducto } = useContext(ProductoContext);
   const { empresas, setEmpresas } = useEmpresa();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   const [formData, setFormData] = useState({
     nombre: '',
@@ -151,7 +153,19 @@ export const CreateProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const newErrors = {};
+
+    if (isSubmitting) return; // Evita que se envíe el formulario si ya se está procesando
+    setIsSubmitting(true); // Cambiar el estado a true para indicar que se está enviando
+
+    // Lógica para enviar el formulario
+    const success = await createProducto(formData);
+    if (success) {
+      setNotification('Producto creado exitosamente');
+      navigate('/productos');
+    } else {
+      setErrors({ general: 'Error al crear el producto' });
+      setIsSubmitting(false); // Cambiar el estado a false si ocurre un error
+    }
 
     // Validaciones
     if (!formData.nombre.trim()) {
@@ -341,13 +355,15 @@ export const CreateProduct = () => {
   {errors.file && <p className="text-red-500 text-xs italic">{errors.file}</p>}
 </div>
 
-          <div className="flex items-center justify-between">
+<div className="mb-4">
             <button
               type="submit"
-              className="bg-darkyellow hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className={`w-full bg-darkyellow text-white font-bold py-2 px-4 rounded ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+              disabled={isSubmitting} // Deshabilita el botón si isSubmitting es true
             >
-              Crear Producto
+              {isSubmitting ? 'Creando...' : 'Crear Artesanía'}
             </button>
+            {errors.general && <p className="text-red-500 text-xs italic mt-2">{errors.general}</p>}
           </div>
         </form>
       </div>

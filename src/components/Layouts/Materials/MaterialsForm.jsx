@@ -78,6 +78,69 @@ export const MaterialsForm = () => {
     fetchEmpresas();
   }, []);
 
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Validación para el nombre
+    if (!formData.Nombre.trim()) {
+        newErrors.Nombre = 'El nombre es obligatorio.';
+    }
+
+    // Validación para la cantidad de insumo
+    if (!formData.cantidadInsumo || formData.cantidadInsumo <= 0) {
+        newErrors.cantidadInsumo = 'La cantidad debe ser un número positivo.';
+    }
+
+    // Validación para el precio unitario
+    if (!formData.precioUnitario || formData.precioUnitario <= 0) {
+        newErrors.precioUnitario = 'El precio unitario debe ser un número positivo.';
+    }
+
+    // Validación para el precio por kilo
+    if (!formData.precioPorKilo || formData.precioPorKilo <= 0) {
+        newErrors.precioPorKilo = 'El precio por kilo debe ser un número positivo.';
+    }
+
+    // Validación para la descripción
+    if (!formData.descripcion.trim()) {
+        newErrors.descripcion = 'La descripción es obligatoria.';
+    }
+
+    // Validación para el lugar de venta
+    if (!formData.lugarDeVenta.trim()) {
+        newErrors.lugarDeVenta = 'El lugar de venta es obligatorio.';
+    }
+
+    // Validación para el correo de contacto
+    if (!formData.correoContacto.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+        newErrors.correoContacto = 'El correo electrónico no es válido.';
+    }
+
+    // Validación para el teléfono de contacto
+    if (!formData.TelefonoContacto.match(/^\+?[1-9]\d{1,14}$/)) { // Ajusta según el formato requerido
+        newErrors.TelefonoContacto = 'El número de teléfono no es válido.';
+    }
+
+    // Validación para el tipo de venta
+    if (!formData.TipoDeVenta.trim()) {
+        newErrors.TipoDeVenta = 'El tipo de venta es obligatorio.';
+    }
+
+    // Validación para seleccionar una empresa
+    if (!formData.codigoEmpresa) {
+        newErrors.codigoEmpresa = 'Debe seleccionar una empresa.';
+    }
+
+    // Validación para el ID del administrador
+    if (!formData.idAdministrador) {
+        newErrors.idAdministrador = 'ID del administrador es obligatorio.';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+};
+
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevData => ({
@@ -96,6 +159,8 @@ export const MaterialsForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
+
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -171,155 +236,180 @@ export const MaterialsForm = () => {
         )}
         
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="Nombre">
-              Nombre
-            </label>
-            <input
-              type="text"
-              id="Nombre"
-              name="Nombre"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-              placeholder="Nombre del Insumo"
-              value={formData.Nombre}
-              onChange={handleChange}
-            />
-            {errors.Nombre && <p className="text-red-500 text-xs italic">{errors.Nombre}</p>}
-          </div>
-          
-          <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="cantidadInsumo">
-              Cantidad
-            </label>
-            <input
-              type="number"
-              id="cantidadInsumo"
-              name="cantidadInsumo"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-              value={formData.cantidadInsumo}
-              onChange={handleChange}
-            />
-          </div>
+      <div className="mb-4">
+        <label className="block text-black text-sm font-bold mb-2" htmlFor="Nombre">
+          Nombre
+        </label>
+        <input
+          type="text"
+          id="Nombre"
+          name="Nombre"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
+          placeholder="Madera, hilo, lana...."
+          value={formData.Nombre}
+          onChange={handleChange}
+        />
+        
+        {errors.Nombre && <p className="text-red-500 text-xs italic">{errors.Nombre}</p>}
+      </div>
+      <div className="mb-4">
+        <label className="block text-black text-sm font-bold mb-2" htmlFor="codigoEmpresa">
+          Seleccionar Empresa
+        </label>
+        <Select
+          id="codigoEmpresa"
+          name="codigoEmpresa"
+          options={empresasOptions}
+          onChange={handleSelectChange}
+          value={empresasOptions.find(option => option.value === formData.codigoEmpresa)}
+          className='shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline'
+        />
+        {errors.codigoEmpresa && <p className="text-red-500 text-xs italic">{errors.codigoEmpresa}</p>}
+      </div>
 
-          <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="precioUnitario">
-              Precio Unitario
-            </label>
-            <input
-              type="number"
-              id="precioUnitario"
-              name="precioUnitario"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-              value={formData.precioUnitario}
-              onChange={handleChange}
-            />
-          </div>
+      
+      <div className="mb-4">
+        <label className="block text-black text-sm font-bold mb-2" htmlFor="cantidadInsumo">
+          Cantidad
+        </label>
+        <input
+          type="number"
+          id="cantidadInsumo"
+          name="cantidadInsumo"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
+          min="0"
+          step="any"
+          value={formData.cantidadInsumo}
+          onChange={handleChange}
+        />
+        {errors.cantidadInsumo && <p className="text-red-500 text-xs italic">{errors.cantidadInsumo}</p>}
+      </div>
 
-          <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="precioPorKilo">
-              Precio por Kilo
-            </label>
-            <input
-              type="number"
-              id="precioPorKilo"
-              name="precioPorKilo"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-              value={formData.precioPorKilo}
-              onChange={handleChange}
-            />
-          </div>
+      <div className="mb-4">
+        <label className="block text-black text-sm font-bold mb-2" htmlFor="precioUnitario">
+          Precio Unitario
+        </label>
+        <input
+          type="number"
+          id="precioUnitario"
+          name="precioUnitario"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
+          min="0"
+          step="any"
+          value={formData.precioUnitario}
+          onChange={handleChange}
+        />
+        {errors.precioUnitario && <p className="text-red-500 text-xs italic">{errors.precioUnitario}</p>}
+      </div>
 
-          <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="descripcion">
-              Descripción
-            </label>
-            <textarea
-              id="descripcion"
-              name="descripcion"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-              placeholder="Descripción del Insumo"
-              value={formData.descripcion}
-              onChange={handleChange}
-            />
-          </div>
+      <div className="mb-4">
+        <label className="block text-black text-sm font-bold mb-2" htmlFor="precioPorKilo">
+          Precio Por Kilo
+        </label>
+        <input
+          type="number"
+          id="precioPorKilo"
+          name="precioPorKilo"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
+          min="0"
+          step="any"
+          value={formData.precioPorKilo}
+          onChange={handleChange}
+        />
+        {errors.precioPorKilo && <p className="text-red-500 text-xs italic">{errors.precioPorKilo}</p>}
+      </div>
 
-          <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="lugarDeVenta">
-              Lugar de Venta
-            </label>
-            <input
-              type="text"
-              id="lugarDeVenta"
-              name="lugarDeVenta"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-              value={formData.lugarDeVenta}
-              onChange={handleChange}
-            />
-          </div>
+      <div className="mb-4">
+        <label className="block text-black text-sm font-bold mb-2" htmlFor="descripcion">
+          Descripción
+        </label>
+        <textarea
+          id="descripcion"
+          name="descripcion"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
+          rows="4"
+          value={formData.descripcion}
+          onChange={handleChange}
+        />
+        {errors.descripcion && <p className="text-red-500 text-xs italic">{errors.descripcion}</p>}
+      </div>
 
-          <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="correoContacto">
-              Correo de Contacto
-            </label>
-            <input
-              type="email"
-              id="correoContacto"
-              name="correoContacto"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-              value={formData.correoContacto}
-              onChange={handleChange}
-            />
-          </div>
+      <div className="mb-4">
+        <label className="block text-black text-sm font-bold mb-2" htmlFor="lugarDeVenta">
+          Lugar de Venta
+        </label>
+        <input
+          type="text"
+          id="lugarDeVenta"
+          name="lugarDeVenta"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
+          placeholder="Lugar de Venta"
+          value={formData.lugarDeVenta}
+          onChange={handleChange}
+        />
+        {errors.lugarDeVenta && <p className="text-red-500 text-xs italic">{errors.lugarDeVenta}</p>}
+      </div>
 
-          <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="TelefonoContacto">
-              Teléfono de Contacto
-            </label>
-            <input
-              type="text"
-              id="TelefonoContacto"
-              name="TelefonoContacto"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-              value={formData.TelefonoContacto}
-              onChange={handleChange}
-            />
-          </div>
+      <div className="mb-4">
+        <label className="block text-black text-sm font-bold mb-2" htmlFor="correoContacto">
+          Correo de Contacto
+        </label>
+        <input
+          type="email"
+          id="correoContacto"
+          name="correoContacto"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
+          placeholder="Correo Electrónico"
+          value={formData.correoContacto}
+          onChange={handleChange}
+        />
+        {errors.correoContacto && <p className="text-red-500 text-xs italic">{errors.correoContacto}</p>}
+      </div>
 
-          <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="TipoDeVenta">
-              Tipo de Venta
-            </label>
-            <input
-              type="text"
-              id="TipoDeVenta"
-              name="TipoDeVenta"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-              value={formData.TipoDeVenta}
-              onChange={handleChange}
-            />
-          </div>
+      <div className="mb-4">
+        <label className="block text-black text-sm font-bold mb-2" htmlFor="TelefonoContacto">
+          Teléfono de Contacto
+        </label>
+        <input
+          type="text"
+          id="TelefonoContacto"
+          name="TelefonoContacto"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
+          placeholder="Teléfono de Contacto"
+          value={formData.TelefonoContacto}
+          onChange={handleChange}
+        />
+        {errors.TelefonoContacto && <p className="text-red-500 text-xs italic">{errors.TelefonoContacto}</p>}
+      </div>
 
-          <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="codigoEmpresa">
-              Código de Empresa
-            </label>
-            <Select
-              options={empresasOptions}
-              onChange={handleSelectChange}
-              value={empresasOptions.find(option => option.value === formData.codigoEmpresa)}
-              placeholder="Seleccionar Empresa"
-            />
-          </div>
+      <div className="mb-4">
+        <label className="block text-black text-sm font-bold mb-2" htmlFor="TipoDeVenta">
+          Tipo de Venta
+        </label>
+        <input
+          type="text"
+          id="TipoDeVenta"
+          name="TipoDeVenta"
+          className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
+          placeholder="Tipo de Venta"
+          value={formData.TipoDeVenta}
+          onChange={handleChange}
+        />
+        {errors.TipoDeVenta && <p className="text-red-500 text-xs italic">{errors.TipoDeVenta}</p>}
+      </div>
 
-          <div className="flex items-center justify-between">
-            <button
-              type="submit"
-              className="bg-darkyellow hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-              Crear Insumo
-            </button>
-          </div>
-        </form>
+      <div className="flex items-center justify-between">
+        <button
+          type="submit"
+          className="bg-darkyellow text-white font-bold py-2 px-4 rounded hover:bg-yellow-500 focus:outline-none focus:shadow-outline"
+        >
+          Crear Insumo
+        </button>
+        <NavLink to="/MaterialsForAdmin" className="text-darkpurple hover:underline">
+              Cancelar
+        </NavLink>
+      </div>
+    </form>
       </div>
     </div>
   );

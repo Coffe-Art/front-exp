@@ -2,17 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import { Header } from '../ForView/Header';
 import { Footer } from '../ForView/Footer';
-import { FaPlus, FaSearch, FaEdit, FaTrash } from 'react-icons/fa';
+import { FaPlus, FaSearch, FaEdit, FaTrash, FaCoffee } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
+// Función para formatear números a pesos colombianos
+const formatToCOP = (value) => {
+  if (value == null) return 'N/A';
+  return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(value);
+};
+
 export const MaterialsForAdmin = () => {
-  // Datos para la tabla (inicialmente vacío)
   const [tableData, setTableData] = useState([]);
   const [selectedInsumo, setSelectedInsumo] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false); // Estado para la ventana modal de confirmación
+  const [insumoToDelete, setInsumoToDelete] = useState(null); // Estado para el insumo a eliminar
   const navigate = useNavigate(); 
 
-  // Efecto para obtener los insumos del administrador
   const fetchInsumos = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -34,12 +40,11 @@ export const MaterialsForAdmin = () => {
       }
   
       const data = await response.json();
-      console.log('Insumos obtenidos:', data); // Verifica la estructura de los datos
+      console.log('Insumos obtenidos:', data);
   
-      // Ajustar esta parte
       if (Array.isArray(data) && data[0]) {
-        console.log('Primer elemento de los insumos:', data[0]); // Verifica el primer elemento del array
-        setTableData(data[0]); // Asume que los datos necesarios están en el primer elemento del array
+        console.log('Primer elemento de los insumos:', data[0]);
+        setTableData(data[0]);
       } else {
         setTableData(data);
       }
@@ -48,20 +53,56 @@ export const MaterialsForAdmin = () => {
     }
   };
 
-  // Ejecutar fetchInsumos al montar el componente
   useEffect(() => {
     fetchInsumos();
   }, []);
 
-  // Funciones de manejo de eventos
   const handleEdit = (id) => {
     console.log('Edit insumo with ID:', id);
-    // Implementar la lógica de edición
+    navigate(`/EventsUpdateForm/${id}`);
+  };
+  
+  
+
+  const handleDelete = (insumo) => {
+    setInsumoToDelete(insumo);
+    setIsConfirmDeleteOpen(true); // Abrir la ventana modal de confirmación
   };
 
-  const handleDelete = (id) => {
-    console.log('Delete insumo with ID:', id);
-    // Implementar la lógica de eliminación
+  const confirmDelete = async () => {
+    if (!insumoToDelete) return;
+
+    try {
+      const token = localStorage.getItem('token');
+  
+      if (!token) {
+        console.error('Token no encontrado en el localStorage');
+        return;
+      }
+
+      const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/insumo/eliminar/${insumoToDelete.IdInsumo}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+
+      console.log('Insumo eliminado con ID:', insumoToDelete.IdInsumo);
+      fetchInsumos();
+      closeConfirmDeleteModal(); // Cerrar la ventana modal después de la eliminación
+    } catch (error) {
+      console.error('Error al eliminar insumo:', error.message);
+    }
+  };
+
+  const closeConfirmDeleteModal = () => {
+    setInsumoToDelete(null);
+    setIsConfirmDeleteOpen(false);
   };
 
   const handleOpenModal = (insumo) => {
@@ -74,17 +115,15 @@ export const MaterialsForAdmin = () => {
     setIsModalOpen(false);
   };
 
-  // Extraer los nombres de los insumos y las cantidades para el gráfico
   const labels = tableData.map(item => item.Nombre);
   const dataValues = tableData.map(item => item.cantidadInsumo);
 
-  // Datos para el gráfico de barras
   const barData = {
     labels: labels,
     datasets: [
       {
         label: 'Cantidad de Insumo',
-        data: dataValues, // Datos para el gráfico
+        data: dataValues,
         backgroundColor: 'rgba(54, 162, 235, 0.6)',
         borderColor: 'rgba(54, 162, 235, 1)',
         borderWidth: 1,
@@ -102,10 +141,11 @@ export const MaterialsForAdmin = () => {
     maintainAspectRatio: false,
   };
 
-  
   const handleClick = () => {
     navigate('/MaterialsForm'); 
   };
+
+  
 
   return (
     <div className="min-h-screen bg-gray-200 font-sans">
@@ -118,98 +158,140 @@ export const MaterialsForAdmin = () => {
           Podrás llevar un registro detallado de los materiales que compras para tus artesanías, ayudándote a gestionar de manera fácil tus recursos y tener siempre a mano la información que necesitas para tus creaciones.
         </p>
       </div>
-      <div className="div1 p-4">
-        <div className="bg-white p-4 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Gráfico de Barras</h2>
-          <div className="h-64">
-            <Bar data={barData} options={barOptions} />
-          </div>
-        </div>
-      </div>
-
-      <div className="div2 p-4">
-        <div className="bg-white p-4 rounded-lg shadow-md">
-          <div className='separator flex justify-between flex-row mb-3 mt-2'>
-            <h2 className="text-3xl font-semibold mb-4">Tabla de Insumos</h2>
-            <button 
-      onClick={handleClick} 
-      className='flex flex-row align-baseline text-3xl text-darkyellow'
-    >
-      <p className="mr-2 flex justify-center align-baseline" />
-      <span className='font-bold text-3xl'> + </span> Agregar Insumo
-    </button>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-2 py-2">IdInsumo</th>
-                  <th className="px-3 py-2">Nombre</th>
-                  <th className="px-4 py-2">Cantidad</th>
-                  <th className="px-4 py-2">Precio Unitario</th>
-                  <th className="px-4 py-2">Precio por Kilo</th>
-                  <th className="px-4 py-2">Descripción</th>
-                  <th className="px-4 py-2">Lugar de Venta</th>
-                  <th className="px-4 py-2">Correo Contacto</th>
-                  <th className="px-4 py-2">Teléfono Contacto</th>
-                  <th className="px-4 py-2">Tipo de Venta</th>
-                  <th className="px-4 py-2">Código Empresa</th>
-                  <th className="px-4 py-2">Acciones</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-              {tableData.map((item) => (
-                <tr key={item.IdInsumo} onClick={() => handleOpenModal(item)} className="cursor-pointer hover:bg-gray-100">
-                    <td className="px-2 py-2 text-xl">{item.IdInsumo}</td>
-                    <td className="px-3 py-2 text-xl">{item.Nombre}</td>
-                    <td className="px-4 py-2 text-xl">{item.cantidadInsumo}</td>
-                    <td className="px-4 py-2 text-xl">{item.precioUnitario}</td>
-                    <td className="px-4 py-2 text-xl">{item.precioPorKilo}</td>
-                    <td className="px-4 py-2 text-xl">{item.descripcion}</td>
-                    <td className="px-4 py-2 text-xl">{item.lugarDeVenta}</td>
-                    <td className="px-4 py-2 text-xl">{item.correoContacto}</td>
-                    <td className="px-4 py-2 text-xl">{item.TelefonoContacto}</td>
-                    <td className="px-4 py-2 text-xl">{item.TipoDeVenta}</td>
-                    <td className="px-4 py-2 text-xl">{item.codigoEmpresa}</td>
-                    <td className="px-4 py-2 flex space-x-2">
-                      <button onClick={() => handleEdit(item.IdInsumo)} className="text-darkyellow hover:text-lightyellow text-3xl">
-                        <FaEdit />
-                      </button>
-                      <button onClick={() => handleDelete(item.IdInsumo)} className="text-darkpurple hover:text-lightpurple text-3xl">
-                        <FaTrash />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      {/* Modal */}
-      {isModalOpen && selectedInsumo && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-8 rounded-lg shadow-lg w-11/12 md:w-1/2 lg:w-1/3">
-            <h2 className="text-2xl font-bold mb-4">Detalles de {selectedInsumo.Nombre}</h2>
-            <p><strong>Nombre:</strong> {selectedInsumo.Nombre}</p>
-            <p><strong>Cantidad:</strong> {selectedInsumo.cantidadInsumo}</p>
-            <p><strong>Precio Unitario:</strong> {selectedInsumo.precioUnitario}</p>
-            <p><strong>Precio por Kilo:</strong> {selectedInsumo.precioPorKilo}</p>
-            <p><strong>Descripción:</strong> {selectedInsumo.descripcion}</p>
-            <p><strong>Lugar de Venta:</strong> {selectedInsumo.lugarDeVenta}</p>
-            <p><strong>Correo de Contacto:</strong> {selectedInsumo.correoContacto}</p>
-            <p><strong>Teléfono de Contacto:</strong> {selectedInsumo.TelefonoContacto}</p>
-            <p><strong>Tipo de Venta:</strong> {selectedInsumo.TipoDeVenta}</p>
-            <p><strong>Código Empresa:</strong> {selectedInsumo.codigoEmpresa}</p>
-            <div className="flex justify-end space-x-2 mt-4">
-              <button onClick={handleCloseModal} className="bg-gray-500 text-white px-4 py-2 rounded">Cerrar</button>
+      <div className='pt-5 pr-40 pl-40 pb-5'>
+        <div className="div1 p-4">
+          <div className="bg-white p-4 rounded-lg shadow-md">
+            <h2 className="text-xl font-semibold mb-4">Gráfico de Barras</h2>
+            <div className="h-64">
+              <Bar data={barData} options={barOptions} />
             </div>
           </div>
         </div>
+
+        <div className="div2 p-4">
+          <div className="bg-white p-4 rounded-lg shadow-md">
+            <div className='separator flex justify-between flex-row mb-3 mt-2'>
+              <h2 className="text-3xl font-semibold mb-4">Tabla de Insumos</h2>
+              <button 
+                onClick={handleClick} 
+                className='flex flex-row align-baseline text-3xl text-darkyellow'
+              >
+                <p className="mr-2 flex justify-center align-baseline" />
+                <span className='font-bold text-3xl'> + </span> Agregar Insumo
+              </button>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-2 py-2">IdInsumo</th>
+                    <th className="px-3 py-2">Nombre</th>
+                    <th className="px-4 py-2">Cantidad</th>
+                    <th className="px-4 py-2">Precio Unitario</th>
+                    <th className="px-4 py-2">Precio por Kilo</th>
+                    <th className="px-4 py-2">Descripción</th>
+                    <th className="px-4 py-2">Lugar de Venta</th>
+                    <th className="px-4 py-2">Correo Contacto</th>
+                    <th className="px-4 py-2">Teléfono Contacto</th>
+                    <th className="px-4 py-2">Tipo de Venta</th>
+                    <th className="px-4 py-2">Código Empresa</th>
+                    <th className="px-4 py-2">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {tableData.map((item) => (
+                    <tr key={item.IdInsumo} onClick={() => handleOpenModal(item)} className="cursor-pointer hover:bg-gray-100">
+                      <td className="px-2 py-2 text-xl">{item.IdInsumo}</td>
+                      <td className="px-3 py-2 text-xl">{item.Nombre}</td>
+                      <td className="px-4 py-2 text-xl">{item.cantidadInsumo}</td>
+                      <td className="px-4 py-2 text-xl">{formatToCOP(item.precioUnitario)}</td>
+                      <td className="px-4 py-2 text-xl">{formatToCOP(item.precioPorKilo)}</td>
+                      <td className="px-4 py-2 text-xl">{item.descripcion}</td>
+                      <td className="px-4 py-2 text-xl">{item.lugarDeVenta}</td>
+                      <td className="px-4 py-2 text-xl">{item.correoContacto}</td>
+                      <td className="px-4 py-2 text-xl">{item.TelefonoContacto}</td>
+                      <td className="px-4 py-2 text-xl">{item.TipoDeVenta}</td>
+                      <td className="px-4 py-2 text-xl">{item.codigoEmpresa}</td>
+                      <td className="px-4 py-2">
+                      <button 
+  onClick={(e) => { e.stopPropagation(); handleEdit(item.IdInsumo); }} 
+  className="text-darkyellow hover:text-lightyellow text-3xl"
+>
+  <FaEdit />
+</button>
+
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); handleDelete(item); }} 
+                          className="text-darkpurple hover:text-lightpurple text-3xl"
+                        >
+                          <FaTrash />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {isModalOpen && selectedInsumo && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-75 flex justify-center items-center z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full">
+            <h3 className="text-2xl font-semibold mb-4">Detalles del Insumo</h3>
+            <p><strong>IdInsumo:</strong> {selectedInsumo.IdInsumo}</p>
+            <p><strong>Nombre:</strong> {selectedInsumo.Nombre}</p>
+            <p><strong>Cantidad:</strong> {selectedInsumo.cantidadInsumo}</p>
+            <p><strong>Precio Unitario:</strong> {formatToCOP(selectedInsumo.precioUnitario)}</p>
+            <p><strong>Precio por Kilo:</strong> {formatToCOP(selectedInsumo.precioPorKilo)}</p>
+            <p><strong>Descripción:</strong> {selectedInsumo.descripcion}</p>
+            <p><strong>Lugar de Venta:</strong> {selectedInsumo.lugarDeVenta}</p>
+            <p><strong>Correo Contacto:</strong> {selectedInsumo.correoContacto}</p>
+            <p><strong>Teléfono Contacto:</strong> {selectedInsumo.telefonoContacto}</p>
+            <p><strong>Tipo de Venta:</strong> {selectedInsumo.tipoDeVenta}</p>
+            <p><strong>Código Empresa:</strong> {selectedInsumo.codigoEmpresa}</p>
+            <button 
+              onClick={handleCloseModal} 
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
       )}
+
+  
+{isConfirmDeleteOpen && (
+  <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+      <div className='flex flex-col justify-center'>
+        <div className='flex justify-center'>
+          <svg className="w-6 h-6 mr-2 text-2xl text-darkyellow"><FaCoffee /></svg>
+          <h3 className="text-lg font-semibold mb-4 text-darkyellow">Confirmar eliminación</h3>
+        </div>
+        <p className="mb-4 text-center">¿Estás seguro de que deseas eliminar el Insumo "{insumoToDelete?.Nombre}"?</p>
+      </div>
+      <div className="flex justify-center gap-4">
+        <button
+          className="bg-gray-300 text-black px-4 py-2 rounded-lg"
+          onClick={closeConfirmDeleteModal} 
+        >
+          Cancelar
+        </button>
+        <button
+          className="text-white bg-darkpurple px-4 py-2 rounded-lg"
+          onClick={confirmDelete} 
+        >
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
       <Footer />
     </div>
   );
 };
+ 

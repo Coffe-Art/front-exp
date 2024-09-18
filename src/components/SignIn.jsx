@@ -251,7 +251,7 @@ export const SignIn = () => {
     }`}
     disabled={isSubmitting}
   >
-    {isSubmitting ? 'Cargando...' : forgotPassword ? (codeVerified ? 'Actualizar Contraseña' : 'Enviar Código') : 'Iniciar Sesión'}
+    {isSubmitting ? 'Iniciando Sesión...' : forgotPassword ? (codeVerified ? 'Actualizar Contraseña' : 'Enviar Código') : 'Iniciar Sesión'}
   </button>
 
   <button
