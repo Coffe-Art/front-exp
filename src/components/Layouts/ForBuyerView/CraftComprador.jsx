@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaSearch, FaStar, FaEllipsisV } from 'react-icons/fa'; // Añadido FaEllipsisV
+import { FaSearch, FaEllipsisV } from 'react-icons/fa';
 import { Header } from '../ForView/Header';
 import { Footer } from '../ForView/Footer';
 import ProductoContext from '../../../Context/contextProducto';
@@ -24,11 +24,8 @@ export const CraftComprador = () => {
   const [carrito, setCarrito] = useState([]);
   const [menuReportes, setMenuReportes] = useState({ visible: false, producto: null });
   const [motivoReporte, setMotivoReporte] = useState('');
-  const [mostrarFormularioReporte, setMostrarFormularioReporte] = useState(false); // Controla la visibilidad del formulario
+  const [mostrarFormularioReporte, setMostrarFormularioReporte] = useState(false);
   const [mostrarNotificacion, setMostrarNotificacion] = useState(false);
-  
-
-
 
   const navigate = useNavigate();
 
@@ -197,49 +194,8 @@ export const CraftComprador = () => {
       visible: !prevState.visible || prevState.producto.idProducto !== producto.idProducto,
       producto
     }));
-    setMotivoReporte(''); // Reseteamos el motivo del reporte al abrir el menú
+    setMotivoReporte('');
   };
-  
-  // const manejarReporte = async () => {
-  //   if (!motivoReporte) {
-  //     alert('Por favor, ingrese un motivo para el reporte');
-  //     return;
-  //   }
-  
-  //   try {
-  //     const response = await fetch('http://localhost:3000/api/crear-reporte', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Authorization': `Bearer ${localStorage.getItem('token')}`
-  //       },
-  //       body: JSON.stringify({
-  //         idProducto: menuReportes.producto.idProducto,
-  //         motivo: motivoReporte
-  //       })
-  //     });
-  
-  //     // Verificar si la respuesta es JSON
-  //     const contentType = response.headers.get('Content-Type');
-  //     if (!contentType || !contentType.includes('application/json')) {
-  //       throw new Error('Respuesta no es JSON');
-  //     }
-  
-  //     // Parsear la respuesta como JSON
-  //     const data = await response.json();
-  //     console.log('Respuesta del servidor:', data);
-  
-  //     if (!response.ok) throw new Error(data.message || 'Error al enviar reporte');
-  
-  //     alert('Reporte enviado con éxito');
-  //     setMotivoReporte('');
-  //     setMenuReportes({ visible: false, producto: null, mostrandoFormulario: false });
-  //   } catch (err) {
-  //     console.error('Error al enviar reporte:', err);
-  //     alert('Error al enviar reporte: ' + err.message);
-  //   }
-  // };
-
   
   const manejarReporte = async () => {
     if (!motivoReporte || !menuReportes.producto) {
@@ -276,7 +232,6 @@ export const CraftComprador = () => {
         setMenuReportes({ visible: false, producto: null, mostrandoFormulario: false });
         setMostrarNotificacion(true);
 
-        // Ocultar la notificación después de 2 segundos
         setTimeout(() => {
             setMostrarNotificacion(false);
         }, 2000);
@@ -285,11 +240,6 @@ export const CraftComprador = () => {
         console.error('Error al enviar el reporte:', error.message);
     }
 };
-
-
-  
-  
-  
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-200">
@@ -388,7 +338,7 @@ export const CraftComprador = () => {
                       e.stopPropagation();
                       agregarAlCarrito(producto);
                     }}
-                    className="bg-darkpurple text-white py-2 px-4 rounded mt-3 hover:bg-lightpurplee"
+                    className="bg-darkpurple text-white py-2 px-4 rounded mt-3 hover:bg-lightpurple"
                   >
                     Agregar al carrito
                   </button>
@@ -397,63 +347,66 @@ export const CraftComprador = () => {
     e.stopPropagation();
     abrirMenuReportes(producto);
   }}
-  className="absolute top-2 right-0 text-gray-600 hover:text-gray-800"
+  className="absolute top-2 right-0 text-darkpurple hover:text-lightpurple border-0 outline-none appearance-none"
 >
   <FaEllipsisV />
 </button>
 
 {menuReportes.visible && menuReportes.producto.idProducto === producto.idProducto && (
-  <div className="absolute top-10 right-2 bg-white border  w-full">
-    {menuReportes.mostrandoFormulario ? (
-      // Mostrar el formulario de reporte cuando se haya seleccionado "Reportar"
+  <div>
+    {menuReportes.mostrandoFormulario && (
       <div
-        className="p-4"
-        onClick={(e) => e.stopPropagation()} // Evitar propagación al interactuar con el formulario
+        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+        onClick={() => setMenuReportes({ ...menuReportes, mostrandoFormulario: false })}
       >
-        <textarea
-          value={motivoReporte}
-          onChange={(e) => {
-            e.stopPropagation(); // Evitar la propagación al escribir
-            setMotivoReporte(e.target.value);
-          }}
-          className="w-full p-2 border rounded mb-2"
-          placeholder="Escribe el motivo del reporte..."
-        />
-        <button
-          onClick={(e) => {
-            e.stopPropagation(); // Evitar la propagación
-            manejarReporte();
-          }}
-          className="bg-darkyellow text-white py-2 px-4 rounded w-full"
+        <div
+          className="bg-white p-4 rounded shadow-lg max-w-sm w-full"
+          onClick={(e) => e.stopPropagation()} 
         >
-          Enviar Reporte
-        </button>
-        <button
-          onClick={(e) => {
-            e.stopPropagation(); // Evitar la propagación
-            setMenuReportes({ ...menuReportes, mostrandoFormulario: false });
-          }}
-          className="mt-2 bg-gray-300  text-gray-800 py-2 px-4 rounded w-full"
-        >
-          Cancelar
-        </button>
+          <textarea
+            value={motivoReporte}
+            onChange={(e) => {
+              e.stopPropagation(); 
+              setMotivoReporte(e.target.value);
+            }}
+            className="w-full p-2 border rounded mb-2"
+            placeholder="Escribe el motivo del reporte..."
+          />
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); 
+              manejarReporte();
+            }}
+            className="bg-darkyellow text-white py-2 px-4 rounded w-full hover:bg-lightyellow"
+          >
+            Enviar Reporte
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); 
+              setMenuReportes({ ...menuReportes, mostrandoFormulario: false });
+            }}
+            className="mt-2 bg-darkpurple text-white py-2 px-4 rounded w-full hover:bg-lightpurple"
+          >
+            Cancelar
+          </button>
+        </div>
       </div>
-    ) : (
-      // Opción para mostrar el formulario
+    )}
+    
+    {!menuReportes.mostrandoFormulario && (
       <button
         onClick={(e) => {
-          e.stopPropagation(); // Evitar la propagación
+          e.stopPropagation(); 
           setMenuReportes({ ...menuReportes, mostrandoFormulario: true });
         }}
-        className="absolute bottom-3 text-white bg-darkyellow right-10 w-16 "
+        className="rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105 text-white bg-darkyellow hover:bg-lightyellow px-4 py-2 right-10 w-auto absolute bottom-3"
       >
         Reportar
       </button>
     )}
   </div>
 )}
-
-
                 </div>
               ))}
             </div>
@@ -487,7 +440,7 @@ export const CraftComprador = () => {
               </button>
               <button
                 onClick={cerrarModal}
-                className="bg-gray-300 text-gray-800 py-2 px-4 rounded"
+                className="bg-darkyellow text-white py-2 px-4 rounded hover:bg-lightyellow"
               >
                 Cerrar
               </button>
@@ -496,15 +449,6 @@ export const CraftComprador = () => {
         </div>
       )}
       
- 
-
-
-  
-
-
-
-
-
       <CartIcon />
       <Footer />
     </div>
