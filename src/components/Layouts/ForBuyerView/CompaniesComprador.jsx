@@ -167,10 +167,8 @@ export const CompaniesComprador = () => {
                     </div>
                     <span className="text-black text-sm text-center mt-7 px-96 md:text-lg">
                         En esta sección, podrás explorar todas las empresas registradas en la aplicación. No solo podrás ver la información básica de cada empresa, sino que también tendrás acceso a una lista completa de los productos que están vinculados a ellas. Esto te permitirá tener una visión clara y completa de todo lo que ocurre en la plataforma.
-                        <br /><br />
-                        ¡Le deseamos un excelente y productivo día!
-                        <br /><br />
                     </span>
+                    <p className="text-black text-sm font-bold text-center mt-7 px-96 md:text-lg">¡Le deseamos un excelente y productivo día!</p>
                 </div>
             </div>
             <div className="container mx-auto my-8 flex-grow grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
@@ -187,26 +185,30 @@ export const CompaniesComprador = () => {
                             className="bg-white border rounded-lg overflow-hidden shadow-md cursor-pointer flex flex-col items-center p-4 relative"
                             onClick={() => viewEmpresa(empresa.codigoempresa)}
                         >
-                            <div className='flex flex-row items-center'>
-                                <svg className="w-6 h-6 mr-2 text-2xl text-darkyellow"><FaCoffee /></svg>
-                                <p className=' text-darkyellow'>{empresa.nombre}</p>
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation(); // Previene que el click propague al div
-                                        toggleOptionsMenu(empresa);
-                                    }}
-                                    className="ml-4 text-gray-600 hover:text-gray-900"
-                                >
-                                    <FaEllipsisV />
-                                </button>
-                                {showOptionsMenu && selectedEmpresaForOptions === empresa && (
-                                    <div className="absolute right-0 mt-2 bg-white border border-gray-300 rounded shadow-lg w-40">
+                           <div className="flex flex-col items-center">
+  <svg className="w-6 h-6 mb-2 text-2xl text-darkpurple">
+    <FaCoffee />
+  </svg>
+  <div className="flex items-center">
+    <p className="text-darkyellow font-bold">{empresa.nombre}</p>
+    <button
+      onClick={(e) => {
+        e.stopPropagation(); // Previene que el click propague al div
+        toggleOptionsMenu(empresa);
+      }}
+      className="ml-4 text-darkpurple hover:text-lightpurple"
+    >
+      <FaEllipsisV />
+    </button>
+  </div>
+                            {showOptionsMenu && selectedEmpresaForOptions === empresa && (
+                                    <div className="absolute right-0 mt-2 bg-white border border-gray-300 rounded shadow-lg ">
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation(); // Previene que el click propague al div
                                                 openReportModal(empresa);
                                             }}
-                                            className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                                            className="rounded text-center px-2 py-2 bg-darkyellow text-white hover:bg-lightyellow"
                                         >
                                             Reportar
                                         </button>
@@ -251,15 +253,15 @@ export const CompaniesComprador = () => {
                   <p className="mb-4 mt-2"><span className='font-bold'>Nombre del Encargado:  </span>{selectedEmpresa.nombre_administrador}</p>
                   <NavLink
                       to={`/CompaniesProducts/${selectedEmpresa.codigoempresa}`}
-                      className="bg-transparent text-darkyellow rounded text-lg font-semibold underline"
+                      className="bg-transparent text-darkyellow rounded text-lg font-semibold underline text-center"
                       activeClassName="font-bold"
                   >
                       Ver productos  
                   </NavLink>
-                  <div className="flex justify-between mt-5">
+                  <div className="flex justify-center mt-5">
                       <button
                           onClick={closeEmpresaModal}
-                          className="bg-gray-300 text-gray-800 py-2 px-4 rounded"
+                          className="bg-darkyellow text-white py-2 px-4 rounded justify-center hover:bg-lightyellow"
                       >
                           Cerrar
                       </button>
@@ -270,9 +272,9 @@ export const CompaniesComprador = () => {
   </div>
 )}
             {showReportModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="fixed inset-0 bg-darkpurple bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg relative">
-                        <h2 className="text-2xl font-bold mb-4">Reportar Empresa</h2>
+                        <h2 className="text-2xl font-bold mb-4 justify-center items-center">Reportar Empresa</h2>
                         <p><strong>Nombre de la Empresa:</strong> {reportingEmpresa?.nombre}</p>
                         <textarea
                             value={reportReason}
@@ -284,13 +286,13 @@ export const CompaniesComprador = () => {
                         <div className="flex justify-end mt-4">
                             <button
                                 onClick={submitReport}
-                                className="bg-darkyellow text-white px-4 py-2 rounded mr-2"
+                                className="bg-darkpurple text-white px-4 py-2 rounded mr-2 hover:bg-lightpurple"
                             >
                                 Enviar Reporte
                             </button>
                             <button
                                 onClick={closeReportModal}
-                                className="bg-gray-300 text-black px-4 py-2 rounded"
+                                className="bg-darkyellow text-white px-4 py-2 rounded hover:bg-lightyellow"
                             >
                                 Cancelar
                             </button>
