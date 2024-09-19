@@ -81,57 +81,46 @@ export const MaterialsForm = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    // Validación para el nombre
     if (!formData.Nombre.trim()) {
         newErrors.Nombre = 'El nombre es obligatorio.';
     }
 
-    // Validación para la cantidad de insumo
     if (!formData.cantidadInsumo || formData.cantidadInsumo <= 0) {
         newErrors.cantidadInsumo = 'La cantidad debe ser un número positivo.';
     }
 
-    // Validación para el precio unitario
     if (!formData.precioUnitario || formData.precioUnitario <= 0) {
         newErrors.precioUnitario = 'El precio unitario debe ser un número positivo.';
     }
 
-    // Validación para el precio por kilo
     if (!formData.precioPorKilo || formData.precioPorKilo <= 0) {
         newErrors.precioPorKilo = 'El precio por kilo debe ser un número positivo.';
     }
 
-    // Validación para la descripción
     if (!formData.descripcion.trim()) {
         newErrors.descripcion = 'La descripción es obligatoria.';
     }
 
-    // Validación para el lugar de venta
     if (!formData.lugarDeVenta.trim()) {
         newErrors.lugarDeVenta = 'El lugar de venta es obligatorio.';
     }
 
-    // Validación para el correo de contacto
     if (!formData.correoContacto.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
         newErrors.correoContacto = 'El correo electrónico no es válido.';
     }
 
-    // Validación para el teléfono de contacto
-    if (!formData.TelefonoContacto.match(/^\+?[1-9]\d{1,14}$/)) { // Ajusta según el formato requerido
+    if (!formData.TelefonoContacto.match(/^\+?[1-9]\d{1,14}$/)) { 
         newErrors.TelefonoContacto = 'El número de teléfono no es válido.';
     }
 
-    // Validación para el tipo de venta
     if (!formData.TipoDeVenta.trim()) {
         newErrors.TipoDeVenta = 'El tipo de venta es obligatorio.';
     }
 
-    // Validación para seleccionar una empresa
     if (!formData.codigoEmpresa) {
         newErrors.codigoEmpresa = 'Debe seleccionar una empresa.';
     }
 
-    // Validación para el ID del administrador
     if (!formData.idAdministrador) {
         newErrors.idAdministrador = 'ID del administrador es obligatorio.';
     }
@@ -401,11 +390,11 @@ export const MaterialsForm = () => {
       <div className="flex items-center justify-between">
         <button
           type="submit"
-          className="bg-darkyellow text-white font-bold py-2 px-4 rounded hover:bg-yellow-500 focus:outline-none focus:shadow-outline"
+          className="bg-darkyellow text-white font-bold py-2 px-4 rounded hover:bg-lightyellow focus:outline-none focus:shadow-outline"
         >
           Crear Insumo
         </button>
-        <NavLink to="/MaterialsForAdmin" className="text-darkpurple hover:underline">
+        <NavLink to="/MaterialsForAdmin" className="font-bold py-2 px-4 rounded bg-darkpurple text-white  hover:bg-lightpurple">
               Cancelar
         </NavLink>
       </div>
