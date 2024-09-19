@@ -21,7 +21,9 @@ export const MaterialsForm = () => {
   });
   const [empresasOptions, setEmpresasOptions] = useState([]);
   const [notification, setNotification] = useState('');
+  const [notificationType, setNotificationType] = useState(''); // Añadido para el tipo de notificación
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -82,53 +84,52 @@ export const MaterialsForm = () => {
     const newErrors = {};
 
     if (!formData.Nombre.trim()) {
-        newErrors.Nombre = 'El nombre es obligatorio.';
+      newErrors.Nombre = 'El nombre es obligatorio.';
     }
 
     if (!formData.cantidadInsumo || formData.cantidadInsumo <= 0) {
-        newErrors.cantidadInsumo = 'La cantidad debe ser un número positivo.';
+      newErrors.cantidadInsumo = 'La cantidad debe ser un número positivo.';
     }
 
     if (!formData.precioUnitario || formData.precioUnitario <= 0) {
-        newErrors.precioUnitario = 'El precio unitario debe ser un número positivo.';
+      newErrors.precioUnitario = 'El precio unitario debe ser un número positivo.';
     }
 
     if (!formData.precioPorKilo || formData.precioPorKilo <= 0) {
-        newErrors.precioPorKilo = 'El precio por kilo debe ser un número positivo.';
+      newErrors.precioPorKilo = 'El precio por kilo debe ser un número positivo.';
     }
 
     if (!formData.descripcion.trim()) {
-        newErrors.descripcion = 'La descripción es obligatoria.';
+      newErrors.descripcion = 'La descripción es obligatoria.';
     }
 
     if (!formData.lugarDeVenta.trim()) {
-        newErrors.lugarDeVenta = 'El lugar de venta es obligatorio.';
+      newErrors.lugarDeVenta = 'El lugar de venta es obligatorio.';
     }
 
     if (!formData.correoContacto.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-        newErrors.correoContacto = 'El correo electrónico no es válido.';
+      newErrors.correoContacto = 'El correo electrónico no es válido.';
     }
 
-    if (!formData.TelefonoContacto.match(/^\+?[1-9]\d{1,14}$/)) { 
-        newErrors.TelefonoContacto = 'El número de teléfono no es válido.';
+    if (!formData.TelefonoContacto.match(/^\+?[1-9]\d{1,14}$/)) { // Ajusta según el formato requerido
+      newErrors.TelefonoContacto = 'El número de teléfono no es válido.';
     }
 
     if (!formData.TipoDeVenta.trim()) {
-        newErrors.TipoDeVenta = 'El tipo de venta es obligatorio.';
+      newErrors.TipoDeVenta = 'El tipo de venta es obligatorio.';
     }
 
     if (!formData.codigoEmpresa) {
-        newErrors.codigoEmpresa = 'Debe seleccionar una empresa.';
+      newErrors.codigoEmpresa = 'Debe seleccionar una empresa.';
     }
 
     if (!formData.idAdministrador) {
-        newErrors.idAdministrador = 'ID del administrador es obligatorio.';
+      newErrors.idAdministrador = 'ID del administrador es obligatorio.';
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-};
-
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -146,9 +147,20 @@ export const MaterialsForm = () => {
     }));
   };
 
+  const showNotification = (message, isError = false) => {
+    setNotification(message);
+    setNotificationType(isError ? 'error' : 'success');
+    setTimeout(() => setNotification(''), 5000); // Clear notification after 5 seconds
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    if (!validateForm()) {
+      showNotification('Por favor, asegúrate de completar correctamente el formulario.', true);
+      return;
+    }
+
+    setIsSubmitting(true);
 
     try {
       const token = localStorage.getItem('token');
@@ -175,6 +187,7 @@ export const MaterialsForm = () => {
       const data = await response.json();
       if (response.status === 201) {
         setNotification('Insumo creado exitosamente');
+        setNotificationType('success');
         setFormData({
           Nombre: '',
           cantidadInsumo: '',
@@ -194,7 +207,10 @@ export const MaterialsForm = () => {
       }
     } catch (error) {
       setErrors({ general: error.message });
+      showNotification('Por favor, asegúrate de completar correctamente el formulario.', true);
       console.error('Error al enviar los datos:', error.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -213,7 +229,7 @@ export const MaterialsForm = () => {
         <h1 className="text-2xl font-bold mb-6 text-center">Crear Nuevo Insumo</h1>
         
         {notification && (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+          <div className={`bg-${notificationType === 'error' ? 'red' : 'green'}-100 border border-${notificationType === 'error' ? 'red' : 'green'}-400 text-${notificationType === 'error' ? 'red' : 'green'}-700 px-4 py-3 rounded relative mb-4`} role="alert">
             <span className="block sm:inline">{notification}</span>
           </div>
         )}
@@ -225,180 +241,48 @@ export const MaterialsForm = () => {
         )}
         
         <form onSubmit={handleSubmit}>
-      <div className="mb-4">
-        <label className="block text-black text-sm font-bold mb-2" htmlFor="Nombre">
-          Nombre
-        </label>
-        <input
-          type="text"
-          id="Nombre"
-          name="Nombre"
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-          placeholder="Madera, hilo, lana...."
-          value={formData.Nombre}
-          onChange={handleChange}
-        />
-        
-        {errors.Nombre && <p className="text-red-500 text-xs italic">{errors.Nombre}</p>}
-      </div>
-      <div className="mb-4">
-        <label className="block text-black text-sm font-bold mb-2" htmlFor="codigoEmpresa">
-          Seleccionar Empresa
-        </label>
-        <Select
-          id="codigoEmpresa"
-          name="codigoEmpresa"
-          options={empresasOptions}
-          onChange={handleSelectChange}
-          value={empresasOptions.find(option => option.value === formData.codigoEmpresa)}
-          className='shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline'
-        />
-        {errors.codigoEmpresa && <p className="text-red-500 text-xs italic">{errors.codigoEmpresa}</p>}
-      </div>
-
-      
-      <div className="mb-4">
-        <label className="block text-black text-sm font-bold mb-2" htmlFor="cantidadInsumo">
-          Cantidad
-        </label>
-        <input
-          type="number"
-          id="cantidadInsumo"
-          name="cantidadInsumo"
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-          min="0"
-          step="any"
-          value={formData.cantidadInsumo}
-          onChange={handleChange}
-        />
-        {errors.cantidadInsumo && <p className="text-red-500 text-xs italic">{errors.cantidadInsumo}</p>}
-      </div>
-
-      <div className="mb-4">
-        <label className="block text-black text-sm font-bold mb-2" htmlFor="precioUnitario">
-          Precio Unitario
-        </label>
-        <input
-          type="number"
-          id="precioUnitario"
-          name="precioUnitario"
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-          min="0"
-          step="any"
-          value={formData.precioUnitario}
-          onChange={handleChange}
-        />
-        {errors.precioUnitario && <p className="text-red-500 text-xs italic">{errors.precioUnitario}</p>}
-      </div>
-
-      <div className="mb-4">
-        <label className="block text-black text-sm font-bold mb-2" htmlFor="precioPorKilo">
-          Precio Por Kilo
-        </label>
-        <input
-          type="number"
-          id="precioPorKilo"
-          name="precioPorKilo"
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-          min="0"
-          step="any"
-          value={formData.precioPorKilo}
-          onChange={handleChange}
-        />
-        {errors.precioPorKilo && <p className="text-red-500 text-xs italic">{errors.precioPorKilo}</p>}
-      </div>
-
-      <div className="mb-4">
-        <label className="block text-black text-sm font-bold mb-2" htmlFor="descripcion">
-          Descripción
-        </label>
-        <textarea
-          id="descripcion"
-          name="descripcion"
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-          rows="4"
-          value={formData.descripcion}
-          onChange={handleChange}
-        />
-        {errors.descripcion && <p className="text-red-500 text-xs italic">{errors.descripcion}</p>}
-      </div>
-
-      <div className="mb-4">
-        <label className="block text-black text-sm font-bold mb-2" htmlFor="lugarDeVenta">
-          Lugar de Venta
-        </label>
-        <input
-          type="text"
-          id="lugarDeVenta"
-          name="lugarDeVenta"
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-          placeholder="Lugar de Venta"
-          value={formData.lugarDeVenta}
-          onChange={handleChange}
-        />
-        {errors.lugarDeVenta && <p className="text-red-500 text-xs italic">{errors.lugarDeVenta}</p>}
-      </div>
-
-      <div className="mb-4">
-        <label className="block text-black text-sm font-bold mb-2" htmlFor="correoContacto">
-          Correo de Contacto
-        </label>
-        <input
-          type="email"
-          id="correoContacto"
-          name="correoContacto"
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-          placeholder="Correo Electrónico"
-          value={formData.correoContacto}
-          onChange={handleChange}
-        />
-        {errors.correoContacto && <p className="text-red-500 text-xs italic">{errors.correoContacto}</p>}
-      </div>
-
-      <div className="mb-4">
-        <label className="block text-black text-sm font-bold mb-2" htmlFor="TelefonoContacto">
-          Teléfono de Contacto
-        </label>
-        <input
-          type="text"
-          id="TelefonoContacto"
-          name="TelefonoContacto"
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-          placeholder="Teléfono de Contacto"
-          value={formData.TelefonoContacto}
-          onChange={handleChange}
-        />
-        {errors.TelefonoContacto && <p className="text-red-500 text-xs italic">{errors.TelefonoContacto}</p>}
-      </div>
-
-      <div className="mb-4">
-        <label className="block text-black text-sm font-bold mb-2" htmlFor="TipoDeVenta">
-          Tipo de Venta
-        </label>
-        <input
-          type="text"
-          id="TipoDeVenta"
-          name="TipoDeVenta"
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-          placeholder="Tipo de Venta"
-          value={formData.TipoDeVenta}
-          onChange={handleChange}
-        />
-        {errors.TipoDeVenta && <p className="text-red-500 text-xs italic">{errors.TipoDeVenta}</p>}
-      </div>
-
-      <div className="flex items-center justify-between">
-        <button
-          type="submit"
-          className="bg-darkyellow text-white font-bold py-2 px-4 rounded hover:bg-lightyellow focus:outline-none focus:shadow-outline"
-        >
-          Crear Insumo
-        </button>
-        <NavLink to="/MaterialsForAdmin" className="font-bold py-2 px-4 rounded bg-darkpurple text-white  hover:bg-lightpurple">
-              Cancelar
-        </NavLink>
-      </div>
-    </form>
+          {/* Campos del formulario */}
+          {Object.keys(formData).map(key => (
+            key !== 'idAdministrador' && (
+              <div className="mb-4" key={key}>
+                <label className="block text-black text-sm font-bold mb-2" htmlFor={key}>
+                  {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                </label>
+                {key === 'codigoEmpresa' ? (
+                  <Select
+                    value={empresasOptions.find(option => option.value === formData.codigoEmpresa)}
+                    onChange={handleSelectChange}
+                    options={empresasOptions}
+                    placeholder="Seleccione una empresa"
+                  />
+                ) : (
+                  <input
+                    type={key.includes('correo') ? 'email' : key.includes('Telefono') ? 'tel' : 'text'}
+                    id={key}
+                    name={key}
+                    value={formData[key]}
+                    onChange={handleChange}
+                    className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors[key] ? 'border-red-500' : ''}`}
+                    placeholder={key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+                  />
+                )}
+                {errors[key] && (
+                  <p className="text-red-500 text-xs italic">{errors[key]}</p>
+                )}
+              </div>
+            )
+          ))}
+          
+          <div className="flex items-center justify-center">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-darkyellow hover:bg-lightyellow text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+              {isSubmitting ? 'Enviando...' : 'Crear Insumo'}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
