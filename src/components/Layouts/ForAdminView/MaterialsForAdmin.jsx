@@ -122,10 +122,10 @@ export const MaterialsForAdmin = () => {
     labels: labels,
     datasets: [
       {
-        label: 'Cantidad de Insumo',
+        label: 'Cantidad del Insumo:',
         data: dataValues,
-        backgroundColor: 'rgba(54, 162, 235, 0.6)',
-        borderColor: 'rgba(54, 162, 235, 1)',
+        backgroundColor: 'rgb(39,31,39)',
+        borderColor: 'rgb(39,31,39)',
         borderWidth: 1,
       },
     ],
