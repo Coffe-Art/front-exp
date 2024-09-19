@@ -55,6 +55,13 @@ export const ProfileForAdmin = () => {
           {(userRole === 'administrador' || userRole === 'empleado') && (
             <>
               <NavLink to="/SalesOverview" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ventas</NavLink>
+              <NavLink 
+              to="/MaterialsForAdmin" 
+              className="nav-link text-xl md:text-2xl text-white hover:text-darkyellow font-bold" 
+              activeClassName="font-bold"
+            >
+              Insumos
+            </NavLink>
             </>
           )}
 

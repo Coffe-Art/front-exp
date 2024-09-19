@@ -145,12 +145,22 @@ export const MaterialsForAdmin = () => {
     navigate('/MaterialsForm'); 
   };
 
+  const handleGoBack = () => {
+    navigate(-1); // Navega a la página anterior
+  };
+
   
 
   return (
     <div className="min-h-screen bg-gray-200 font-sans">
       <Header />
       <div className="text-center">
+      <button 
+        onClick={handleGoBack} 
+        className="mt-5 ml-5 top-4 left-4 bg-darkyellow text-white px-4 py-2 rounded hover:bg-lightyellow flex items-center"
+      >
+        <p className="mr-2" /> Volver
+      </button> 
         <h2 className="text-darkyellow text-4xl font-bold mt-6 mb-10">Insumos</h2>
         <p className="max-w-2xl mt-2 mx-auto text-lg mb-5">
           ¡Bienvenido, artesano! Este espacio está diseñado para que puedas anotar y llevar gestión de los materiales / insumos que compras para hacer tus artesanías.

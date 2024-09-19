@@ -96,13 +96,7 @@ export const Header = () => {
             >
               Eventos
             </NavLink>
-            <NavLink 
-              to="/MaterialsForAdmin" 
-              className="nav-link text-white text-lg font-semibold hover:text-darkyellow mb-2 md:mb-0" 
-              activeClassName="font-bold"
-            >
-              Insumos
-            </NavLink>
+            
 
           </>
         ) : null}
