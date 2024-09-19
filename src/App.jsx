@@ -37,6 +37,7 @@ import CartIcon from './components/Layouts/ForBuyerView/CartIcon';
 import {EventsUpdateForm} from './components/Layouts/Events/EventsUpdateForm'
 import  {MaterialsForAdmin}  from './components/Layouts/ForAdminView/MaterialsForAdmin';
 import  {MaterialsForm}  from './components/Layouts/Materials/MaterialsForm';
+import { MaterialsUpdateForm } from './components/Layouts/Materials/MaterialsUpdateForm';
 
 
 
@@ -93,8 +94,7 @@ function App() {
             <Route path="/UpdateProduct/:idProducto" element={<ProtectedRoute element={UpdateProducto} allowedRoles={['administrador', 'empleado']} />} />
             <Route path="/MaterialsForAdmin" element={<ProtectedRoute element={MaterialsForAdmin} allowedRoles={['administrador', 'empleado']} />} />
             <Route path="/MaterialsForm" element={<ProtectedRoute element={MaterialsForm} allowedRoles={['administrador', 'empleado']} />} />
-
-            <Route path="/EventsUpdateForm/:id" element={<EventsUpdateForm />} />          </Routes>
+            <Route path="/MaterialsUpdateForm/:id" element={<MaterialsUpdateForm />} />          </Routes>
         </EventsProvider>
       </EmpresaProvider>
     </Router>

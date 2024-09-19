@@ -59,7 +59,7 @@ export const MaterialsForAdmin = () => {
 
   const handleEdit = (id) => {
     console.log('Edit insumo with ID:', id);
-    navigate(`/EventsUpdateForm/${id}`);
+    navigate(`/MaterialsUpdateForm/${id}`);
   };
   
   
