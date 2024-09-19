@@ -13,7 +13,6 @@ export const CreateProduct = () => {
   const { empresas, setEmpresas } = useEmpresa();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-
   const [formData, setFormData] = useState({
     nombre: '',
     categoria: '',
@@ -150,23 +149,10 @@ export const CreateProduct = () => {
       }));
     }
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (isSubmitting) return; // Evita que se envíe el formulario si ya se está procesando
-    setIsSubmitting(true); // Cambiar el estado a true para indicar que se está enviando
-
-    // Lógica para enviar el formulario
-    const success = await createProducto(formData);
-    if (success) {
-      setNotification('Producto creado exitosamente');
-      navigate('/productos');
-    } else {
-      setErrors({ general: 'Error al crear el producto' });
-      setIsSubmitting(false); // Cambiar el estado a false si ocurre un error
-    }
-
+    const newErrors = {};
+  
     // Validaciones
     if (!formData.nombre.trim()) {
       newErrors.nombre = 'El nombre es obligatorio';
@@ -174,14 +160,14 @@ export const CreateProduct = () => {
     if (!formData.categoria.trim()) {
       newErrors.categoria = 'La categoría es obligatoria';
     }
-    if (formData.precio <= 0) {
-      newErrors.precio = 'El precio debe ser un número positivo';
+    if (formData.precio < 1000) { // Validación para que el precio no sea menor de 1000
+      newErrors.precio = 'El precio no puede ser menor a 1000';
     }
     if (!formData.descripcion.trim()) {
       newErrors.descripcion = 'La descripción es obligatoria';
     }
     if (formData.cantidad <= 0) {
-      newErrors.cantidad = 'La cantidad debe ser un número positivo';
+      newErrors.cantidad = 'La cantidad debe ser un número positivo mayor a 0';
     }
     if (formData.empresasSeleccionadas.length === 0) {
       newErrors.codigoempresa = 'Debes seleccionar al menos una empresa';
@@ -189,15 +175,17 @@ export const CreateProduct = () => {
     if (!file) {
       newErrors.file = 'La imagen del producto es obligatoria';
     }
-    
-
+  
     setErrors(newErrors);
-
+  
     if (Object.keys(newErrors).length === 0) {
       console.log('Datos enviados:', formData);
       if (file) {
         console.log('Archivo enviado:', file);
       }
+      
+      setIsSubmitting(true); // Deshabilitar el botón mientras se procesa la solicitud
+  
       try {
         await createProducto(formData, file);
         setNotification('Producto creado exitosamente');
@@ -208,11 +196,14 @@ export const CreateProduct = () => {
       } catch (error) {
         console.error('Error al crear producto:', error);
         setNotification('Error al crear el producto, intenta de nuevo');
+      } finally {
+        setIsSubmitting(false); // Rehabilitar el botón después de la solicitud
       }
     } else {
       setNotification('');
     }
   };
+
 
   return (
     <div 
@@ -355,15 +346,14 @@ export const CreateProduct = () => {
   {errors.file && <p className="text-red-500 text-xs italic">{errors.file}</p>}
 </div>
 
-<div className="mb-4">
-            <button
-              type="submit"
-              className={`w-full bg-darkyellow text-white font-bold py-2 px-4 rounded ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
-              disabled={isSubmitting} // Deshabilita el botón si isSubmitting es true
-            >
-              {isSubmitting ? 'Creando...' : 'Crear Artesanía'}
-            </button>
-            {errors.general && <p className="text-red-500 text-xs italic mt-2">{errors.general}</p>}
+          <div className="flex items-center justify-between">
+          <button
+          type="submit"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          disabled={isSubmitting} // Deshabilita el botón si isSubmitting es true
+        >
+          {isSubmitting ? 'Creando...' : 'Crear Producto'}
+        </button>
           </div>
         </form>
       </div>
