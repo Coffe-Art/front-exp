@@ -152,15 +152,18 @@ export const CompaniesForAdmin = () => {
         <div>
             <div className="flex flex-col min-h-screen bg-gray-200">
                 <Header />
-                <div className="container mx-auto my-8 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                <div className="flex justify-center items-center my-6">
+  <h2 className="text-3xl font-bold text-darkyellow mb-2">¡Bienvenido a Productos!</h2>
+</div>
+                <div className="container mx-auto my-8 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"> 
                     <div className="bg-white border rounded-lg overflow-hidden shadow-md flex flex-col items-center p-4 cursor-pointer mb-4">
                         <div className="flex flex-col items-center">
                             <span className="text-black text-sm text-center">
                                 Bienvenido, aquí podrá consultar información sobre sus locales y empresas.<br /><br />
                                 Recuerde, no puede borrar una empresa con productos anteriormente registrados en esta, deberá cambiar los productos de empresa o eliminarlos primero.<br />
-                                <br />
-                                ¡Tenga un feliz día!
                             </span>
+                            <br></br>
+                            <p className="font-bold text-black text-sm text-center">¡Tenga un feliz día!</p>
                         </div>
                     </div>
                     {empresas.length === 0 ? (
