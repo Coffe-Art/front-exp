@@ -9,13 +9,12 @@ export const ProfileForAdmin = () => {
   const [name, setName] = useState('Nombre de Usuario');
   const [email, setEmail] = useState('usuario@example.com');
   const [phone, setPhone] = useState('123-456-7890');
-  const [loading, setLoading] = useState(false); // Para mostrar un indicador de carga si es necesario
-  const [errorMessage, setErrorMessage] = useState(null); // Para manejar errores
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null); // Nuevo estado para el mensaje de éxito
   const navigate = useNavigate();
-  const userRole = localStorage.getItem('userType');
-  const userId = localStorage.getItem('userId'); // Obtener userId del localStorage
+  const userId = localStorage.getItem('userId');
 
-  // Fetch para obtener los datos del usuario
   useEffect(() => {
     if (userId) {
       const fetchUserData = async () => {
@@ -43,11 +42,11 @@ export const ProfileForAdmin = () => {
     }
   }, [userId]);
 
-  // Función para manejar la edición y envío de los datos al servidor
   const handleSave = async () => {
     setLoading(true);
     setErrorMessage(null);
-    
+    setSuccessMessage(null); // Limpiar mensaje de éxito antes de guardar
+
     try {
       const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/profiles/administrador/update/${userId}`, {
         method: 'PUT',
@@ -60,14 +59,20 @@ export const ProfileForAdmin = () => {
           telefono: phone,
         }),
       });
-      
+
       if (!response.ok) {
         throw new Error('Error al actualizar los datos del perfil');
       }
 
       const data = await response.json();
       console.log('Perfil actualizado:', data);
-      alert('Datos actualizados con éxito');
+
+      setSuccessMessage('Perfil actualizado con éxito'); // Mostrar el mensaje de éxito
+
+      // Ocultar el mensaje de éxito después de 3 segundos
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 3000);
     } catch (error) {
       setErrorMessage('Hubo un error al actualizar los datos.');
       console.error('Error al actualizar el perfil:', error);
@@ -111,10 +116,10 @@ export const ProfileForAdmin = () => {
               {loading ? 'Guardando...' : 'Guardar'}
             </button>
             {errorMessage && <p className="text-red-500 mt-4">{errorMessage}</p>}
+            {successMessage && <p className="text-green-500 mt-4">{successMessage}</p>} {/* Mensaje de éxito */}
           </div>
         </div>
       </div>
     </div>
   );
 };
-
