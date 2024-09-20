@@ -182,7 +182,7 @@ export const UpdateCompany = () => {
                             required
                         />
                     </div>
-                    <div className="flex items-center justify-center">
+                    <div className="flex ">
                         <button
                             type="submit"
                             className="bg-darkyellow hover:bg-lightyellow text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
