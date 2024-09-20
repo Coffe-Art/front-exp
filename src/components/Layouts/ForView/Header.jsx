@@ -2,10 +2,11 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Logo from '../../../assets/Artesanías.png';
 import BackgroundImage from '../../../assets/FondoHeader.jpg';
+import UserIcon from '../../../assets/perfil-de-usuario.png';  // Reemplaza con tu imagen deseada
 
 export const Header = () => {
   const navigate = useNavigate();
-  
+
   // Obtener el tipo de usuario del localStorage, o 'anonimo' si no existe
   const userType = localStorage.getItem('userType') || 'anonimo';
 
@@ -15,6 +16,19 @@ export const Header = () => {
 
   const handleLogoClick = () => {
     window.scrollTo(0, 0);
+  };
+
+  const handleProfileClick = () => {
+    // Verificar el tipo de usuario y redirigir según el caso
+    if (userType === 'comprador') {
+      navigate('/ProfileComprador');  // Cambia a la ruta del perfil del comprador
+    } else if (userType === 'administrador') {
+      navigate('/ProfileForAdmin');  // Cambia a la ruta del perfil del administrador
+    } else if (userType === 'empleado') {
+      navigate('/ProfileForEmpleado');  // Cambia a la ruta del perfil del empleado
+    } else {
+      navigate('/login'); // Redirigir a login si es 'anonimo' o si hay algún error
+    }
   };
 
   return (
@@ -48,7 +62,6 @@ export const Header = () => {
         </NavLink>
         {userType === 'comprador' || userType === 'anonimo' ? (
           <>
-            
             <NavLink 
               to="/CraftComprador" 
               className="nav-link text-white text-lg font-semibold hover:text-darkyellow mb-2 md:mb-0" 
@@ -88,7 +101,6 @@ export const Header = () => {
             >
               Empresas
             </NavLink>
-            
             <NavLink 
               to="/EventsForAdmin" 
               className="nav-link text-white text-lg font-semibold hover:text-darkyellow mb-2 md:mb-0" 
@@ -96,18 +108,25 @@ export const Header = () => {
             >
               Eventos
             </NavLink>
-            
-
           </>
         ) : null}
       </nav>
       <div className="flex justify-center mt-4 md:mt-0">
-        <button
-          className="login-button bg-darkpurple text-white px-4 py-2 rounded hover:bg-lightpurple mx-4 md:mx-8"
-          onClick={handleLoginClick}
-        >
-          Iniciar Sesión
-        </button>
+        {userType === 'anonimo' ? (
+          <button
+            className="login-button bg-darkpurple text-white px-4 py-2 rounded hover:bg-lightpurple mx-4 md:mx-8"
+            onClick={handleLoginClick}
+          >
+            Unete
+          </button>
+        ) : (
+          <img
+            src={UserIcon} // Tu imagen de perfil o icono de usuario
+            alt="User Profile"
+            className="h-14 w-14 rounded-full cursor-pointer mx-4 md:mx-8"
+            onClick={handleProfileClick}
+          />
+        )}
       </div>
     </header>
   );
