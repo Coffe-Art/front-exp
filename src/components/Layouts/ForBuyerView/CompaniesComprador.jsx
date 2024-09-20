@@ -20,6 +20,8 @@ export const CompaniesComprador = () => {
     const [selectedEmpresaForOptions, setSelectedEmpresaForOptions] = useState(null);
     const [showNotification, setShowNotification] = useState(false);
 
+    const [filterText, setFilterText] = useState(''); 
+
     useEffect(() => {
         fetchEmpresas();
     }, []);
@@ -110,7 +112,7 @@ export const CompaniesComprador = () => {
         }
     
         try {
-            const response = await fetch('https://checkpoint-9tp4.onrender.com/api/reportes', {
+            const response = await fetch('http://localhost:3000/api/reportes', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -157,6 +159,11 @@ export const CompaniesComprador = () => {
         }
     }, [showNotification]);
 
+    const filteredEmpresas = empresas.filter(empresa =>
+        empresa.nombre.toLowerCase().includes(filterText.toLowerCase()) ||
+        empresa.direccion.toLowerCase().includes(filterText.toLowerCase())
+    );
+    
     return (
         <div className="flex flex-col min-h-screen bg-gray-200">
             <Header />
@@ -170,16 +177,24 @@ export const CompaniesComprador = () => {
                     </span>
                     <p className="text-black text-sm font-bold text-center mt-7 px-96 md:text-lg">¡Le deseamos un excelente y productivo día!</p>
                 </div>
+
+                <input
+                        type="text"
+                        placeholder="Buscar empresa por nombre..."
+                        value={filterText}
+                        onChange={(e) => setFilterText(e.target.value)} // Actualiza el texto del filtro
+                        className=" w-96  flex self-center border rounded p-2 mt-4"
+                    />
             </div>
             <div className="container mx-auto my-8 flex-grow grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                {empresas.length === 0 ? (
-                    <div className="bg-white border rounded-lg overflow-hidden shadow-md flex flex-col items-center p-4 cursor-pointer">
-                        <div className="flex flex-col items-center">
-                            <span className="text-black text-sm text-center">No hay empresas para mostrar</span>
-                        </div>
-                    </div>
-                ) : (
-                    empresas.map((empresa) => (
+            {filteredEmpresas.length === 0 ? (
+    <div className="bg-white border rounded-lg overflow-hidden shadow-md flex flex-col items-center p-4 cursor-pointer">
+        <div className="flex flex-col items-center">
+            <span className="text-black text-sm text-center">No hay empresas para mostrar</span>
+        </div>
+    </div>
+) : (
+    filteredEmpresas.map((empresa) => (
                         <div
                             key={empresa.codigoempresa}
                             className="bg-white border rounded-lg overflow-hidden shadow-md cursor-pointer flex flex-col items-center p-4 relative"
@@ -308,7 +323,10 @@ export const CompaniesComprador = () => {
                             {/* Barra de progreso vertical */}
                             <div
                                 className="bg-white w-full progress-bar"
-                                
+                                style={{
+                                    height: '100%', // Comienza con 100% de altura
+                                    transition: 'height 2s linear',
+                                }}
                             ></div>
                         </div>
                     </div>
