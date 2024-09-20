@@ -20,6 +20,9 @@ export const CompaniesForAdmin = () => {
     const [empresaToDelete, setEmpresaToDelete] = useState(null);
     const [showEmpresaModal, setShowEmpresaModal] = useState(false);
 
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchText, setSearchText] = useState(''); 
+
 
     useEffect(() => {
         const storedUserId = localStorage.getItem('userId');
@@ -148,64 +151,87 @@ export const CompaniesForAdmin = () => {
         }
     };
 
+    
+   // Filtrar empresas basadas en el texto de búsqueda
+  const filteredEmpresas = empresas.filter(empresa =>
+    empresa.nombre.toLowerCase().includes(searchText) ||
+    empresa.direccion.toLowerCase().includes(searchText)
+  );
+
+
+     // Función para manejar los cambios en el campo de búsqueda
+  const handleSearchChange = (e) => {
+    setSearchText(e.target.value.toLowerCase());
+  };
+
+  
+
+
+
+
     return (
         <div>
             <div className="flex flex-col min-h-screen bg-gray-200">
                 <Header />
-                <div className="flex justify-center items-center my-6">
-  <h2 className="text-3xl font-bold text-darkyellow mb-2">¡Bienvenido a Empresas!</h2>
-</div>
-                <div className="container mx-auto my-8 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"> 
+                <input
+                        type="text"
+                        value={searchText}
+                        onChange={handleSearchChange}
+                        className="flex self-center w-96 mt-5 mb-4 p-2 border border-gray-300 rounded"
+                    />
+                    
+                <div className="container mx-auto my-8 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     <div className="bg-white border rounded-lg overflow-hidden shadow-md flex flex-col items-center p-4 cursor-pointer mb-4">
                         <div className="flex flex-col items-center">
                             <span className="text-black text-sm text-center">
                                 Bienvenido, aquí podrá consultar información sobre sus locales y empresas.<br /><br />
                                 Recuerde, no puede borrar una empresa con productos anteriormente registrados en esta, deberá cambiar los productos de empresa o eliminarlos primero.<br />
+                                <br />
+                                ¡Tenga un feliz día!
                             </span>
-                            <br></br>
-                            <p className="font-bold text-black text-sm text-center">¡Tenga un feliz día!</p>
                         </div>
                     </div>
-                    {empresas.length === 0 ? (
-                        <div className="bg-white border rounded-lg overflow-hidden shadow-md flex flex-col items-center p-4 cursor-pointer">
-                            <div className="flex flex-col items-center">
-                                <span className="text-black text-sm text-center">No hay empresas para mostrar</span>
-                            </div>
-                        </div>
-                    ) : (
-                        empresas.map((empresa) => (
-                            <div
-                                key={empresa.codigoempresa}
-                                className="bg-white border rounded-lg overflow-hidden shadow-md cursor-pointer flex flex-col items-center p-4"
-                                onClick={() => viewEmpresa(empresa)}
-                            >
-                                <h3 className="text-lg font-semibold mb-2 text-center">{empresa.nombre}</h3>
-                                <p className="text-center underline text-darkyellow">{empresa.direccion}</p>
-                                <p className="text-center line-clamp-5">{empresa.descripcion}</p>
-                                <p className="text-center text-gray-600">ID: {empresa.codigoempresa}</p>
-                                <div className="flex gap-32 mt-4">
-                                    <button
-                                        className="text-darkyellow hover:text-lightyellow text-3xl"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleUpdate(empresa);
-                                        }}
-                                    >
-                                        <FaEdit className="text-xl" />
-                                    </button>
-                                    <button
-                                        className="text-darkpurple hover:text-lightpurple text-3xl"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            confirmDelete(empresa);
-                                        }}
-                                    >
-                                        <FaTrash className="text-xl" />
-                                    </button>
-                                </div>
-                            </div>
-                        ))
-                    )}
+                    {filteredEmpresas.length === 0 ? (
+    <div className="bg-white border rounded-lg overflow-hidden shadow-md flex flex-col items-center p-4 cursor-pointer">
+        <div className="flex flex-col items-center">
+            <span className="text-black text-sm text-center">No hay empresas que coincidan con la búsqueda</span>
+        </div>
+    </div>
+) : (
+    filteredEmpresas.map((empresa) => (
+        <div
+            key={empresa.codigoempresa}
+            className="bg-white border rounded-lg overflow-hidden shadow-md cursor-pointer flex flex-col items-center p-4"
+            onClick={() => viewEmpresa(empresa)}
+        >
+            <h3 className="text-lg font-semibold mb-2 text-center">{empresa.nombre}</h3>
+            <p className="text-center underline text-darkyellow">{empresa.direccion}</p>
+            <p className="text-center line-clamp-5">{empresa.descripcion}</p>
+            <p className="text-center text-gray-600">ID: {empresa.codigoempresa}</p>
+            <div className="flex gap-32 mt-4">
+                <button
+                    className="text-darkyellow hover:text-lightyellow text-3xl"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleUpdate(empresa);
+                    }}
+                >
+                    <FaEdit className="text-xl" />
+                </button>
+                <button
+                    className="text-darkpurple hover:text-lightpurple text-3xl"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        confirmDelete(empresa);
+                    }}
+                >
+                    <FaTrash className="text-xl" />
+                </button>
+            </div>
+        </div>
+    ))
+)}
+
                     <div className="bg-white border rounded-lg overflow-hidden shadow-md flex flex-col items-center p-4 cursor-pointer">
                         <div className="flex flex-col items-center" onClick={() => navigate('/LoginCompanies')}>
                             <svg
