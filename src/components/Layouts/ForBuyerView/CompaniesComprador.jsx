@@ -110,7 +110,7 @@ export const CompaniesComprador = () => {
         }
     
         try {
-            const response = await fetch('http://localhost:3000/api/reportes', {
+            const response = await fetch('https://checkpoint-9tp4.onrender.com/api/reportes', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -308,10 +308,7 @@ export const CompaniesComprador = () => {
                             {/* Barra de progreso vertical */}
                             <div
                                 className="bg-white w-full progress-bar"
-                                style={{
-                                    height: '100%', // Comienza con 100% de altura
-                                    transition: 'height 2s linear',
-                                }}
+                                
                             ></div>
                         </div>
                     </div>
