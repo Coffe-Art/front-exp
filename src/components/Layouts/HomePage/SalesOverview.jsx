@@ -1,5 +1,3 @@
-// src/pages/SalesOverview.jsx
-
 import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import Logo from '../../../assets/Artesanías.png';
@@ -37,7 +35,7 @@ export const SalesOverview = ({ isAuthenticated, userType }) => {
       if (userRole === 'administrador') {
         try {
           setIsLoading(true);
-          const response = await fetch('https://checkpoint-9tp4.onrender.com/admin/sales-overview', {
+          const response = await fetch('http://localhost:3000/api/admin/sales-overview', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
