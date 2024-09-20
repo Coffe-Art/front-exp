@@ -17,11 +17,11 @@ export const MaterialsForm = () => {
     TelefonoContacto: '',
     TipoDeVenta: '',
     codigoEmpresa: '',
-    idAdministrador: ''
+    idAdministrador: '' // Este se llenará más adelante
   });
   const [empresasOptions, setEmpresasOptions] = useState([]);
   const [notification, setNotification] = useState('');
-  const [notificationType, setNotificationType] = useState(''); // Añadido para el tipo de notificación
+  const [notificationType, setNotificationType] = useState('');
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ export const MaterialsForm = () => {
         if (idAdministrador) {
           setFormData(prevData => ({
             ...prevData,
-            idAdministrador: idAdministrador
+            idAdministrador // Asignamos directamente aquí
           }));
 
           const token = localStorage.getItem('token');
@@ -111,7 +111,7 @@ export const MaterialsForm = () => {
       newErrors.correoContacto = 'El correo electrónico no es válido.';
     }
 
-    if (!formData.TelefonoContacto.match(/^\+?[1-9]\d{1,14}$/)) { // Ajusta según el formato requerido
+    if (!formData.TelefonoContacto.match(/^\+?[1-9]\d{1,14}$/)) {
       newErrors.TelefonoContacto = 'El número de teléfono no es válido.';
     }
 
@@ -150,7 +150,7 @@ export const MaterialsForm = () => {
   const showNotification = (message, isError = false) => {
     setNotification(message);
     setNotificationType(isError ? 'error' : 'success');
-    setTimeout(() => setNotification(''), 5000); // Clear notification after 5 seconds
+    setTimeout(() => setNotification(''), 5000);
   };
 
   const handleSubmit = async (e) => {
@@ -199,7 +199,7 @@ export const MaterialsForm = () => {
           TelefonoContacto: '',
           TipoDeVenta: '',
           codigoEmpresa: '',
-          idAdministrador: formData.idAdministrador
+          idAdministrador: formData.idAdministrador // Asegúrate de que se mantenga el valor
         });
         setTimeout(() => navigate('/MaterialsForAdmin'), 2000);
       } else {
@@ -241,47 +241,183 @@ export const MaterialsForm = () => {
         )}
         
         <form onSubmit={handleSubmit}>
-          {/* Campos del formulario */}
-          {Object.keys(formData).map(key => (
-            key !== 'idAdministrador' && (
-              <div className="mb-4" key={key}>
-                <label className="block text-black text-sm font-bold mb-2" htmlFor={key}>
-                  {key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
-                </label>
-                {key === 'codigoEmpresa' ? (
-                  <Select
-                    value={empresasOptions.find(option => option.value === formData.codigoEmpresa)}
-                    onChange={handleSelectChange}
-                    options={empresasOptions}
-                    placeholder="Seleccione una empresa"
-                  />
-                ) : (
-                  <input
-                    type={key.includes('correo') ? 'email' : key.includes('Telefono') ? 'tel' : 'text'}
-                    id={key}
-                    name={key}
-                    value={formData[key]}
-                    onChange={handleChange}
-                    className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors[key] ? 'border-red-500' : ''}`}
-                    placeholder={key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
-                  />
-                )}
-                {errors[key] && (
-                  <p className="text-red-500 text-xs italic">{errors[key]}</p>
-                )}
-              </div>
-            )
-          ))}
-          
-          <div className="flex items-center justify-center">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-darkyellow hover:bg-lightyellow text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-              {isSubmitting ? 'Enviando...' : 'Crear Insumo'}
-            </button>
+          {/* Campo de Nombre */}
+          <div className="mb-4">
+            <label className="block text-black text-sm font-bold mb-2" htmlFor="Nombre">
+              Nombre
+            </label>
+            <input
+              type="text"
+              id="Nombre"
+              name="Nombre"
+              value={formData.Nombre}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="Nombre del insumo"
+            />
+            {errors.Nombre && <p className="text-red-500 text-xs italic">{errors.Nombre}</p>}
           </div>
+
+          {/* Selector de Empresa */}
+          <div className="mb-4">
+            <label className="block text-black text-sm font-bold mb-2" htmlFor="codigoEmpresa">
+              Empresa
+            </label>
+            <Select
+              id="codigoEmpresa"
+              name="codigoEmpresa"
+              options={empresasOptions}
+              onChange={handleSelectChange}
+              className="basic-single"
+              classNamePrefix="select"
+            />
+            {errors.codigoEmpresa && <p className="text-red-500 text-xs italic">{errors.codigoEmpresa}</p>}
+          </div>
+
+          {/* Campo de Cantidad */}
+          <div className="mb-4">
+            <label className="block text-black text-sm font-bold mb-2" htmlFor="cantidadInsumo">
+              Cantidad
+            </label>
+            <input
+              type="number"
+              id="cantidadInsumo"
+              name="cantidadInsumo"
+              value={formData.cantidadInsumo}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="Cantidad"
+            />
+            {errors.cantidadInsumo && <p className="text-red-500 text-xs italic">{errors.cantidadInsumo}</p>}
+          </div>
+
+          {/* Campo de Precio Unitario */}
+          <div className="mb-4">
+            <label className="block text-black text-sm font-bold mb-2" htmlFor="precioUnitario">
+              Precio Unitario
+            </label>
+            <input
+              type="number"
+              id="precioUnitario"
+              name="precioUnitario"
+              value={formData.precioUnitario}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="Precio unitario"
+            />
+            {errors.precioUnitario && <p className="text-red-500 text-xs italic">{errors.precioUnitario}</p>}
+          </div>
+
+          {/* Campo de Precio Por Kilo */}
+          <div className="mb-4">
+            <label className="block text-black text-sm font-bold mb-2" htmlFor="precioPorKilo">
+              Precio Por Kilo
+            </label>
+            <input
+              type="number"
+              id="precioPorKilo"
+              name="precioPorKilo"
+              value={formData.precioPorKilo}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="Precio por kilo"
+            />
+            {errors.precioPorKilo && <p className="text-red-500 text-xs italic">{errors.precioPorKilo}</p>}
+          </div>
+
+          {/* Campo de Descripción */}
+          <div className="mb-4">
+            <label className="block text-black text-sm font-bold mb-2" htmlFor="descripcion">
+              Descripción
+            </label>
+            <textarea
+              id="descripcion"
+              name="descripcion"
+              value={formData.descripcion}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="Descripción del insumo"
+            />
+            {errors.descripcion && <p className="text-red-500 text-xs italic">{errors.descripcion}</p>}
+          </div>
+
+          {/* Campo de Lugar de Venta */}
+          <div className="mb-4">
+            <label className="block text-black text-sm font-bold mb-2" htmlFor="lugarDeVenta">
+              Lugar de Venta
+            </label>
+            <input
+              type="text"
+              id="lugarDeVenta"
+              name="lugarDeVenta"
+              value={formData.lugarDeVenta}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="Lugar de venta"
+            />
+            {errors.lugarDeVenta && <p className="text-red-500 text-xs italic">{errors.lugarDeVenta}</p>}
+          </div>
+
+          {/* Campo de Correo de Contacto */}
+          <div className="mb-4">
+            <label className="block text-black text-sm font-bold mb-2" htmlFor="correoContacto">
+              Correo de Contacto
+            </label>
+            <input
+              type="email"
+              id="correoContacto"
+              name="correoContacto"
+              value={formData.correoContacto}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="Correo de contacto"
+            />
+            {errors.correoContacto && <p className="text-red-500 text-xs italic">{errors.correoContacto}</p>}
+          </div>
+
+          {/* Campo de Teléfono de Contacto */}
+          <div className="mb-4">
+            <label className="block text-black text-sm font-bold mb-2" htmlFor="TelefonoContacto">
+              Teléfono de Contacto
+            </label>
+            <input
+              type="tel"
+              id="TelefonoContacto"
+              name="TelefonoContacto"
+              value={formData.TelefonoContacto}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="Teléfono de contacto"
+            />
+            {errors.TelefonoContacto && <p className="text-red-500 text-xs italic">{errors.TelefonoContacto}</p>}
+          </div>
+
+          {/* Campo de Tipo de Venta */}
+          <div className="mb-4">
+            <label className="block text-black text-sm font-bold mb-2" htmlFor="TipoDeVenta">
+              Tipo de Venta
+            </label>
+            <input
+              type="text"
+              id="TipoDeVenta"
+              name="TipoDeVenta"
+              value={formData.TipoDeVenta}
+              onChange={handleChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              placeholder="Tipo de venta"
+            />
+            {errors.TipoDeVenta && <p className="text-red-500 text-xs italic">{errors.TipoDeVenta}</p>}
+          </div>
+
+          
+
+          <button
+            type="submit"
+            className={` bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Enviando...' : 'Crear Insumo'}
+          </button>
         </form>
       </div>
     </div>
