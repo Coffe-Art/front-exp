@@ -6,7 +6,7 @@ import { Footer } from '../ForView/Footer';
 import ProductoContext from '../../../Context/contextProducto';
 import CartIcon from './CartIcon';
 import { FaCoffee } from "react-icons/fa";
-
+import Swal from 'sweetalert2';
 export const CraftComprador = () => {
   const { productos, setProductos } = useContext(ProductoContext);
   const [productosFiltrados, setProductosFiltrados] = useState([]);
@@ -204,7 +204,7 @@ export const CraftComprador = () => {
     }
 
     try {
-        const response = await fetch('http://localhost:3000/api/crear-reporte-producto', {
+        const response = await fetch('https://checkpoint-9tp4.onrender.com/api/crear-reporte-producto', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -227,7 +227,11 @@ export const CraftComprador = () => {
         }
 
         const result = await response.json();
-        console.log('Reporte enviado con éxito:', result);
+        Swal.fire({
+          title: 'Reporte enviado con éxito',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
         setMotivoReporte('');
         setMenuReportes({ visible: false, producto: null, mostrandoFormulario: false });
         setMostrarNotificacion(true);
