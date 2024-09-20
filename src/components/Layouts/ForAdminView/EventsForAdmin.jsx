@@ -7,13 +7,15 @@ import { Footer } from '../ForView/Footer';
 import { NavLink, useLocation } from 'react-router-dom';
 import { FaSearch, FaPlus, FaEdit, FaTrash, FaCoffee } from 'react-icons/fa';
 import Fondo from '../../../assets/FondoEmpresas.png';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const containerStyle = {
   width: '100%',
   height: '600px',
 };
 
-
+// Define the geocode function
 const geocodeAddress = async (address, city) => {
   const geocoder = new google.maps.Geocoder();
   return new Promise((resolve, reject) => {
@@ -34,11 +36,12 @@ export const EventsForAdmin = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [center, setCenter] = useState({ lat: 4.5709, lng: -74.2973 }); 
+  const [center, setCenter] = useState({ lat: 4.5709, lng: -74.2973 }); // Center of Colombia
   const location = useLocation();
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 const [eventToDelete, setEventToDelete] = useState(null);
+const navigate = useNavigate();
 
 
   useEffect(() => {
@@ -63,7 +66,7 @@ const [eventToDelete, setEventToDelete] = useState(null);
         }
   
         const data = await response.json();
-        console.log('Eventos obtenidos:', data); 
+        console.log('Eventos obtenidos:', data); // Agrega este console.log para verificar la estructura
         setEvents(data);
       } catch (error) {
         console.error('Error al obtener eventos:', error.message);
@@ -81,9 +84,10 @@ const [eventToDelete, setEventToDelete] = useState(null);
   const handleEventClick = async (event) => {
     setSelectedEvent(event);
 
+    // Geocode the address to get the location
     try {
       const location = await geocodeAddress(event.ubicacion, event.lugar);
-      setCenter(location); 
+      setCenter(location); // Update map center to the new location
     } catch (error) {
       console.error('Error al obtener la ubicación:', error);
     }
@@ -125,21 +129,29 @@ const [eventToDelete, setEventToDelete] = useState(null);
         throw new Error(`Error ${response.status}: ${response.statusText}`);
       }
   
+      // Actualiza la lista de eventos después de la eliminación
       setEvents(prevEvents => prevEvents.filter(event => event.idEvento !== eventToDelete.idEvento));
-      setShowConfirmModal(false); 
+      setShowConfirmModal(false); // Cierra el modal
     } catch (error) {
       console.error('Error al eliminar el evento:', error.message);
     }
   };
+
+  const handleEditEvent = (eventId) => {
+    navigate(`/EventsUpdateForm/${eventId}`);
+  };
   
+  
+ 
   
   return (
     <div className="min-h-screen bg-gray-200 font-sans">
       <Header />
+
       <div className="flex flex-col min-h-screen p-4 md:p-8 bg-gray-200">
         <section className="flex flex-col md:flex-row gap-8">
           <div className="w-full md:w-1/2 flex flex-col items-center justify-center md:items-start">
-
+            {/* Search */}
             <div className="w-full max-w-full mb-6 relative">
               <input
                 type="text"
@@ -150,6 +162,9 @@ const [eventToDelete, setEventToDelete] = useState(null);
               />
               <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-lg" />
             </div>
+
+
+                        {/* Calendar */}
                         <div className="w-full max-w-full mt-8" style={{ width: '70rem', height: '25rem' }}>
   <Calendar
     className="w-full h-full text-lg"
@@ -162,11 +177,14 @@ const [eventToDelete, setEventToDelete] = useState(null);
   />
 </div>
 
+
+
+            {/* Map */}
             <div className="w-full max-w-full mt-8">
               <LoadScript googleMapsApiKey="AIzaSyDlmwtbA4RlJtcDndjLKwzExz_cChUSMrk">
                 <GoogleMap
                   mapContainerStyle={containerStyle}
-                  center={center} 
+                  center={center} // Center is updated when an event is clicked
                   zoom={12}
                 >
                   {filteredEvents.map(event => event.ubicacion && (
@@ -183,22 +201,25 @@ const [eventToDelete, setEventToDelete] = useState(null);
 
           <div className="w-full md:w-1/2 flex flex-col items-center">
             <div className="text-center">
-              <h2 className="text-darkyellow text-4xl font-bold mt-6 mb-10">¡Bienvenido a Eventos!</h2>
+              <h2 className="text-darkyellow text-4xl font-bold mt-6 mb-10">Eventos</h2>
               <p className="max-w-2xl mt-2 mx-auto text-lg mb-5">
-              Este espacio está diseñado para que puedas gestionar los eventos y ferias a los que planeas asistir para que lo vean posibles compradores.
+              ¡Bienvenido, artesano! Este espacio está diseñado para que puedas gestionar los eventos y ferias a los que planeas asistir para que lo vean posibles compradores.
+              <br/><br/>
+              Podrás encontrar un apartado en donde encontraras las fechas de tus eventos, además de un mapa como guia para que puedas  visualizar las ubicaciones que necesites.
               </p>
-              <p className="font-bold">Podrás encontrar un apartado en donde encontraras las fechas de tus eventos, además de un mapa como guia para que puedas  visualizar las ubicaciones que necesites.</p>
             </div>
 
-            <div className="flex flex-col justify-center items-center border rounded-lg p-6 shadow-md bg-white mt-8 max-w-md mx-auto text-base mb-10">
-  <h3 className="text-xl font-bold mb-4">¿Vas a Asisitir a un Evento?</h3>
+            {/* Create New Event Container */}
+<div className="border rounded-lg p-6 shadow-md bg-white mt-8 max-w-md mx-auto text-base mb-10">
+  <h3 className="text-xl font-semibold mb-4">¿Vas a Asisitir a un Evento?</h3>
   <p className="mb-4">
-    <NavLink to="/EventsForm" className="text-darkyellow hover:underline">
+    <NavLink to="/EventsForm" className="text-darkyellow font-bold hover:underline">
       Agregar Evento
     </NavLink>
   </p>
 </div>
-<div className='overflow-y-auto overflow-x-hidden'  style={{ height: '55rem' }}>
+
+            <div className='overflow-y-auto overflow-x-hidden'  style={{ height: '55rem' }}>
 
 <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 mt-8">
 {filteredEvents.map(event => (
@@ -220,13 +241,23 @@ const [eventToDelete, setEventToDelete] = useState(null);
     </div>
     <div className="flex justify-between gap-4 mt-4">
    
-      <FaTrash
+    <FaTrash
   className='text-darkpurple hover:text-lightpurple text-3xl'
   onClick={(e) => {
-    e.stopPropagation(); 
-    handleDeleteEvent(event); 
+    e.stopPropagation(); // Evita que el clic se propague al contenedor del evento
+    handleDeleteEvent(event); // Muestra el modal de confirmación
   }}
 />
+
+
+<FaEdit
+  className='text-darkyellow hover:text-lightyellow text-3xl'
+  onClick={(e) => {
+    e.stopPropagation(); // Evita que el clic se propague al contenedor del evento
+    handleEditEvent(event.idEvento); // Envía el idEvento a la función que maneja la edición
+  }}
+/>
+
 
     </div>
   </div>
@@ -237,13 +268,15 @@ const [eventToDelete, setEventToDelete] = useState(null);
 
 </div>
 
+
+
           </div>
         </section>
 
         {selectedEvent && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div className="bg-white rounded-lg shadow-lg w-11/12 md:w-2/3 lg:w-1/3 relative overflow-hidden">
-    
+              {/* Banner de Fondo */}
               <div className="relative">
                 <img src={Fondo} alt="Banner" className="w-full h-40 object-cover" />
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -298,6 +331,8 @@ const [eventToDelete, setEventToDelete] = useState(null);
     </div>
   </div>
 )}
+
+
       <Footer />
     </div>
   );
