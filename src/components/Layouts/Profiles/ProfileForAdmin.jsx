@@ -87,6 +87,10 @@ export const ProfileForAdmin = () => {
     window.location.reload();
   };
 
+  const handleLoginClick = () => {
+    navigate('/#');
+  };
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-white">
       <div className="md:w-1/5 lg:w-1/6 bg-cover bg-center p-4 text-white flex flex-col items-center justify-center" style={{ backgroundImage: `url(${BackgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
@@ -98,7 +102,15 @@ export const ProfileForAdmin = () => {
           <NavLink to="/ProfileForAdmin" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Perfil</NavLink>
           <NavLink to="/SalesOverview" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ventas</NavLink>
           <NavLink to="/MaterialsForAdmin" className="nav-link text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Insumos</NavLink>
-          <NavLink to="/Help" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ayuda</NavLink>
+            {/* Ruta común para todos */}
+            <NavLink to="/Help" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ayuda</NavLink>
+
+<button
+  className="bg-darkyellow text-white px-4 py-2 rounded hover:bg-lightyellow mt-4 text-lg font-bold"
+  onClick={handleLoginClick}
+>
+  Regresar
+</button>
           <button className="bg-darkpurple text-white px-4 py-2 rounded hover:bg-lightpurple mt-4 text-lg font-bold" onClick={handleLogout}>Cerrar Sesión</button>
         </nav>
       </div>
