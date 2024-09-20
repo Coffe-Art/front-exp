@@ -197,7 +197,6 @@ export const MaterialsForAdmin = () => {
                   <th className="px-4 py-2">Correo Contacto</th>
                   <th className="px-4 py-2">Teléfono Contacto</th>
                   <th className="px-4 py-2">Tipo de Venta</th>
-                  <th className="px-4 py-2">Código Empresa</th>
                   <th className="px-4 py-2">Acciones</th>
                 </tr>
               </thead>
@@ -212,19 +211,18 @@ export const MaterialsForAdmin = () => {
                     <td className="px-4 py-2">{item.descripcion}</td>
                     <td className="px-4 py-2">{item.lugarDeVenta}</td>
                     <td className="px-4 py-2">{item.correoContacto}</td>
-                    <td className="px-4 py-2">{item.telefonoContacto}</td>
-                    <td className="px-4 py-2">{item.tipoVenta}</td>
-                    <td className="px-4 py-2">{item.codigoEmpresa}</td>
+                    <td className="px-4 py-2">{item.TelefonoContacto}</td>
+                    <td className="px-4 py-2">{item.TipoDeVenta}</td>
                     <td className="px-4 py-2 flex justify-around">
                       <button 
                         onClick={(e) => { e.stopPropagation(); handleEdit(item.IdInsumo); }} 
-                        className="text-blue-500 hover:text-blue-700"
+                        className="text-darkyellow hover:text-lightyellow text-3xl"
                       >
                         <FaEdit />
                       </button>
                       <button 
                         onClick={(e) => { e.stopPropagation(); handleDelete(item); }} 
-                        className="text-red-500 hover:text-red-700"
+                        className="text-darkpurple hover:text-lightpurple text-3xl"
                       >
                         <FaTrash />
                       </button>
@@ -250,7 +248,6 @@ export const MaterialsForAdmin = () => {
               <p><strong>Correo Contacto:</strong> {selectedInsumo.correoContacto}</p>
               <p><strong>Teléfono Contacto:</strong> {selectedInsumo.telefonoContacto}</p>
               <p><strong>Tipo de Venta:</strong> {selectedInsumo.tipoVenta}</p>
-              <p><strong>Código Empresa:</strong> {selectedInsumo.codigoEmpresa}</p>
             </div>
             <div className="mt-4 flex justify-end">
               <button 
@@ -261,39 +258,41 @@ export const MaterialsForAdmin = () => {
               </button>
             </div>
             <div className="flex justify-end mt-4">
-              <button 
-                onClick={() => handleDelete(selectedInsumo)} 
-                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-              >
-                Eliminar
-              </button>
+              
             </div>
           </div>
         </div>
       )}
-      {isConfirmDeleteOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
-            <h3 className="text-2xl font-bold mb-4">Confirmar Eliminación</h3>
-            <p>¿Estás seguro de que deseas eliminar el insumo?</p>
-            <div className="flex justify-end mt-4">
-              <button 
-                onClick={confirmDelete} 
-                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-              >
-                Confirmar
-              </button>
-              <button 
-                onClick={closeConfirmDeleteModal} 
-                className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 ml-2"
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
+     {isConfirmDeleteOpen && (
+  <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full">
+      <div className='flex flex-col justify-center'>
+      <div className='flex justify-center'>
+          <svg className="w-6 h-6 mr-2 text-2xl text-darkyellow"><FaCoffee /></svg>
+          <h3 className="text-lg font-semibold mb-4 text-darkyellow">Confirmar eliminación</h3>
         </div>
-      )}
+        <p className="mb-4 text-center">¿Estás seguro de que deseas eliminar el insumo?</p>
+      </div>
+      <div className="flex justify-center gap-4">
+        <button
+          className="bg-gray-300 text-black px-4 py-2 rounded-lg"
+          onClick={closeConfirmDeleteModal}
+        >
+          Cancelar
+        </button>
+        <button
+          className="text-white bg-darkpurple px-4 py-2 rounded-lg"
+          onClick={confirmDelete}
+        >
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
       <Footer />
     </div>
   );
 };
+
