@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
 import BackgroundImage from '../../../assets/BackgroundLogin.jpg'; 
-import { FaHome, FaTimes } from 'react-icons/fa';
+import { FaHome } from 'react-icons/fa';
 import Logo from '../../../assets/Artesanías.png';
 import Select from 'react-select'; 
 import { useEvents } from '../../../Context/EventsContext';
@@ -78,7 +78,6 @@ export const EventsForm = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     
-    // Contador de caracteres y validación de la descripción
     if (name === 'descripcion') {
       if (value.length <= 200) {
         setFormData((prevState) => ({
@@ -145,13 +144,13 @@ export const EventsForm = () => {
       }
     
       const newEvent = await response.json();
-      console.log('Evento creado:', newEvent); // Verificar la respuesta
+      console.log('Evento creado:', newEvent); 
     
-      setEvents(prevEvents => [...prevEvents, newEvent]); // Actualizar eventos globales
+      setEvents(prevEvents => [...prevEvents, newEvent]);
       setNotification('Evento creado exitosamente');
       setTimeout(() => {
         setNotification('');
-        navigate('/EventsForAdmin'); // Redirigir al componente EventsForAdmin
+        navigate('/EventsForAdmin');
       }, 2000);
     } catch (error) {
       console.error('Error al crear evento:', error);
@@ -174,7 +173,7 @@ export const EventsForm = () => {
         <img src={Logo} alt="Logo" className="h-24 w-24 mx-auto mb-6" />
         <h1 className="text-2xl font-bold mb-6 text-center">Crear Nuevo Evento</h1>
         {notification && (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+          <div className={`border px-4 py-3 rounded relative mb-4 ${notification.includes('Error') ? 'bg-red-100 border-red-400 text-red-700' : 'bg-red-100  border-red-700 text-red-700'}`} role="alert">
             <span className="block sm:inline">{notification}</span>
           </div>
         )}
@@ -237,7 +236,6 @@ export const EventsForm = () => {
               value={formData.ubicacion}
               onChange={handleChange}
             />
-            <p className="text-gray-600 text-sm mt-2">Indica la dirección donde se realizará el evento</p>
             {errors.ubicacion && <p className="text-red-500 text-xs italic">{errors.ubicacion}</p>}
           </div>
           <div className="mb-4">
@@ -253,7 +251,6 @@ export const EventsForm = () => {
               value={formData.duracion}
               onChange={handleChange}
             />
-            <p className="text-gray-600 text-sm mt-2">Especifica la duración del evento en horas o días</p>
             {errors.duracion && <p className="text-red-500 text-xs italic">{errors.duracion}</p>}
           </div>
           <div className="mb-4">
@@ -269,7 +266,6 @@ export const EventsForm = () => {
               value={formData.lugar}
               onChange={handleChange}
             />
-            <p className="text-gray-600 text-sm mt-2">¿En qué ciudad se llevará a cabo el evento?</p>
             {errors.lugar && <p className="text-red-500 text-xs italic">{errors.lugar}</p>}
           </div>
           <div className="mb-4">
@@ -279,29 +275,27 @@ export const EventsForm = () => {
             <textarea
               id="descripcion"
               name="descripcion"
+              rows="4"
               className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
               placeholder="Descripción del Evento"
               value={formData.descripcion}
               onChange={handleChange}
-              maxLength={200}
-            ></textarea>
-            <p className="text-gray-600 text-sm mt-2">Máximo 200 caracteres ({charCount}/200)</p>
+            />
+            <p className="text-gray-600 text-sm mt-2">{charCount} / 200 caracteres</p>
             {errors.descripcion && <p className="text-red-500 text-xs italic">{errors.descripcion}</p>}
           </div>
-          <div className="flex items-center justify-between">
-            <button 
-              type="submit" 
-              className={`bg-darkyellow hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+          <div className="flex justify-center">
+            <button
+              type="submit"
               disabled={isSubmitting}
+              className="bg-darkyellow hover:bg-lightyellow text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
-              {isSubmitting ? 'Creando...' : 'Enviar Informacion'}
+              Crear Evento
             </button>
-            <NavLink to="/EventsForAdmin" className="inline-block align-baseline font-bold text-sm text-darkyellow hover:text-yellow-700">
-              <FaTimes className="text-2xl" />
-            </NavLink>
           </div>
         </form>
       </div>
     </div>
   );
 };
+
