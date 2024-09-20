@@ -228,14 +228,14 @@ export const UpdateProducto = () => {
         <FaHome className="text-darkyellow text-4xl" />
       </NavLink>
       <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full space-y-6">
-        <div className="flex justify-center">
-          <img src={Logo} alt="Logo" className="w-32 mb-4" />
-        </div>
-        <h1 className="text-2xl font-bold mb-4">Actualizar Producto</h1>
-        {notification && (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
-            <span className="block sm:inline">{notification}</span>
-          </div>
+  <div className="flex justify-center">
+    <img src={Logo} alt="Logo" className="w-32 mb-4" />
+  </div>
+  <h1 className="text-2xl font-bold mb-4 text-center">Actualizar Producto</h1>
+  {notification && (
+    <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+      <span className="block sm:inline">{notification}</span>
+    </div>
         )}
         <form onSubmit={handleSubmit}>
           <div className="space-y-4">
