@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Logo from '../../../assets/Artesanías.png';
 import BackgroundImage from '../../../assets/FondoHeader.jpg';
-import UserIcon from '../../../assets/perfil-de-usuario.png';  // Reemplaza con tu imagen deseada
+import UserIcon from '../../../assets/p.png';  // Reemplaza con tu imagen deseada
 
 export const Header = () => {
   const navigate = useNavigate();
