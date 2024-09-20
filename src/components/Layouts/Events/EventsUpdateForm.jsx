@@ -291,9 +291,7 @@ export const EventsUpdateForm = () => {
             >
               {isSubmitting ? 'Guardando...' : 'Actualizar Evento'}
             </button>
-            <NavLink to="/EventsForAdmin" className="text-darkred hover:text-red-600">
-              <FaTimes className="text-2xl" />
-            </NavLink>
+           
           </div>
         </form>
       </div>
