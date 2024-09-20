@@ -324,7 +324,7 @@ export const UpdateProducto = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-darkyellow text-white py-2 px-4 rounded mt-6"
+            className="bg-darkyellow text-white py-2 px-4 rounded mt-6"
           >
             Actualizar Producto
           </button>
