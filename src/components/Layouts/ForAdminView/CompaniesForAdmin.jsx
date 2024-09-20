@@ -153,7 +153,7 @@ export const CompaniesForAdmin = () => {
             <div className="flex flex-col min-h-screen bg-gray-200">
                 <Header />
                 <div className="flex justify-center items-center my-6">
-  <h2 className="text-3xl font-bold text-darkyellow mb-2">¡Bienvenido a Productos!</h2>
+  <h2 className="text-3xl font-bold text-darkyellow mb-2">¡Bienvenido a Empresas!</h2>
 </div>
                 <div className="container mx-auto my-8 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"> 
                     <div className="bg-white border rounded-lg overflow-hidden shadow-md flex flex-col items-center p-4 cursor-pointer mb-4">
