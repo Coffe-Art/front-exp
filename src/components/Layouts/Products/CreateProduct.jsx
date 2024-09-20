@@ -346,10 +346,10 @@ export const CreateProduct = () => {
   {errors.file && <p className="text-red-500 text-xs italic">{errors.file}</p>}
 </div>
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-center">
           <button
           type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="bg-darkyellow hover:bg-lightyellow text-white font-bold py-2 px-4 rounded"
           disabled={isSubmitting} // Deshabilita el botón si isSubmitting es true
         >
           {isSubmitting ? 'Creando...' : 'Crear Producto'}
