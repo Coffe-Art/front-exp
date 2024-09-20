@@ -1,27 +1,24 @@
-import React, { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+// src/pages/SalesOverview.jsx
+
+import React, { useState, useEffect } from 'react';
+import { Bar } from 'react-chartjs-2';
 import Logo from '../../../assets/Artesanías.png';
 import BackgroundImage from '../../../assets/FondoMenu.png';
 import Background from '../../../assets/Fondo.png';
-import { Bar } from 'react-chartjs-2';
+import { NavLink } from 'react-router-dom';
 
 export const SalesOverview = ({ isAuthenticated, userType }) => {
-  const navigate = useNavigate();
+  const [totalSales, setTotalSales] = useState(0);
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [totalOrders, setTotalOrders] = useState(0);
   const [showAccessMessage, setShowAccessMessage] = useState(false);
+  const [showReport, setShowReport] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [noSalesMessage, setNoSalesMessage] = useState(false);
 
   const userRole = localStorage.getItem('userType');
-
-  const bestRatedProduct = {
-    id: 1,
-    name: 'Café Especial Premium',
-    rating: 4.9,
-    totalSales: 320,
-    revenue: 9600,
-  };
-
-  const totalSales = 1450;
-  const totalRevenue = 42000;
-  const totalOrders = 230;
+  const token = localStorage.getItem('authToken'); // Asegúrate de que el token esté presente
 
   const salesData = {
     labels: ['Ventas Totales', 'Ingresos Totales', 'Pedidos Totales'],
@@ -35,84 +32,76 @@ export const SalesOverview = ({ isAuthenticated, userType }) => {
     ],
   };
 
-  const handleLogoClick = (e) => {
-    e.preventDefault();
-    navigate('/');
-  };
+  useEffect(() => {
+    const fetchSalesOverview = async () => {
+      if (userRole === 'administrador') {
+        try {
+          setIsLoading(true);
+          const response = await fetch('https://checkpoint-9tp4.onrender.com/admin/sales-overview', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`, // Asegúrate de que el token esté incluido
+            },
+          });
 
-  const handleLoginClick = () => {
-    navigate('/');
-  };
+          if (response.status === 401) {
+            setShowAccessMessage(true);
+            setIsLoading(false);
+            return;
+          }
+
+          if (!response.ok) {
+            throw new Error('Error en la respuesta de la red');
+          }
+
+          const data = await response.json();
+          const { totalVentas, totalIngresos, totalPedidos } = data;
+          setTotalSales(totalVentas);
+          setTotalRevenue(totalIngresos);
+          setTotalOrders(totalPedidos);
+          setIsLoading(false);
+        } catch (error) {
+          console.error('Error al obtener las estadísticas de ventas:', error);
+          setErrorMessage('Error al obtener las estadísticas de ventas: ' + error.message);
+          setIsLoading(false);
+        }
+      } else {
+        setShowAccessMessage(true);
+        setIsLoading(false);
+      }
+    };
+
+    fetchSalesOverview();
+  }, [userRole, token]); // Incluye token en la lista de dependencias
 
   const handleReportClick = () => {
-    if (userType === 'vendedor') {
-      navigate('/reporte-ventas');
+    if (totalSales > 0) {
+      setShowReport(true);
+      setNoSalesMessage(false);
     } else {
-      setShowAccessMessage(true);
-      setTimeout(() => setShowAccessMessage(false), 5000);
+      setNoSalesMessage(true);
     }
   };
 
-   const handleLogout = () => {
-    localStorage.clear(); 
-    navigate('/'); 
-    window.location.reload();
-  };
+  if (isLoading) {
+    return <div>Cargando...</div>;
+  }
 
+  if (errorMessage) {
+    return <div className="text-red-500">{errorMessage}</div>;
+  }
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-200">
-
       <div className="md:w-1/4 lg:w-1/6 bg-cover bg-center p-4 text-white flex flex-col items-center justify-center" style={{ backgroundImage: `url(${BackgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-        <a href="/#" onClick={handleLogoClick} className="mb-6">
+        <a href="/#" className="mb-6">
           <img src={Logo} alt="Logo" className="h-32 w-32" />
         </a>
         <nav className="flex flex-col items-center space-y-6">
           <NavLink to="/menu" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Bienvenido</NavLink>
-          <NavLink to={userRole === 'comprador' ? '/ProfileComprador' : userRole === 'administrador' ? '/ProfileForAdmin' : '/ProfileForEmpleado'} className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">
-            Perfil
-          </NavLink>
-
-          {userRole === 'comprador' && (
-            <>
-              <NavLink to="/ProductFav" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Producto Favorito</NavLink>
-              <NavLink to="/Cart" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Carrito</NavLink>
-              <NavLink to="/CraftComprador" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Artesanías</NavLink>
-              <NavLink to="/CompaniesComprador" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Compañías</NavLink>
-              <NavLink to="/EventsComprador" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Eventos</NavLink>
-            </>
-          )}
-
-          {(userRole === 'administrador' || userRole === 'empleado') && (
-            <>
-              <NavLink to="/SalesOverview" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ventas</NavLink>
-              <NavLink 
-              to="/MaterialsForAdmin" 
-              className="nav-link text-xl md:text-2xl text-white hover:text-darkyellow font-bold" 
-              activeClassName="font-bold"
-            >
-              Insumos
-            </NavLink>
-            </>
-          )}
-
-          <NavLink to="/Help" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ayuda</NavLink>
-
-          <button
-            className="bg-darkyellow text-white px-4 py-2 rounded hover:bg-lightyellow mt-4 text-lg font-bold"
-            onClick={handleLoginClick}
-          >
-            Regresar
-          </button>
-
-          {userRole !== 'anonimo' && (
-            <button
-              className="bg-darkpurple text-white px-4 py-2 rounded hover:bg-lightpurple mt-4 text-lg font-bold"
-              onClick={handleLogout}
-            >
-              Cerrar Sesión
-            </button>
-          )}
+          <NavLink to={userRole === 'comprador' ? '/ProfileComprador' : '/ProfileForAdmin'} className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Perfil</NavLink>
+          <NavLink to="/SalesOverview" className="text-xl md:text-2xl text-white hover:text-darkyellow font-bold">Ventas</NavLink>
         </nav>
       </div>
 
@@ -123,54 +112,30 @@ export const SalesOverview = ({ isAuthenticated, userType }) => {
             <h1 className="text-black text-3xl md:text-4xl font-bold mb-8">Resumen de Ventas</h1>
 
             <div className="w-full max-w-lg mb-8">
-              <div className="mb-4">
-                <h2 className="text-2xl font-bold text-darkyellow mb-4">Producto Más Vendido</h2>
-                <div className="flex items-center justify-between bg-gray-200 px-4 py-2 rounded-lg mb-2">
-                  <span className="text-lg flex justify-center self-center">{bestRatedProduct.name}</span>
-                </div>
-                <p className="text-gray-700 mb-2">
-                  Ventas Totales: <span className="font-bold">{bestRatedProduct.totalSales}</span>
-                </p>
-                <p className="text-gray-700 mb-2">
-                  Ingresos Generados: <span className="font-bold">${bestRatedProduct.revenue}</span>
-                </p>
+              <h2 className="text-2xl font-bold text-darkyellow mb-4">Estadísticas Generales</h2>
+              <div className="flex flex-col space-y-2 mb-4">
+                <p className="text-gray-700">Ventas Totales: <span className="font-bold">{totalSales}</span></p>
+                <p className="text-gray-700">Ingresos Totales: <span className="font-bold">${totalRevenue}</span></p>
+                <p className="text-gray-700">Pedidos Totales: <span className="font-bold">{totalOrders}</span></p>
               </div>
 
-              <div>
-                <h2 className="text-2xl font-bold text-darkyellow mb-4">Estadísticas Generales</h2>
-                <div className="flex flex-col space-y-2 mb-4">
-                  <p className="text-gray-700">
-                    Ventas Totales: <span className="font-bold">{totalSales}</span>
-                  </p>
-                  <p className="text-gray-700">
-                    Ingresos Totales: <span className="font-bold">${totalRevenue}</span>
-                  </p>
-                  <p className="text-gray-700">
-                    Pedidos Totales: <span className="font-bold">{totalOrders}</span>
-                  </p>
-                </div>
-                <div className="flex justify-center">
-                  <Bar data={salesData} options={{ maintainAspectRatio: false }} />
-                </div>
-              </div>
+              {showReport && <Bar data={salesData} />} 
             </div>
 
-            <button
-              className="bg-darkyellow text-white px-6 py-2 rounded hover:bg-lightyellow mt-4 text-lg font-bold"
-              onClick={handleReportClick}
-            >
-              Generar Informe
+            <button className="bg-darkyellow px-6 py-3 text-white font-bold text-lg hover:bg-darkyellow rounded" onClick={handleReportClick}>
+              Generar Reporte
             </button>
 
-            {showAccessMessage && (
-              <div className="mt-4 text-red-600 text-sm">
-                No tienes permiso para generar informes.
+            {noSalesMessage && (
+              <div className="mt-4 text-red-500">
+                No se han realizado ventas. No se puede generar el informe.
               </div>
             )}
+
+            
           </div>
         </div>
       </div>
     </div>
   );
 };
-
