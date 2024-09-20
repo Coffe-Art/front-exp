@@ -320,9 +320,7 @@ export const EventsForm = () => {
             >
               {isSubmitting ? 'Creando...' : 'Enviar Informacion'}
             </button>
-            <NavLink to="/EventsForAdmin" className="inline-block align-baseline font-bold text-sm text-darkyellow hover:text-yellow-700">
-              <FaTimes className="text-2xl" />
-            </NavLink>
+            
           </div>
         </form>
       </div>
