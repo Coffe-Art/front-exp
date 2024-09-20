@@ -10,7 +10,6 @@ export const EventsUpdateForm = () => {
   const { id } = useParams(); // Obtén el ID del evento desde la URL
   const [event, setEvent] = useState({
     nombreEvento: '',
-    fecha: '',
     empresasAsistente: [],
     ubicacion: '',
     duracion: '',
@@ -26,12 +25,6 @@ export const EventsUpdateForm = () => {
   const [charCount, setCharCount] = useState(0);
   const navigate = useNavigate();
 
-  const dateValue = new Date(value).toISOString().split('T')[0]; // Eliminar esta línea
-const formattedDate = new Date(fecha).toISOString(); // Eliminar esta línea
-
-
-
-
   useEffect(() => {
     const fetchEvent = async () => {
       try {
@@ -44,14 +37,8 @@ const formattedDate = new Date(fecha).toISOString(); // Eliminar esta línea
         const data = await response.json();
         console.log('Evento obtenido:', data);
   
-        // Convierte la fecha a formato YYYY-MM-DD
-        const parsedDate = new Date(data.fecha);
-        if (isNaN(parsedDate.getTime())) throw new Error('Fecha no válida');
-        const formattedDate = parsedDate.toISOString().split('T')[0];
-  
         setEvent(prevEvent => ({
           ...data,
-          fecha: formattedDate
         }));
       } catch (error) {
         console.error('Error al obtener el evento:', error.message);
@@ -59,7 +46,6 @@ const formattedDate = new Date(fecha).toISOString(); // Eliminar esta línea
         setLoading(false);
       }
     };
-  
 
     const fetchEmpresas = async () => {
       try {
@@ -115,82 +101,56 @@ const formattedDate = new Date(fecha).toISOString(); // Eliminar esta línea
     fetchEmpresas();
   }, [id]);
 
-
-
-
   const handleSave = async (e) => {
     e.preventDefault();
-  setIsSubmitting(true);
-  try {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      console.error('Token no encontrado en el localStorage');
-      return;
+    setIsSubmitting(true);
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('Token no encontrado en el localStorage');
+        return;
+      }
+
+      const { nombreEvento, empresasAsistente, ubicacion, duracion, lugar, descripcion } = event;
+
+      const simplifiedEvent = {
+        nombreEvento,
+        empresasAsistente,
+        ubicacion,
+        duracion,
+        lugar,
+        descripcion
+      };
+
+      console.log('Datos del evento a enviar:', simplifiedEvent);
+
+      const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/evento/update/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(simplifiedEvent),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+
+      setNotification('Evento actualizado exitosamente');
+      setTimeout(() => navigate('/EventsForAdmin'), 2000);
+    } catch (error) {
+      console.error('Error al guardar el evento:', error.message);
+      setErrors({ ...errors, global: 'Error al actualizar el evento. Inténtalo de nuevo.' });
+    } finally {
+      setIsSubmitting(false);
     }
+  };
 
-    const { nombreEvento, fecha, empresasAsistente, ubicacion, duracion, lugar, descripcion } = event;
-
-    // Convertir la fecha al formato ISO para enviarla al backend
-    const formattedDate = new Date(fecha);
-    if (isNaN(formattedDate.getTime())) {
-      throw new Error('Fecha no válida');
-    }
-    const isoDate = formattedDate.toISOString();
-
-    const simplifiedEvent = {
-      nombreEvento,
-      fecha: isoDate,
-      empresasAsistente,
-      ubicacion,
-      duracion,
-      lugar,
-      descripcion
-    };
-
-    console.log('Datos del evento a enviar:', simplifiedEvent);
-
-    const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/evento/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(simplifiedEvent),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error ${response.status}: ${response.statusText}`);
-    }
-
-    setNotification('Evento actualizado exitosamente');
-    setTimeout(() => navigate('/events'), 2000);
-  } catch (error) {
-    console.error('Error al guardar el evento:', error.message);
-    setErrors({ ...errors, global: 'Error al actualizar el evento. Inténtalo de nuevo.' });
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-
-const handleChange = (e) => {
-  const { name, value } = e.target;
-  if (name === 'fecha') {
-    const dateValue = new Date(value).toISOString().split('T')[0]; // Convierte el valor si es fecha
-    setEvent(prevEvent => ({ ...prevEvent, [name]: dateValue }));  // Guarda la fecha formateada
-  } else {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
     setEvent(prevEvent => ({ ...prevEvent, [name]: value }));
-  }
-};
-
-
-
-  
-  
-  
-
-
-  
-  
+  };
 
   const handleSelectChange = (selectedOptions) => {
     const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
@@ -247,20 +207,6 @@ const handleChange = (e) => {
             />
             <p className="text-gray-600 text-sm mt-2">Indica el nombre del evento al que asistirá tu empresa</p>
             {errors.nombreEvento && <p className="text-red-500 text-xs italic">{errors.nombreEvento}</p>}
-          </div>
-          <div className="mb-4">
-            <label className="block text-black text-sm font-bold mb-2" htmlFor="fecha">
-              Fecha
-            </label>
-            <input
-              type="date"
-              id="fecha"
-              name="fecha"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
-              value={event?.fecha || ''}
-              onChange={handleChange}
-            />
-            {errors.fecha && <p className="text-red-500 text-xs italic">{errors.fecha}</p>}
           </div>
           <div className="mb-4">
             <label className="block text-black text-sm font-bold mb-2" htmlFor="empresasAsistente">
@@ -332,6 +278,7 @@ const handleChange = (e) => {
               placeholder="Descripción del Evento"
               value={event?.descripcion || ''}
               onChange={handleDescriptionChange}
+              rows="3"
             />
             <p className="text-gray-600 text-sm mt-2">Caracteres: {charCount}</p>
             {errors.descripcion && <p className="text-red-500 text-xs italic">{errors.descripcion}</p>}
@@ -339,13 +286,13 @@ const handleChange = (e) => {
           <div className="flex items-center justify-between">
             <button
               type="submit"
-              className={`bg-darkyellow hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
               disabled={isSubmitting}
+              className="bg-darkyellow hover:bg-darkyellow-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
             >
-              {isSubmitting ? 'Guardando...' : 'Guardar Cambios'}
+              {isSubmitting ? 'Guardando...' : 'Actualizar Evento'}
             </button>
-            <NavLink to="/events">
-              <FaTimes className="text-red-500 text-2xl" />
+            <NavLink to="/EventsForAdmin" className="text-darkred hover:text-red-600">
+              <FaTimes className="text-2xl" />
             </NavLink>
           </div>
         </form>

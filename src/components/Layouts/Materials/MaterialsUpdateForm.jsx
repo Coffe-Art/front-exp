@@ -91,7 +91,7 @@ export const MaterialsUpdateForm = () => {
         if (!token) {
           throw new Error('Token de autenticación no encontrado');
         }
-        const response = await fetch(` https://checkpoint-9tp4.onrender.com/api/insumo/consultar/${insumoId}`, {
+        const response = await fetch(`https://checkpoint-9tp4.onrender.com/api/insumo/consultar/${insumoId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -109,20 +109,27 @@ export const MaterialsUpdateForm = () => {
           const data = await response.json();
           console.log('Insumo data:', data); // Verifica los datos aquí
     
-          // Asegúrate de que el formato de datos sea correcto
-          setFormData({
-            Nombre: data.Nombre || '',
-            cantidadInsumo: data.cantidadInsumo || '',
-            precioUnitario: data.precioUnitario || '',
-            precioPorKilo: data.precioPorKilo || '',
-            descripcion: data.descripcion || '',
-            lugarDeVenta: data.lugarDeVenta || '',
-            correoContacto: data.correoContacto || '',
-            TelefonoContacto: data.TelefonoContacto || '',
-            TipoDeVenta: data.TipoDeVenta || '',
-            codigoEmpresa: data.codigoEmpresa || '',
-            idAdministrador: data.idAdministrador || ''
-          });
+          // Asegúrate de que data es un array y tiene al menos un elemento
+          if (Array.isArray(data) && data.length > 0) {
+            const insumo = data[0]; // Accede al primer objeto en el array
+    
+            // Asegúrate de que el formato de datos sea correcto
+            setFormData({
+              Nombre: insumo.Nombre || '',
+              cantidadInsumo: insumo.cantidadInsumo || '',
+              precioUnitario: insumo.precioUnitario || '',
+              precioPorKilo: insumo.precioPorKilo || '',
+              descripcion: insumo.descripcion || '',
+              lugarDeVenta: insumo.lugarDeVenta || '',
+              correoContacto: insumo.correoContacto || '',
+              TelefonoContacto: insumo.TelefonoContacto || '',
+              TipoDeVenta: insumo.TipoDeVenta || '',
+              codigoEmpresa: insumo.codigoEmpresa || '',
+              idAdministrador: insumo.idAdministrador || ''
+            });
+          } else {
+            throw new Error('Formato de datos inesperado: el array está vacío o no es un array');
+          }
         } else {
           const text = await response.text();
           throw new Error('Respuesta no es JSON');
@@ -288,7 +295,7 @@ export const MaterialsUpdateForm = () => {
       type="text"
       id="Nombre"
       name="Nombre"
-      value={formData.Nombre}
+      value={formData.Nombre} 
       onChange={handleChange}
       className="shadow appearance-none border rounded w-full py-2 px-3 text-darkyellow leading-tight focus:outline-none focus:shadow-outline"
     />

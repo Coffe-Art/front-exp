@@ -77,7 +77,7 @@ export const EventsForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+  
     // Contador de caracteres y validación de la descripción
     if (name === 'descripcion') {
       if (value.length <= 200) {
@@ -87,6 +87,29 @@ export const EventsForm = () => {
         }));
         setCharCount(value.length);
       }
+    } else if (name === 'fecha') {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Establecer la hora a 00:00
+      const selectedDate = new Date(value);
+      selectedDate.setHours(0, 0, 0, 0); // También establecer la hora a 00:00 para la comparación
+  
+      if (selectedDate < today) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          fecha: 'La fecha no puede ser anterior a la fecha actual',
+        }));
+      } else {
+        // Limpiar el error si la fecha es válida
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          fecha: undefined,
+        }));
+      }
+  
+      setFormData((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
     } else {
       setFormData((prevState) => ({
         ...prevState,
@@ -94,6 +117,7 @@ export const EventsForm = () => {
       }));
     }
   };
+  
 
   const handleSelectChange = (selectedOptions) => {
     setFormData((prevData) => ({

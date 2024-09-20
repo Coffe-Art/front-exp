@@ -8,6 +8,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { FaSearch, FaPlus, FaEdit, FaTrash, FaCoffee } from 'react-icons/fa';
 import Fondo from '../../../assets/FondoEmpresas.png';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const containerStyle = {
   width: '100%',
@@ -40,6 +41,7 @@ export const EventsForAdmin = () => {
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 const [eventToDelete, setEventToDelete] = useState(null);
+const navigate = useNavigate();
 
 
   useEffect(() => {
@@ -134,7 +136,13 @@ const [eventToDelete, setEventToDelete] = useState(null);
       console.error('Error al eliminar el evento:', error.message);
     }
   };
+
+  const handleEditEvent = (eventId) => {
+    navigate(`/EventsUpdateForm/${eventId}`);
+  };
   
+  
+ 
   
   return (
     <div className="min-h-screen bg-gray-200 font-sans">
@@ -233,13 +241,23 @@ const [eventToDelete, setEventToDelete] = useState(null);
     </div>
     <div className="flex justify-between gap-4 mt-4">
    
-      <FaTrash
+    <FaTrash
   className='text-darkpurple hover:text-lightpurple text-3xl'
   onClick={(e) => {
     e.stopPropagation(); // Evita que el clic se propague al contenedor del evento
     handleDeleteEvent(event); // Muestra el modal de confirmación
   }}
 />
+
+
+<FaEdit
+  className='text-darkyellow hover:text-lightyellow text-3xl'
+  onClick={(e) => {
+    e.stopPropagation(); // Evita que el clic se propague al contenedor del evento
+    handleEditEvent(event.idEvento); // Envía el idEvento a la función que maneja la edición
+  }}
+/>
+
 
     </div>
   </div>

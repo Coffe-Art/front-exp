@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaSearch, FaStar } from 'react-icons/fa';
+import { FaSearch, FaEllipsisV } from 'react-icons/fa';
 import { Header } from '../ForView/Header';
 import { Footer } from '../ForView/Footer';
 import ProductoContext from '../../../Context/contextProducto';
 import CartIcon from './CartIcon';
 import { FaCoffee } from "react-icons/fa";
-
 
 export const CraftComprador = () => {
   const { productos, setProductos } = useContext(ProductoContext);
@@ -23,6 +22,10 @@ export const CraftComprador = () => {
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [carrito, setCarrito] = useState([]);
+  const [menuReportes, setMenuReportes] = useState({ visible: false, producto: null });
+  const [motivoReporte, setMotivoReporte] = useState('');
+  const [mostrarFormularioReporte, setMostrarFormularioReporte] = useState(false);
+  const [mostrarNotificacion, setMostrarNotificacion] = useState(false);
 
   const navigate = useNavigate();
 
@@ -52,8 +55,6 @@ export const CraftComprador = () => {
     };
     obtenerProductos();
   }, [setProductos]);
-
-  
 
   useEffect(() => {
     const obtenerCategorias = () => {
@@ -113,19 +114,17 @@ export const CraftComprador = () => {
   }, [terminoBusqueda, categoria, precioMinimo, precioMaximo, calificacion, productos]);
 
   useEffect(() => {
-    
     const carritoGuardado = JSON.parse(localStorage.getItem('carrito')) || [];
     setCarrito(carritoGuardado);
   }, []);
 
   useEffect(() => {
-    
     localStorage.setItem('carrito', JSON.stringify(carrito));
   }, [carrito]);
 
   const [notificacionVisible, setNotificacionVisible] = useState(false);
   const [productoNotificado, setProductoNotificado] = useState(null);
-  
+
   useEffect(() => {
     if (notificacionVisible) {
       const timer = setTimeout(() => {
@@ -134,7 +133,7 @@ export const CraftComprador = () => {
       return () => clearTimeout(timer);
     }
   }, [notificacionVisible]);
-  
+
   const agregarAlCarrito = (producto) => {
     setCarrito((prevCarrito) => {
       const productoExistente = prevCarrito.find((p) => p.idProducto === producto.idProducto);
@@ -149,7 +148,7 @@ export const CraftComprador = () => {
     setProductoNotificado(producto);
     setNotificacionVisible(true);
   };
-  
+
   const alternarFiltro = () => {
     setFiltroAbierto(!filtroAbierto);
   };
@@ -189,13 +188,57 @@ export const CraftComprador = () => {
     setModalAbierto(false);
     setProductoSeleccionado(null);
   };
-  const manejarIrACarrito = () => {
-    navigate('/Cart');
+
+  const abrirMenuReportes = (producto) => {
+    setMenuReportes(prevState => ({
+      visible: !prevState.visible || prevState.producto.idProducto !== producto.idProducto,
+      producto
+    }));
+    setMotivoReporte('');
   };
+  
+  const manejarReporte = async () => {
+    if (!motivoReporte || !menuReportes.producto) {
+        console.error('Motivo del reporte o producto no están definidos');
+        return;
+    }
 
-const eliminarDelCarrito = (idProducto) => {
+    try {
+        const response = await fetch('http://localhost:3000/api/crear-reporte-producto', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify({
+                idProducto: menuReportes.producto.idProducto,
+                motivo: motivoReporte,
+            }),
+        });
 
-setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !== idProducto));
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Error ${response.status}: ${errorText}`);
+        }
+
+        const contentType = response.headers.get('Content-Type');
+        if (!contentType || !contentType.includes('application/json')) {
+            throw new Error('Respuesta no es JSON');
+        }
+
+        const result = await response.json();
+        console.log('Reporte enviado con éxito:', result);
+        setMotivoReporte('');
+        setMenuReportes({ visible: false, producto: null, mostrandoFormulario: false });
+        setMostrarNotificacion(true);
+
+        setTimeout(() => {
+            setMostrarNotificacion(false);
+        }, 2000);
+
+    } catch (error) {
+        console.error('Error al enviar el reporte:', error.message);
+    }
 };
 
   return (
@@ -208,10 +251,11 @@ setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !==
             <button onClick={alternarFiltro} className="text-darkyellow text-xl">
             </button>
             {notificacionVisible && (
-  <div className="fixed bottom-4 right-4 bg-white text-darkyellow py-2 px-4 rounded shadow-lg z-50 border-solid border-3 border-darkyellow flex flex-row"> <FaCoffee className='mr-2' size={24}/>
-    {productoNotificado ? `Añadido ${productoNotificado.nombre} al carrito` : 'Producto añadido al carrito'}
-  </div>
-)}
+              <div className="fixed bottom-4 right-4 bg-white text-darkyellow py-2 px-4 rounded shadow-lg z-50 border-solid border-3 border-darkyellow flex flex-row"> 
+                <FaCoffee className='mr-2' size={24}/>
+                {productoNotificado ? `Añadido ${productoNotificado.nombre} al carrito` : 'Producto añadido al carrito'}
+              </div>
+            )}
           </div>
           <div>
             <div className="flex items-center mb-4">
@@ -259,20 +303,16 @@ setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !==
                 placeholder="Max"
               />
             </div>
-            
             <button
               onClick={resetearPrecios}
               className="bg-gray-300 text-gray-800 py-2 px-4 rounded w-full"
             >
               Resetear Precio
             </button>
-         
           </div>
         </div>
         <div className="flex-1 p-4">
-        <h2 className="text-darkyellow md:text-4xl font-bold mt-5 mb-8 text-center">¡Bienvenido a Artesanías!</h2>
-
-
+          <h2 className="text-darkyellow md:text-4xl font-bold mt-5 mb-8 text-center">¡Bienvenido a Artesanías!</h2>
           {cargando ? (
             <div className="text-center">Cargando...</div>
           ) : error ? (
@@ -282,7 +322,7 @@ setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !==
               {productosFiltrados.map(producto => (
                 <div
                   key={producto.idProducto}
-                  className="bg-white p-4 rounded-lg shadow-md cursor-pointer transition-transform transform hover:scale-105"
+                  className="bg-white p-4 rounded-lg shadow-md cursor-pointer transition-transform transform hover:scale-105 relative"
                   onClick={() => abrirModal(producto)}
                 >
                   <img
@@ -298,10 +338,75 @@ setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !==
                       e.stopPropagation();
                       agregarAlCarrito(producto);
                     }}
-                    className="bg-darkpurple text-white py-2 px-4 rounded mt-3 hover:bg-lightpurplee"
+                    className="bg-darkpurple text-white py-2 px-4 rounded mt-3 hover:bg-lightpurple"
                   >
                     Agregar al carrito
                   </button>
+                  <button
+  onClick={(e) => {
+    e.stopPropagation();
+    abrirMenuReportes(producto);
+  }}
+  className="absolute top-2 right-0 text-darkpurple hover:text-lightpurple border-0 outline-none appearance-none"
+>
+  <FaEllipsisV />
+</button>
+
+{menuReportes.visible && menuReportes.producto.idProducto === producto.idProducto && (
+  <div>
+    {menuReportes.mostrandoFormulario && (
+      <div
+        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+        onClick={() => setMenuReportes({ ...menuReportes, mostrandoFormulario: false })}
+      >
+        <div
+          className="bg-white p-4 rounded shadow-lg max-w-sm w-full"
+          onClick={(e) => e.stopPropagation()} 
+        >
+          <textarea
+            value={motivoReporte}
+            onChange={(e) => {
+              e.stopPropagation(); 
+              setMotivoReporte(e.target.value);
+            }}
+            className="w-full p-2 border rounded mb-2"
+            placeholder="Escribe el motivo del reporte..."
+          />
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); 
+              manejarReporte();
+            }}
+            className="bg-darkyellow text-white py-2 px-4 rounded w-full hover:bg-lightyellow"
+          >
+            Enviar Reporte
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); 
+              setMenuReportes({ ...menuReportes, mostrandoFormulario: false });
+            }}
+            className="mt-2 bg-darkpurple text-white py-2 px-4 rounded w-full hover:bg-lightpurple"
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    )}
+    
+    {!menuReportes.mostrandoFormulario && (
+      <button
+        onClick={(e) => {
+          e.stopPropagation(); 
+          setMenuReportes({ ...menuReportes, mostrandoFormulario: true });
+        }}
+        className="rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105 text-white bg-darkyellow hover:bg-lightyellow px-4 py-2 right-10 w-auto absolute bottom-3"
+      >
+        Reportar
+      </button>
+    )}
+  </div>
+)}
                 </div>
               ))}
             </div>
@@ -335,7 +440,7 @@ setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !==
               </button>
               <button
                 onClick={cerrarModal}
-                className="bg-gray-300 text-gray-800 py-2 px-4 rounded"
+                className="bg-darkyellow text-white py-2 px-4 rounded hover:bg-lightyellow"
               >
                 Cerrar
               </button>
@@ -343,6 +448,7 @@ setCarrito(prevCarrito => prevCarrito.filter(producto => producto.idProducto !==
           </div>
         </div>
       )}
+      
       <CartIcon />
       <Footer />
     </div>

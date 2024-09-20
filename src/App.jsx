@@ -88,16 +88,14 @@ function App() {
             <Route path="/CreateStory" element={<ProtectedRoute element={CreateStory} allowedRoles={['administrador', 'empleado']} />} />
             <Route path="/CreateProduct" element={<ProtectedRoute element={CreateProduct} allowedRoles={['administrador', 'empleado']} />} />
             <Route path="/EventsForAdmin" element={<ProtectedRoute element={EventsForAdmin} allowedRoles={['administrador', 'empleado']} />} />
-            <Route path="/EventsForm" element={<ProtectedRoute element={EventsForm} allowedRoles={['administrador', 'empleado']} />} />
+d            <Route path="/EventsForm" element={<ProtectedRoute element={EventsForm} allowedRoles={['administrador', 'empleado']} />} />
             <Route path="/LoginCompanies" element={<ProtectedRoute element={LoginCompanies} allowedRoles={['administrador', 'empleado']} />} />
             <Route path="/SalesOverview" element={<ProtectedRoute element={SalesOverview} allowedRoles={['administrador', 'empleado']} />} />
             <Route path="/UpdateCompany/:id" element={<ProtectedRoute element={UpdateCompany} allowedRoles={['administrador', 'empleado']} />} />
             <Route path="/UpdateProduct/:idProducto" element={<ProtectedRoute element={UpdateProducto} allowedRoles={['administrador', 'empleado']} />} />
             <Route path="/MaterialsForAdmin" element={<ProtectedRoute element={MaterialsForAdmin} allowedRoles={['administrador', 'empleado']} />} />
             <Route path="/MaterialsForm" element={<ProtectedRoute element={MaterialsForm} allowedRoles={['administrador', 'empleado']} />} />
-            <Route path="/MaterialsUpdateForm" element={<ProtectedRoute element={MaterialsUpdateForm} allowedRoles={['administrador', 'empleado']} />} />
-            <Route path="/EventsUpdateForm/:id"  element={<ProtectedRoute element={MaterialsUpdateForm} allowedRoles={['administrador', 'empleado']} />} />         
-             </Routes>
+            <Route path="/MaterialsUpdateForm/:id" element={<MaterialsUpdateForm />} />          </Routes>
         </EventsProvider>
       </EmpresaProvider>
     </Router>
