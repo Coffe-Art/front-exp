@@ -175,11 +175,11 @@ export const CompaniesForAdmin = () => {
                 <Header />
                 <input
                         type="text"
+                        placeholder='Buscar Empresas...'
                         value={searchText}
                         onChange={handleSearchChange}
                         className="flex self-center w-96 mt-5 mb-4 p-2 border border-gray-300 rounded"
                     />
-                    
                 <div className="container mx-auto my-8 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     <div className="bg-white border rounded-lg overflow-hidden shadow-md flex flex-col items-center p-4 cursor-pointer mb-4">
                         <div className="flex flex-col items-center">
