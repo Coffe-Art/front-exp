@@ -389,7 +389,7 @@ className='shadow border rounded w-1/2 py-2 px-3'
                   <img
   src={`https://imagenes224.blob.core.windows.net/imagenes224/${product.urlProductoImg.split('/').pop()}`}
   alt={product.nombre}
-  className="product-image"
+  className="w-full h-48 object-cover mb-4 rounded"
 />
                   <h3 className="text-xl font-semibold mb-2">{product.nombre}</h3>
                   <p className="text-gray-700 mb-2">{product.descripcion}</p>
