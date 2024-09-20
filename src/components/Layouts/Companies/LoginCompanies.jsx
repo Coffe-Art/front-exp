@@ -138,12 +138,12 @@ export const LoginCompanies = () => {
                         />
                         <p className="text-gray-600 text-sm mt-2">Una bonita descripción te ayudara a tener una buena impresión</p>
                     </div>
-                    <div className="flex items-center justify-center">
+                    <div className="flex ">
                         <button
                             type="submit"
                             className="bg-darkyellow hover:bg-lightyellow text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                         >
-                            Registrar Empresa
+                            Agregar Empresa
                         </button>
                     </div>
                 </form>
