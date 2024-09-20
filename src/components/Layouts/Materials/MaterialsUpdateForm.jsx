@@ -454,9 +454,7 @@ export const MaterialsUpdateForm = () => {
     >
       Actualizar Insumo
     </button>
-    <NavLink to="/MaterialsForAdmin" className="text-darkpurple hover:underline">
-      Cancelar
-    </NavLink>
+    
   </div>
 </form>
 
